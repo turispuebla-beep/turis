@@ -5,6 +5,13 @@
     <string name="default_notification_channel_name">Notificaciones generales</string>
     <string name="news_notification_channel_id">news_channel</string>
     <string name="news_notification_channel_name">Noticias</string>
+
+    <!-- Navigation -->
+    <string name="title_home">Inicio</string>
+    <string name="title_calendar">Calendario</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_media">Archivos</string>
+    <string name="title_profile">Perfil</string>
     
     <!-- News -->
     <string name="news_title">Noticias</string>

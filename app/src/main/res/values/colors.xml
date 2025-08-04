@@ -1,44 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Colores base -->
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    
-    <!-- Material Design Colors -->
-    <color name="purple_200">#BB86FC</color>
-    <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_700">#018786</color>
-
-    <!-- Colores primarios -->
+    <!-- Material Theme Colors -->
     <color name="primary">#1976D2</color>
     <color name="primary_dark">#1565C0</color>
     <color name="primary_darker">#0D47A1</color>
-
-    <!-- Colores secundarios -->
-    <color name="secondary">#26A69A</color>
-    <color name="secondary_dark">#00897B</color>
-    <color name="secondary_darker">#00695C</color>
-
-    <!-- Tema claro -->
+    <color name="secondary">#FFC107</color>
+    <color name="secondary_dark">#FFA000</color>
+    <color name="secondary_darker">#FF8F00</color>
+    
+    <!-- Light Theme Colors -->
     <color name="background_light">#FAFAFA</color>
     <color name="surface_light">#FFFFFF</color>
-    <color name="on_surface_light">#000000</color>
-
-    <!-- Tema oscuro -->
+    <color name="on_surface_light">#212121</color>
+    
+    <!-- Dark Theme Colors -->
     <color name="background_dark">#121212</color>
     <color name="surface_dark">#1E1E1E</color>
     <color name="on_surface_dark">#FFFFFF</color>
+    
+    <!-- Legacy Colors (mantener por compatibilidad) -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
 
-    <!-- Estados -->
-    <color name="error">#B00020</color>
-    <color name="success">#4CAF50</color>
-    <color name="warning">#FFC107</color>
-    <color name="info">#2196F3</color>
+    <!-- Comparison colors -->
+    <color name="old_value_text">#757575</color>
+    <color name="new_value_text">#212121</color>
+    <color name="visible_text">#212121</color>
+    <color name="hidden_text">#9E9E9E</color>
 
-    <!-- Transparencias -->
-    <color name="scrim">#52000000</color>
-    <color name="overlay_light">#1F000000</color>
-    <color name="overlay_dark">#1FFFFFFF</color>
+    <!-- Team colors -->
+    <color name="team_primary">#1976D2</color>
+    <color name="team_primary_dark">#1565C0</color>
+    <color name="team_accent">#FFC107</color>
+    <color name="team_background">#F5F5F5</color>
+    <color name="team_surface">#FFFFFF</color>
+    <color name="team_error">#B00020</color>
+    <color name="team_success">#4CAF50</color>
+    <color name="team_warning">#FF9800</color>
+    <color name="team_info">#2196F3</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="text_disabled">#BDBDBD</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_surface">#000000</color>
+
+    <!-- Divider colors -->
+    <color name="divider">#EEEEEE</color>
+    <color name="divider_dark">#BDBDBD</color>
+
+    <!-- Shimmer colors -->
+    <color name="shimmer_color">#DDDDDD</color>
+    <color name="shimmer_highlight">#FFFFFF</color>
 </resources>
