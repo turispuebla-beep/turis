@@ -1,3 +1,13 @@
+val org.gradle.accessors.dm.LibrariesForLibs.mpandroidchart: kotlin.Any
+    get() {
+        TODO()
+    }
+
+val org.gradle.accessors.dm.LibrariesForLibs.compressor: kotlin.Any
+    get() {
+        TODO()
+    }
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -131,7 +141,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     
     // Socket.IO
-    implementation(libs.socket)
+    implementation(dependencyNotation = libs.coil)
     // AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
