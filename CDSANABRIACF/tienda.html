@@ -436,102 +436,112 @@
     </footer>
 
     <script>
-        // Productos de ejemplo
-        const products = [
-            {
-                id: 1,
-                name: "Camiseta Oficial CDSANABRIACF",
-                price: 45.00,
-                description: "Camiseta oficial del equipo con los colores del club. Material transpirable y cómodo.",
-                image: "⚽",
-                category: "camisetas",
-                sizes: ["S", "M", "L", "XL"],
-                stock: {
-                    "S": 15,
-                    "M": 25,
-                    "L": 20,
-                    "XL": 10
-                }
-            },
-            {
-                id: 2,
-                name: "Equipación Completa",
-                price: 85.00,
-                description: "Equipación completa incluye camiseta, pantalón y medias oficiales del club.",
-                image: "👕",
-                category: "equipaciones",
-                sizes: ["S", "M", "L", "XL"],
-                stock: {
-                    "S": 8,
-                    "M": 12,
-                    "L": 15,
-                    "XL": 5
-                }
-            },
-            {
-                id: 3,
-                name: "Chaqueta Deportiva",
-                price: 65.00,
-                description: "Chaqueta deportiva con logo del club. Perfecta para entrenamientos y partidos.",
-                image: "🧥",
-                category: "equipaciones",
-                sizes: ["M", "L", "XL"],
-                stock: {
-                    "M": 10,
-                    "L": 8,
-                    "XL": 3
-                }
-            },
-            {
-                id: 4,
-                name: "Gorra CDSANABRIACF",
-                price: 18.00,
-                description: "Gorra oficial del club con logo bordado. Ajustable y cómoda.",
-                image: "🧢",
-                category: "accesorios",
-                sizes: ["Única"],
-                stock: {
-                    "Única": 30
-                }
-            },
-            {
-                id: 5,
-                name: "Pantalón de Entrenamiento",
-                price: 35.00,
-                description: "Pantalón deportivo para entrenamientos. Material ligero y cómodo.",
-                image: "👖",
-                category: "entrenamiento",
-                sizes: ["S", "M", "L", "XL"],
-                stock: {
-                    "S": 12,
-                    "M": 18,
-                    "L": 15,
-                    "XL": 8
-                }
-            },
-            {
-                id: 6,
-                name: "Bufanda Oficial",
-                price: 22.00,
-                description: "Bufanda oficial con los colores del club. Perfecta para animar al equipo.",
-                image: "🧣",
-                category: "accesorios",
-                sizes: ["Única"],
-                stock: {
-                    "Única": 25
-                }
-            },
-            {
-                id: 7,
-                name: "Camiseta de Entrenamiento",
-                price: 28.00,
-                description: "Camiseta técnica para entrenamientos. Material transpirable y ligero.",
-                image: "🏃",
-                category: "entrenamiento",
-                sizes: ["S", "M", "L", "XL"],
-                stock: {
-                    "S": 20,
-                    "M": 25,
+        // Cargar productos desde localStorage o usar productos de ejemplo
+        let products = [];
+        
+        // Intentar cargar productos guardados por el administrador
+        function loadProductsFromStorage() {
+            const storedProducts = localStorage.getItem('cdsanabriacfProducts');
+            if (storedProducts) {
+                products = JSON.parse(storedProducts);
+                console.log('✅ Productos cargados desde localStorage:', products.length, 'productos');
+            } else {
+                // Productos de ejemplo si no hay productos guardados
+                products = [
+                    {
+                        id: 1,
+                        name: "Camiseta Oficial CDSANABRIACF",
+                        price: 45.00,
+                        description: "Camiseta oficial del equipo con los colores del club. Material transpirable y cómodo.",
+                        image: "⚽",
+                        category: "camisetas",
+                        sizes: ["S", "M", "L", "XL"],
+                        stock: {
+                            "S": 15,
+                            "M": 25,
+                            "L": 20,
+                            "XL": 10
+                        }
+                    },
+                    {
+                        id: 2,
+                        name: "Equipación Completa",
+                        price: 85.00,
+                        description: "Equipación completa incluye camiseta, pantalón y medias oficiales del club.",
+                        image: "👕",
+                        category: "equipaciones",
+                        sizes: ["S", "M", "L", "XL"],
+                        stock: {
+                            "S": 8,
+                            "M": 12,
+                            "L": 15,
+                            "XL": 5
+                        }
+                    },
+                    {
+                        id: 3,
+                        name: "Chaqueta Deportiva",
+                        price: 65.00,
+                        description: "Chaqueta deportiva con logo del club. Perfecta para entrenamientos y partidos.",
+                        image: "🧥",
+                        category: "equipaciones",
+                        sizes: ["M", "L", "XL"],
+                        stock: {
+                            "M": 10,
+                            "L": 8,
+                            "XL": 3
+                        }
+                    },
+                    {
+                        id: 4,
+                        name: "Gorra CDSANABRIACF",
+                        price: 18.00,
+                        description: "Gorra oficial del club con logo bordado. Ajustable y cómoda.",
+                        image: "🧢",
+                        category: "accesorios",
+                        sizes: ["Única"],
+                        stock: {
+                            "Única": 30
+                        }
+                    },
+                    {
+                        id: 5,
+                        name: "Pantalón de Entrenamiento",
+                        price: 35.00,
+                        description: "Pantalón deportivo para entrenamientos. Material ligero y cómodo.",
+                        image: "👖",
+                        category: "entrenamiento",
+                        sizes: ["S", "M", "L", "XL"],
+                        stock: {
+                            "S": 12,
+                            "M": 18,
+                            "L": 15,
+                            "XL": 8
+                        }
+                    },
+                    {
+                        id: 6,
+                        name: "Bufanda Oficial",
+                        price: 22.00,
+                        description: "Bufanda oficial con los colores del club. Perfecta para animar al equipo.",
+                        image: "🧣",
+                        category: "accesorios",
+                        sizes: ["Única"],
+                        stock: {
+                            "Única": 25
+                        }
+                    },
+                    {
+                        id: 7,
+                        name: "Camiseta de Entrenamiento",
+                        price: 28.00,
+                        description: "Camiseta técnica para entrenamientos. Material transpirable y ligero.",
+                        image: "🏃",
+                        category: "entrenamiento",
+                        sizes: ["S", "M", "L", "XL"],
+                        stock: {
+                            "S": 20,
+                            "M": 25,
                     "L": 18,
                     "XL": 12
                 }
@@ -627,6 +637,9 @@
 
         // Event listeners para filtros
         document.addEventListener('DOMContentLoaded', function() {
+            // Cargar productos desde localStorage
+            loadProductsFromStorage();
+            
             // Renderizar productos iniciales
             renderProducts();
 

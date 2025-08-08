@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración Completa de Tienda - CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626, #3b82f6);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #dc2626;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #dc2626;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section h2 {
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+
+        .variants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .variant-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .variant-item label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .variant-item input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .products-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 20px;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .product-image {
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .stock-info {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .low-stock {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .alert.show {
+            transform: translateX(0);
+        }
+
+        .alert-success {
+            background: #10b981;
+        }
+
+        .alert-error {
+            background: #ef4444;
+        }
+
+        .store-settings {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .store-settings h2 {
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .online-links {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .online-links h2 {
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .link-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .link-item input {
+            flex: 1;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #dc2626;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .purchases-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .purchases-section h2 {
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .variants-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="admin-panel.html" class="back-button">← Volver al Panel</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Administración Completa de Tienda</h1>
+            <p>Gestiona productos, tallas, colores, enlaces online y compras CDSANABRIACF</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalProducts">0</h3>
+                <p>Productos Totales</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lowStockCount">0</h3>
+                <p>Stock Bajo</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalValue">€0</h3>
+                <p>Valor Total</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalPurchases">0</h3>
+                <p>Compras Realizadas</p>
+            </div>
+        </div>
+
+        <!-- Formulario para agregar productos -->
+        <div class="form-section">
+            <h2>➕ Agregar Nuevo Producto</h2>
+            <form id="productForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="productName">Nombre del Producto *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Categoría *</label>
+                        <select id="productCategory" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="camisetas">Camisetas</option>
+                            <option value="equipaciones">Equipaciones</option>
+                            <option value="accesorios">Accesorios</option>
+                            <option value="calzado">Calzado</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Precio (€) *</label>
+                        <input type="number" id="productPrice" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage">Emoji/Imagen</label>
+                        <input type="text" id="productImage" placeholder="⚽" value="⚽">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Descripción</label>
+                    <textarea id="productDescription" rows="3" placeholder="Describe el producto..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Variantes (Tallas y Colores)</label>
+                    <div class="variants-grid" id="variantsGrid">
+                        <div class="variant-item">
+                            <label>Talla</label>
+                            <input type="text" placeholder="S" class="size-input">
+                        </div>
+                        <div class="variant-item">
+                            <label>Color</label>
+                            <input type="text" placeholder="Rojo" class="color-input">
+                        </div>
+                        <div class="variant-item">
+                            <label>Stock</label>
+                            <input type="number" min="0" value="0" class="stock-input">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addVariant()" class="btn btn-secondary" style="margin-top: 10px;">➕ Agregar Variante</button>
+                </div>
+
+                <button type="submit" class="btn">➕ Agregar Producto</button>
+            </form>
+        </div>
+
+        <!-- Enlaces Online -->
+        <div class="online-links">
+            <h2>🔗 Enlaces a Tiendas Online</h2>
+            <div id="onlineLinksContainer">
+                <div class="link-item">
+                    <input type="text" placeholder="Nombre de la tienda" class="store-name">
+                    <input type="url" placeholder="https://tienda-online.com" class="store-url">
+                    <button type="button" onclick="removeLink(this)" class="btn btn-danger btn-small">🗑️</button>
+                </div>
+            </div>
+            <button onclick="addOnlineLink()" class="btn btn-secondary">➕ Agregar Enlace</button>
+            <button onclick="saveOnlineLinks()" class="btn btn-success">💾 Guardar Enlaces</button>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="products-table">
+            <div class="table-header">
+                <h2>📋 Productos en Tienda</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Variantes</th>
+                        <th>Stock Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Registro de Compras -->
+        <div class="purchases-section">
+            <h2>🛒 Registro de Compras</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Variante</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="purchasesTableBody">
+                    <!-- Las compras se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar datos
+        let products = [];
+        let purchases = [];
+        let onlineLinks = [];
+        let nextId = 1;
+
+        // Cargar datos guardados
+        function loadData() {
+            const storedProducts = localStorage.getItem('cdsanabriacfProducts');
+            const storedPurchases = localStorage.getItem('cdsanabriacfPurchases');
+            const storedLinks = localStorage.getItem('cdsanabriacfOnlineLinks');
+
+            if (storedProducts) {
+                products = JSON.parse(storedProducts);
+                if (products.length > 0) {
+                    nextId = Math.max(...products.map(p => p.id)) + 1;
+                }
+            }
+
+            if (storedPurchases) {
+                purchases = JSON.parse(storedPurchases);
+            }
+
+            if (storedLinks) {
+                onlineLinks = JSON.parse(storedLinks);
+                renderOnlineLinks();
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('cdsanabriacfProducts', JSON.stringify(products));
+            localStorage.setItem('cdsanabriacfPurchases', JSON.stringify(purchases));
+            localStorage.setItem('cdsanabriacfOnlineLinks', JSON.stringify(onlineLinks));
+        }
+
+        // Agregar variante
+        function addVariant() {
+            const grid = document.getElementById('variantsGrid');
+            const variantDiv = document.createElement('div');
+            variantDiv.className = 'variant-item';
+            variantDiv.innerHTML = `
+                <label>Talla</label>
+                <input type="text" placeholder="S" class="size-input">
+                <label>Color</label>
+                <input type="text" placeholder="Rojo" class="color-input">
+                <label>Stock</label>
+                <input type="number" min="0" value="0" class="stock-input">
+                <button type="button" onclick="removeVariant(this)" class="btn btn-danger btn-small" style="margin-top: 5px;">🗑️</button>
+            `;
+            grid.appendChild(variantDiv);
+        }
+
+        // Remover variante
+        function removeVariant(button) {
+            button.parentElement.remove();
+        }
+
+        // Agregar enlace online
+        function addOnlineLink() {
+            const container = document.getElementById('onlineLinksContainer');
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'link-item';
+            linkDiv.innerHTML = `
+                <input type="text" placeholder="Nombre de la tienda" class="store-name">
+                <input type="url" placeholder="https://tienda-online.com" class="store-url">
+                <button type="button" onclick="removeLink(this)" class="btn btn-danger btn-small">🗑️</button>
+            `;
+            container.appendChild(linkDiv);
+        }
+
+        // Remover enlace
+        function removeLink(button) {
+            button.parentElement.remove();
+        }
+
+        // Guardar enlaces online
+        function saveOnlineLinks() {
+            const links = [];
+            document.querySelectorAll('.link-item').forEach(item => {
+                const name = item.querySelector('.store-name').value;
+                const url = item.querySelector('.store-url').value;
+                if (name && url) {
+                    links.push({ name, url });
+                }
+            });
+            onlineLinks = links;
+            saveData();
+            showAlert('✅ Enlaces guardados correctamente');
+        }
+
+        // Renderizar enlaces online
+        function renderOnlineLinks() {
+            const container = document.getElementById('onlineLinksContainer');
+            container.innerHTML = '';
+            
+            onlineLinks.forEach(link => {
+                const linkDiv = document.createElement('div');
+                linkDiv.className = 'link-item';
+                linkDiv.innerHTML = `
+                    <input type="text" placeholder="Nombre de la tienda" class="store-name" value="${link.name}">
+                    <input type="url" placeholder="https://tienda-online.com" class="store-url" value="${link.url}">
+                    <button type="button" onclick="removeLink(this)" class="btn btn-danger btn-small">🗑️</button>
+                `;
+                container.appendChild(linkDiv);
+            });
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const totalProducts = products.length;
+            const lowStock = products.filter(p => {
+                const totalStock = p.variants.reduce((sum, v) => sum + v.stock, 0);
+                return totalStock < 5;
+            }).length;
+            const totalValue = products.reduce((sum, p) => {
+                const totalStock = p.variants.reduce((s, v) => s + v.stock, 0);
+                return sum + (p.price * totalStock);
+            }, 0);
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('lowStockCount').textContent = lowStock;
+            document.getElementById('totalValue').textContent = `€${totalValue.toFixed(2)}`;
+            document.getElementById('totalPurchases').textContent = purchases.length;
+        }
+
+        // Renderizar tabla de productos
+        function renderProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const totalStock = product.variants.reduce((sum, v) => sum + v.stock, 0);
+                const stockClass = totalStock < 5 ? 'low-stock' : '';
+                const variantsText = product.variants.map(v => `${v.size} ${v.color}: ${v.stock}`).join(', ');
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="product-image">${product.image}</td>
+                    <td>
+                        <strong>${product.name}</strong><br>
+                        <small>${product.description || 'Sin descripción'}</small>
+                    </td>
+                    <td>${product.category}</td>
+                    <td>€${product.price.toFixed(2)}</td>
+                    <td class="stock-info">${variantsText}</td>
+                    <td class="stock-info ${stockClass}">Total: ${totalStock}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="deleteProduct(${product.id})" class="btn btn-danger btn-small">🗑️ Eliminar</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Renderizar tabla de compras
+        function renderPurchasesTable() {
+            const tbody = document.getElementById('purchasesTableBody');
+            tbody.innerHTML = '';
+
+            purchases.forEach(purchase => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${purchase.date}</td>
+                    <td><strong>${purchase.customerName}</strong><br><small>${purchase.customerType}</small></td>
+                    <td>${purchase.productName}</td>
+                    <td>${purchase.variant}</td>
+                    <td>€${purchase.price.toFixed(2)}</td>
+                    <td><span style="color: #10b981; font-weight: 600;">✅ Completada</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Agregar producto
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const variants = [];
+            document.querySelectorAll('.variant-item').forEach(item => {
+                const size = item.querySelector('.size-input').value;
+                const color = item.querySelector('.color-input').value;
+                const stock = parseInt(item.querySelector('.stock-input').value) || 0;
+                
+                if (size && color) {
+                    variants.push({ size, color, stock });
+                }
+            });
+
+            const newProduct = {
+                id: nextId++,
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                description: document.getElementById('productDescription').value,
+                image: document.getElementById('productImage').value || '⚽',
+                variants: variants
+            };
+
+            products.push(newProduct);
+            saveData();
+            renderProductsTable();
+            updateStats();
+            showAlert('✅ Producto agregado correctamente');
+            
+            // Limpiar formulario
+            event.target.reset();
+            document.getElementById('productImage').value = '⚽';
+            document.getElementById('variantsGrid').innerHTML = `
+                <div class="variant-item">
+                    <label>Talla</label>
+                    <input type="text" placeholder="S" class="size-input">
+                </div>
+                <div class="variant-item">
+                    <label>Color</label>
+                    <input type="text" placeholder="Rojo" class="color-input">
+                </div>
+                <div class="variant-item">
+                    <label>Stock</label>
+                    <input type="number" min="0" value="0" class="stock-input">
+                </div>
+            `;
+        });
+
+        // Eliminar producto
+        function deleteProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (confirm(`¿Estás seguro de que quieres eliminar "${product.name}"?`)) {
+                products = products.filter(p => p.id !== productId);
+                saveData();
+                renderProductsTable();
+                updateStats();
+                showAlert('🗑️ Producto eliminado correctamente');
+            }
+        }
+
+        // Función para registrar compra (llamada desde la tienda pública)
+        function registerPurchase(productId, variantIndex, customerName, customerType) {
+            const product = products.find(p => p.id === productId);
+            if (!product || !product.variants[variantIndex]) return;
+
+            const variant = product.variants[variantIndex];
+            if (variant.stock <= 0) return;
+
+            // Reducir stock
+            variant.stock--;
+
+            // Registrar compra
+            const purchase = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('es-ES'),
+                customerName: customerName,
+                customerType: customerType,
+                productName: product.name,
+                variant: `${variant.size} ${variant.color}`,
+                price: product.price
+            };
+
+            purchases.push(purchase);
+            saveData();
+            renderPurchasesTable();
+            updateStats();
+        }
+
+        // Mostrar alerta
+        function showAlert(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => alert.classList.add('show'), 100);
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => document.body.removeChild(alert), 300);
+            }, 3000);
+        }
+
+        // Hacer función global para que la tienda pública pueda usarla
+        window.registerPurchase = registerPurchase;
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            renderProductsTable();
+            renderPurchasesTable();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

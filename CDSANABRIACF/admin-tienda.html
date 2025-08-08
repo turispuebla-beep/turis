@@ -841,9 +841,13 @@
             };
 
             products.push(newProduct);
+            
+            // Guardar en localStorage automáticamente
+            localStorage.setItem('cdsanabriacfProducts', JSON.stringify(products));
+            
             renderProductsTable();
             updateStats();
-            showAlert('Producto agregado correctamente');
+            showAlert('Producto agregado correctamente y guardado');
             event.target.reset();
         }
 
@@ -863,9 +867,13 @@
 
             if (confirm(`¿Estás seguro de que quieres eliminar "${product.name}"?`)) {
                 products = products.filter(p => p.id !== productId);
+                
+                // Guardar en localStorage automáticamente
+                localStorage.setItem('cdsanabriacfProducts', JSON.stringify(products));
+                
                 renderProductsTable();
                 updateStats();
-                showAlert('Producto eliminado correctamente');
+                showAlert('Producto eliminado correctamente y guardado');
             }
         }
 
@@ -875,8 +883,20 @@
             showAlert('Configuración de la tienda guardada correctamente');
         }
 
+        // Función para cargar productos desde localStorage
+        function loadProductsFromStorage() {
+            const storedProducts = localStorage.getItem('cdsanabriacfProducts');
+            if (storedProducts) {
+                products = JSON.parse(storedProducts);
+                console.log('✅ Productos cargados desde localStorage:', products.length, 'productos');
+            }
+        }
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Cargar productos guardados
+            loadProductsFromStorage();
+            
             renderProductsTable();
             updateStats();
 
