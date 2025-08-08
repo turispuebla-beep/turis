@@ -1,0 +1,90 @@
+<!-- ENLACE PARA AGREGAR AL PANEL DE ADMINISTRACIÓN PRINCIPAL -->
+<!-- Copiar y pegar este código en la sección de navegación o menú del admin-panel.html -->
+
+<!-- Opción 1: Enlace en el menú principal -->
+<div class="admin-option" style="
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.15)'" 
+   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.1)'">
+    <a href="admin-tienda.html" style="
+        text-decoration: none;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    ">
+        <div style="
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #dc2626, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        ">🏪</div>
+        <div>
+            <h3 style="margin: 0 0 5px 0; color: #dc2626;">Administración de Tienda</h3>
+            <p style="margin: 0; color: #666; font-size: 0.9rem;">Gestionar productos, stock y configuración de la tienda</p>
+        </div>
+    </a>
+</div>
+
+<!-- Opción 2: Botón simple -->
+<!--
+<a href="admin-tienda.html" style="
+    display: inline-block;
+    background: linear-gradient(135deg, #dc2626, #3b82f6);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 10px 5px;
+    transition: transform 0.3s;
+" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+    🏪 Administrar Tienda
+</a>
+-->
+
+<!-- Opción 3: Tarjeta de estadísticas -->
+<!--
+<div style="
+    background: linear-gradient(135deg, #dc2626, #3b82f6);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+" onclick="window.location.href='admin-tienda.html'" 
+   onmouseover="this.style.transform='translateY(-2px)'" 
+   onmouseout="this.style.transform='translateY(0)'">
+    <div style="font-size: 2rem; margin-bottom: 10px;">🏪</div>
+    <h3 style="margin: 0 0 10px 0;">Tienda CDSANABRIACF</h3>
+    <p style="margin: 0; opacity: 0.9;">Gestionar productos y stock</p>
+</div>
+-->
+
+<!-- Opción 4: Enlace en la barra de navegación -->
+<!--
+<a href="admin-tienda.html" style="
+    background: #dc2626;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+" onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+    🏪 Tienda
+</a>
+-->

@@ -1,0 +1,94 @@
+/* Estilos específicos para iOS */
+
+/* Ajustes para notch y áreas seguras */
+.safe-area-padding {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Evitar el rebote del scroll en iOS */
+html {
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    overflow: auto;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Deshabilitar el resaltado al tocar en iOS */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Mejorar la apariencia de los botones en iOS */
+button {
+    -webkit-appearance: none;
+    border-radius: 8px;
+}
+
+/* Mejorar inputs en iOS */
+input,
+textarea {
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+/* Ajustes para el teclado virtual en iOS */
+.keyboard-padding {
+    padding-bottom: var(--keyboard-height, 0px);
+}
+
+/* Animaciones suaves para iOS */
+.ios-transition {
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* Estilo para listas con rebote en iOS */
+.ios-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+}
+
+/* Ajustes para modales en iOS */
+.ios-modal {
+    margin-bottom: env(safe-area-inset-bottom);
+}
+
+/* Ajustes para la barra de navegación en iOS */
+.ios-nav-bar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(44px + env(safe-area-inset-top));
+}
+
+/* Ajustes para el tab bar en iOS */
+.ios-tab-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(49px + env(safe-area-inset-bottom));
+}
+
+/* Estilos para pull-to-refresh en iOS */
+.pull-to-refresh {
+    transform: translateY(var(--pull-distance, 0px));
+    transition: transform 0.2s ease;
+}
+
+/* Ajustes para el modo oscuro en iOS */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* Mejoras de accesibilidad para iOS */
+@supports (-webkit-touch-callout: none) {
+    .large-touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}

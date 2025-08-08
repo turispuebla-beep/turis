@@ -1,0 +1,117 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Pruebas
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Usar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Instalar dependencias del backend
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Ejecutar pruebas del backend
+        working-directory: ./backend
+        run: |
+          npm run test
+        env:
+          CI: true
+          MONGODB_URI: mongodb://localhost:27017/test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRE: 24h
+
+      - name: Instalar dependencias del frontend
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Construir frontend
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          CI: true
+
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Usar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias del backend
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Ejecutar ESLint en backend
+        working-directory: ./backend
+        run: npm run lint
+
+      - name: Instalar dependencias del frontend
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Ejecutar ESLint en frontend
+        working-directory: ./frontend
+        run: npm run lint
+
+  deploy:
+    name: Despliegue
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Configurar known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Desplegar en servidor
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'ENDSSH'
+            cd /var/www/futbol-web
+            git pull origin main
+            cd backend
+            npm ci
+            npm run build
+            pm2 restart futbol-api
+            cd ../frontend
+            npm ci
+            npm run build
+            ENDSSH
