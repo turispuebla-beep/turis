@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Entrenador - CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #059669;
+            --secondary-color: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .coach-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .coach-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .coach-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .coach-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .current-coach {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: rgba(220,53,69,0.8);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220,53,69,1);
+        }
+
+        .navigation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: #6c757d;
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .player-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .push-form {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .coach-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="coach-container">
+        <div class="coach-header">
+            <h1>👨‍🏫 Panel de Entrenador</h1>
+            <p>CDSANABRIACF - Gestión de Equipo</p>
+            
+            <div class="coach-info">
+                <div class="current-coach" id="currentCoachInfo">
+                    👤 Cargando información...
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-tab" onclick="showTab('jugadores')">👥 Jugadores</button>
+                <button class="nav-tab" onclick="showTab('mensajes')">📱 Mensajes Push</button>
+                <button class="nav-tab" onclick="showTab('calendario')">📅 Calendario</button>
+                <button class="nav-tab" onclick="showTab('estadisticas')">📈 Estadísticas</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="section">
+                    <h2>📊 Dashboard del Equipo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalPlayers">0</div>
+                            <div class="stat-label">Total Jugadores</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activePlayers">0</div>
+                            <div class="stat-label">Jugadores Activos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="nextMatch">-</div>
+                            <div class="stat-label">Próximo Partido</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="messagesSent">0</div>
+                            <div class="stat-label">Mensajes Enviados</div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🎯 Acciones Rápidas</h3>
+                        <button class="btn btn-primary" onclick="showTab('mensajes')">📱 Enviar Mensaje</button>
+                        <button class="btn btn-success" onclick="showTab('jugadores')">👥 Ver Jugadores</button>
+                        <button class="btn btn-warning" onclick="showTab('calendario')">📅 Ver Calendario</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jugadores Tab -->
+            <div id="jugadores" class="tab-content">
+                <div class="section">
+                    <h2>👥 Jugadores de mi Equipo</h2>
+                    <div id="playersList">
+                        <p style="text-align: center; color: #6c757d;">Cargando jugadores...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensajes Push Tab -->
+            <div id="mensajes" class="tab-content">
+                <div class="section">
+                    <h2>📱 Enviar Mensajes Push</h2>
+                    
+                    <div class="push-form">
+                        <h3>💬 Nuevo Mensaje</h3>
+                        
+                        <div class="form-group">
+                            <label for="messageTitle">Título del Mensaje *</label>
+                            <input type="text" id="messageTitle" placeholder="Ej: Entrenamiento cancelado" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="messageContent">Contenido del Mensaje *</label>
+                            <textarea id="messageContent" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="messageType">Tipo de Mensaje</label>
+                            <select id="messageType">
+                                <option value="general">General</option>
+                                <option value="urgent">Urgente</option>
+                                <option value="reminder">Recordatorio</option>
+                                <option value="announcement">Anuncio</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="messageRecipients">Destinatarios</label>
+                            <select id="messageRecipients">
+                                <option value="all">Todos los jugadores</option>
+                                <option value="parents">Solo padres/tutores</option>
+                                <option value="players">Solo jugadores</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-success" onclick="sendPushMessage()">📤 Enviar Mensaje</button>
+                        <button class="btn btn-warning" onclick="previewMessage()">👁️ Vista Previa</button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>📋 Historial de Mensajes</h3>
+                    <div id="messagesHistory">
+                        <p style="text-align: center; color: #6c757d;">Cargando historial...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendario Tab -->
+            <div id="calendario" class="tab-content">
+                <div class="section">
+                    <h2>📅 Calendario del Equipo</h2>
+                    <div id="teamCalendar">
+                        <p style="text-align: center; color: #6c757d;">Cargando calendario...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas Tab -->
+            <div id="estadisticas" class="tab-content">
+                <div class="section">
+                    <h2>📈 Estadísticas del Equipo</h2>
+                    <div id="teamStats">
+                        <p style="text-align: center; color: #6c757d;">Cargando estadísticas...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCoach = null;
+        let coachTeam = null;
+
+        // Verificar autenticación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Cargando panel de entrenador...');
+            checkCoachSession();
+        });
+
+        // Función para verificar sesión de entrenador
+        function checkCoachSession() {
+            try {
+                const coachData = JSON.parse(localStorage.getItem('currentCoach') || '{}');
+                
+                if (!coachData.email) {
+                    alert('❌ No hay sesión de entrenador activa. Redirigiendo...');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                currentCoach = coachData;
+                coachTeam = coachData.team;
+                
+                console.log('✅ Sesión de entrenador verificada:', coachData.email);
+                
+                // Actualizar información en pantalla
+                const coachInfo = document.getElementById('currentCoachInfo');
+                if (coachInfo) {
+                    const teamNames = {
+                        'prebenjamin': 'Prebenjamín',
+                        'benjamin': 'Benjamín',
+                        'alevin': 'Alevín',
+                        'infantil': 'Infantil',
+                        'aficionado': 'Aficionado'
+                    };
+                    
+                    coachInfo.innerHTML = `
+                        👨‍🏫 ${coachData.name} ${coachData.surname}<br>
+                        <small>${coachData.email} | ⚽ ${teamNames[coachData.team] || coachData.team}</small>
+                    `;
+                }
+                
+                // Cargar datos iniciales
+                loadDashboardData();
+                loadPlayersList();
+                loadMessagesHistory();
+                loadTeamCalendar();
+                loadTeamStats();
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Error verificando sesión:', error);
+                return false;
+            }
+        }
+
+        // Función para cambiar de pestaña
+        function showTab(tabName) {
+            try {
+                console.log('📂 Cambiando a pestaña:', tabName);
+                
+                // Ocultar todos los contenidos de pestañas
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Remover clase active de todos los botones
+                const navTabs = document.querySelectorAll('.nav-tab');
+                navTabs.forEach(tab => tab.classList.remove('active'));
+                
+                // Mostrar el contenido de la pestaña seleccionada
+                const targetTab = document.getElementById(tabName);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+                
+                // Marcar el botón como activo
+                const buttons = document.querySelectorAll('.nav-tab');
+                buttons.forEach(button => {
+                    if (button.textContent.includes(getTabDisplayName(tabName))) {
+                        button.classList.add('active');
+                    }
+                });
+                
+                console.log('✅ Pestaña cambiada exitosamente:', tabName);
+            } catch (error) {
+                console.error('❌ Error cambiando pestaña:', error);
+            }
+        }
+
+        function getTabDisplayName(tabName) {
+            const names = {
+                'dashboard': 'Dashboard',
+                'jugadores': 'Jugadores',
+                'mensajes': 'Mensajes Push',
+                'calendario': 'Calendario',
+                'estadisticas': 'Estadísticas'
+            };
+            return names[tabName] || tabName;
+        }
+
+        // Función para cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('currentCoach');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Cargar datos del dashboard
+        function loadDashboardData() {
+            try {
+                // Contar jugadores del equipo
+                const players = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                const teamPlayers = players.filter(p => p.categoria === coachTeam);
+                
+                document.getElementById('totalPlayers').textContent = teamPlayers.length;
+                document.getElementById('activePlayers').textContent = teamPlayers.filter(p => p.estado === 'activo').length;
+                
+                // Contar mensajes enviados
+                const messages = JSON.parse(localStorage.getItem('pushMessages') || '[]');
+                const coachMessages = messages.filter(m => m.senderId === currentCoach.id);
+                document.getElementById('messagesSent').textContent = coachMessages.length;
+                
+                // Próximo partido
+                const calendarEvents = JSON.parse(localStorage.getItem('clubCalendarEvents') || '[]');
+                const teamEvents = calendarEvents.filter(e => e.category === coachTeam && e.type === 'match');
+                const nextMatch = teamEvents.find(e => new Date(e.date) > new Date());
+                
+                if (nextMatch) {
+                    document.getElementById('nextMatch').textContent = new Date(nextMatch.date).toLocaleDateString();
+                } else {
+                    document.getElementById('nextMatch').textContent = 'No programado';
+                }
+                
+            } catch (error) {
+                console.error('❌ Error cargando datos del dashboard:', error);
+            }
+        }
+
+        // Cargar lista de jugadores
+        function loadPlayersList() {
+            try {
+                const players = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                const teamPlayers = players.filter(p => p.categoria === coachTeam);
+                
+                const playersListElement = document.getElementById('playersList');
+                
+                if (teamPlayers.length === 0) {
+                    playersListElement.innerHTML = '<p style="text-align: center; color: #6c757d;">No hay jugadores registrados en tu equipo</p>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 15px;">';
+                
+                teamPlayers.forEach(player => {
+                    const statusColor = player.estado === 'activo' ? '#059669' : '#6c757d';
+                    const statusText = player.estado === 'activo' ? 'Activo' : 'Inactivo';
+                    
+                    html += `
+                        <div class="player-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h4 style="margin: 0; color: #1e3a8a;">⚽ ${player.nombre} ${player.apellidos}</h4>
+                                    <p style="margin: 5px 0; color: #666;">🆔 DNI: ${player.dni}</p>
+                                    <p style="margin: 5px 0; color: #666;">📱 Teléfono: ${player.telefono}</p>
+                                    <p style="margin: 5px 0; color: #666;">🎂 Edad: ${player.edad} años</p>
+                                    <p style="margin: 5px 0; color: #666;">👕 Dorsal: ${player.dorsal || 'Sin asignar'}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="background: ${statusColor}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">${statusText}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                playersListElement.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando lista de jugadores:', error);
+                document.getElementById('playersList').innerHTML = '<p style="text-align: center; color: #dc2626;">Error al cargar la lista de jugadores</p>';
+            }
+        }
+
+        // Enviar mensaje push
+        function sendPushMessage() {
+            try {
+                const title = document.getElementById('messageTitle').value.trim();
+                const content = document.getElementById('messageContent').value.trim();
+                const type = document.getElementById('messageType').value;
+                const recipients = document.getElementById('messageRecipients').value;
+                
+                if (!title || !content) {
+                    alert('❌ Por favor, completa el título y contenido del mensaje');
+                    return;
+                }
+                
+                const message = {
+                    id: 'MSG_' + Date.now(),
+                    title: title,
+                    content: content,
+                    type: type,
+                    recipients: recipients,
+                    senderId: currentCoach.id,
+                    senderName: `${currentCoach.name} ${currentCoach.surname}`,
+                    team: coachTeam,
+                    sentAt: new Date().toISOString(),
+                    status: 'sent'
+                };
+                
+                // Guardar mensaje
+                const messages = JSON.parse(localStorage.getItem('pushMessages') || '[]');
+                messages.push(message);
+                localStorage.setItem('pushMessages', JSON.stringify(messages));
+                
+                // Actualizar contador del entrenador
+                const coaches = JSON.parse(localStorage.getItem('clubCoaches') || '[]');
+                const coachIndex = coaches.findIndex(c => c.id === currentCoach.id);
+                if (coachIndex !== -1) {
+                    coaches[coachIndex].pushNotifications.sentCount = (coaches[coachIndex].pushNotifications.sentCount || 0) + 1;
+                    coaches[coachIndex].pushNotifications.lastSent = new Date().toISOString();
+                    localStorage.setItem('clubCoaches', JSON.stringify(coaches));
+                }
+                
+                // Limpiar formulario
+                document.getElementById('messageTitle').value = '';
+                document.getElementById('messageContent').value = '';
+                document.getElementById('messageType').value = 'general';
+                document.getElementById('messageRecipients').value = 'all';
+                
+                alert(`✅ Mensaje enviado exitosamente\n\n📱 "${title}"\n👥 Destinatarios: ${recipients}\n⏰ ${new Date().toLocaleString()}`);
+                
+                // Actualizar dashboard y historial
+                loadDashboardData();
+                loadMessagesHistory();
+                
+            } catch (error) {
+                console.error('❌ Error enviando mensaje:', error);
+                alert('❌ Error al enviar el mensaje. Inténtalo de nuevo.');
+            }
+        }
+
+        // Vista previa del mensaje
+        function previewMessage() {
+            const title = document.getElementById('messageTitle').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+            const type = document.getElementById('messageType').value;
+            const recipients = document.getElementById('messageRecipients').value;
+            
+            if (!title || !content) {
+                alert('❌ Por favor, completa el título y contenido del mensaje');
+                return;
+            }
+            
+            const preview = `
+                📱 <strong>Vista Previa del Mensaje</strong><br><br>
+                📋 <strong>Título:</strong> ${title}<br>
+                💬 <strong>Contenido:</strong> ${content}<br>
+                🏷️ <strong>Tipo:</strong> ${type}<br>
+                👥 <strong>Destinatarios:</strong> ${recipients}<br>
+                👨‍🏫 <strong>Enviado por:</strong> ${currentCoach.name} ${currentCoach.surname}<br>
+                ⚽ <strong>Equipo:</strong> ${coachTeam}
+            `;
+            
+            alert(preview);
+        }
+
+        // Cargar historial de mensajes
+        function loadMessagesHistory() {
+            try {
+                const messages = JSON.parse(localStorage.getItem('pushMessages') || '[]');
+                const coachMessages = messages.filter(m => m.senderId === currentCoach.id);
+                
+                const historyElement = document.getElementById('messagesHistory');
+                
+                if (coachMessages.length === 0) {
+                    historyElement.innerHTML = '<p style="text-align: center; color: #6c757d;">No hay mensajes enviados</p>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 15px;">';
+                
+                coachMessages.sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt)).forEach(message => {
+                    const typeColors = {
+                        'general': '#3b82f6',
+                        'urgent': '#dc2626',
+                        'reminder': '#f59e0b',
+                        'announcement': '#059669'
+                    };
+                    
+                    html += `
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid ${typeColors[message.type] || '#3b82f6'};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <h4 style="margin: 0; color: #1e3a8a;">${message.title}</h4>
+                                <span style="background: ${typeColors[message.type] || '#3b82f6'}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${message.type}</span>
+                            </div>
+                            <p style="margin: 5px 0; color: #666;">${message.content}</p>
+                            <div style="font-size: 0.8rem; color: #888; margin-top: 10px;">
+                                👥 ${message.recipients} | ⏰ ${new Date(message.sentAt).toLocaleString()}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                historyElement.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando historial de mensajes:', error);
+                document.getElementById('messagesHistory').innerHTML = '<p style="text-align: center; color: #dc2626;">Error al cargar el historial</p>';
+            }
+        }
+
+        // Cargar calendario del equipo
+        function loadTeamCalendar() {
+            try {
+                const calendarEvents = JSON.parse(localStorage.getItem('clubCalendarEvents') || '[]');
+                const teamEvents = calendarEvents.filter(e => e.category === coachTeam);
+                
+                const calendarElement = document.getElementById('teamCalendar');
+                
+                if (teamEvents.length === 0) {
+                    calendarElement.innerHTML = '<p style="text-align: center; color: #6c757d;">No hay eventos programados para tu equipo</p>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 15px;">';
+                
+                teamEvents.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(event => {
+                    const eventColors = {
+                        'match': '#dc2626',
+                        'training': '#059669',
+                        'event': '#3b82f6'
+                    };
+                    
+                    html += `
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid ${eventColors[event.type] || '#3b82f6'};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <h4 style="margin: 0; color: #1e3a8a;">${event.title}</h4>
+                                <span style="background: ${eventColors[event.type] || '#3b82f6'}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${event.type}</span>
+                            </div>
+                            <p style="margin: 5px 0; color: #666;">📅 ${new Date(event.date).toLocaleDateString()}</p>
+                            <p style="margin: 5px 0; color: #666;">⏰ ${event.startTime} - ${event.endTime}</p>
+                            <p style="margin: 5px 0; color: #666;">📍 ${event.location}</p>
+                            ${event.description ? `<p style="margin: 5px 0; color: #666;">📝 ${event.description}</p>` : ''}
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                calendarElement.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando calendario:', error);
+                document.getElementById('teamCalendar').innerHTML = '<p style="text-align: center; color: #dc2626;">Error al cargar el calendario</p>';
+            }
+        }
+
+        // Cargar estadísticas del equipo
+        function loadTeamStats() {
+            try {
+                const players = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                const teamPlayers = players.filter(p => p.categoria === coachTeam);
+                const messages = JSON.parse(localStorage.getItem('pushMessages') || '[]');
+                const coachMessages = messages.filter(m => m.senderId === currentCoach.id);
+                const calendarEvents = JSON.parse(localStorage.getItem('clubCalendarEvents') || '[]');
+                const teamEvents = calendarEvents.filter(e => e.category === coachTeam);
+                
+                const statsElement = document.getElementById('teamStats');
+                
+                const stats = {
+                    totalPlayers: teamPlayers.length,
+                    activePlayers: teamPlayers.filter(p => p.estado === 'activo').length,
+                    inactivePlayers: teamPlayers.filter(p => p.estado === 'inactivo').length,
+                    messagesSent: coachMessages.length,
+                    upcomingEvents: teamEvents.filter(e => new Date(e.date) > new Date()).length,
+                    matches: teamEvents.filter(e => e.type === 'match').length,
+                    trainings: teamEvents.filter(e => e.type === 'training').length
+                };
+                
+                let html = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.totalPlayers}</div>
+                            <div class="stat-label">Total de Jugadores</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.activePlayers}</div>
+                            <div class="stat-label">Jugadores Activos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.messagesSent}</div>
+                            <div class="stat-label">Mensajes Enviados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.upcomingEvents}</div>
+                            <div class="stat-label">Eventos Próximos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.matches}</div>
+                            <div class="stat-label">Partidos Programados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.trainings}</div>
+                            <div class="stat-label">Entrenamientos</div>
+                        </div>
+                    </div>
+                `;
+                
+                statsElement.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando estadísticas:', error);
+                document.getElementById('teamStats').innerHTML = '<p style="text-align: center; color: #dc2626;">Error al cargar las estadísticas</p>';
+            }
+        }
+    </script>
+</body>
+</html>
+

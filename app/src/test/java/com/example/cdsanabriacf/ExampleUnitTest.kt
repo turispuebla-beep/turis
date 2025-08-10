@@ -1,4 +1,4 @@
-package com.example.cdsanabriacf
+package com.example.turisteam
 
 import org.junit.Test
 

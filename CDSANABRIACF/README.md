@@ -72,6 +72,12 @@ Sistema web completo para el Club Deportivo SANABRIACF que incluye gestión de u
 - **Contraseñas ocultas** con puntos (••••••••)
 - **Validación manual** de socios (7 días)
 - **Acceso restringido** para amigos
+ - **Acceso administradores (modal de login moderno)**:
+   - Administrador único: `amco@gmx.es` / `533712`
+   - Segundo administrador: `cdsanabriacf@gmail.com` / `admin123`
+   - Variante admitida del segundo admin: `cdsanabria@gmail.com` / `admin123`
+  - Campos del modal sin autocompletar/recordar (autocomplete off) y limpieza al abrir, para no guardar correos ni contraseñas en el navegador
+  - Mensajes de error genéricos (no revelan credenciales válidas)
 
 ## 📁 Estructura de Archivos
 
@@ -109,6 +115,13 @@ CDSANABRIACF/
 3. Configurar productos con variantes
 4. Añadir enlaces a tiendas online
 5. Verificar el registro de compras
+6. Botón TIENDA en la página principal abre la tienda oficial si no hay enlaces configurados: `https://sanabriacf.akinda.com/shop`
+
+### Valores por defecto en la página principal
+- Email de contacto por defecto: `cdsanabriacf@gmail.com`
+- Dirección por defecto: `Crta. del Pinar, s/n, 49300 Puebla de Sanabria, Zamora`
+- CIF mostrado en contacto: `G49115413`
+- Botones de redes (Facebook/Instagram) encima de la galería; configurables desde Publicidad. Si no hay enlaces, aparecen desactivados
 
 ## 🛒 Funcionalidades de la Tienda
 
@@ -124,6 +137,7 @@ CDSANABRIACF/
 - **Seleccionar talla y color** antes de comprar
 - **Comprar productos** (solo socios y amigos)
 - **Ver enlaces** a tiendas online para envío a casa
+ - El botón TIENDA del menú abre el primer enlace configurado. Si no existe, abre la tienda oficial y la guarda como enlace editable.
 
 ### Flujo de Compra
 1. Usuario selecciona producto
@@ -143,11 +157,13 @@ CDSANABRIACF/
 - **No visibles en alertas** de error
 - **Administrador principal** siempre oculto
 - **Administradores pueden ver** contraseñas de otros usuarios
+- **Cerrar sesión**: el botón en el panel cierra sesión sin mensajes y redirige a la página principal
 
 ### Validación de Usuarios
 - **Socios**: Validación manual por administrador (7 días)
 - **Amigos**: Acceso inmediato limitado
 - **Restricciones de compra**: Solo socios y amigos
+ - **Cuotas de socio**: Adulto (≥18) 20 € · Menor (≤17) 10 €. Se calcula automáticamente por fecha de nacimiento y puede elegirse con radios; el campo de cuota es solo lectura
 
 ## 🎨 Personalización
 
@@ -156,6 +172,7 @@ CDSANABRIACF/
 - **Sincronización automática** entre páginas
 - **Persistencia** en localStorage
 - **Mensaje del logo** personalizable
+- **Logo**: Se puede usar un logo de ejemplo (archivo `logo-cdsanabriacf.jpg`); si no está disponible, se muestra el escudo como reserva
 
 ### Logo
 - **Emoji de escudo** por defecto
@@ -171,6 +188,9 @@ CDSANABRIACF/
 - **localStorage** para todos los datos
 - **Sincronización automática** entre páginas
 - **Backup automático** de configuraciones
+
+## 📑 Otras notas
+- Se añadieron ejemplos genéricos de datos gestionados (jugadores, socios, amigos, entrenadores, eventos, competiciones, tienda, compras y multimedia) en la sección de “Política de Protección de Datos” al final de la página principal
 
 ## 🚀 Uso Rápido
 
@@ -201,6 +221,7 @@ CDSANABRIACF/
 - **Panel Admin**: `admin-panel.html`
 - **Admin Tienda**: `admin-tienda-completa.html`
 - **Tienda Pública**: `tienda-completa.html`
+ - **Tienda Oficial**: `https://sanabriacf.akinda.com/shop`
 
 ## 🆘 Soporte
 - **Errores de login**: Verificar credenciales

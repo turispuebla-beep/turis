@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- VERSIÓN: 2.0 - Panel de Administración CDSANABRIACF con Importación de Datos -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -104,6 +105,28 @@
         .nav-tab.active {
             background: var(--primary-color);
             color: white;
+        }
+        
+        /* Estilo específico para la pestaña de importar */
+        .nav-tab[onclick*="importar"] {
+            background: #10b981 !important;
+            color: white !important;
+            border: 2px solid #059669;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 1000 !important;
+        }
+        
+        .nav-tab[onclick*="importar"]:hover {
+            background: #059669 !important;
+        }
+        
+        /* Forzar visibilidad de todas las pestañas */
+        .nav-tab {
+            display: inline-block !important;
+            visibility: visible !important;
         }
 
         .admin-content {
@@ -298,6 +321,7 @@
         <button class="nav-tab" onclick="showTab('entrenadores')">👨‍🏫 Entrenadores</button>
         <button class="nav-tab" onclick="showTab('mensajes')">📱 Mensajes Push</button>
         <button class="nav-tab" onclick="showTab('exportar')">📊 Exportar Datos</button>
+        <button class="nav-tab" onclick="showTab('importar')">📥 Importar Datos</button>
         <button class="nav-tab" onclick="showTab('publicidad')">📢 Publicidad</button>
         <button class="nav-tab" onclick="showTab('competiciones')">🏆 Competiciones</button>
         <button class="nav-tab" onclick="showTab('multimedia')">📸 Multimedia</button>
@@ -363,6 +387,99 @@
                         <p><strong>✅ Panel de administración configurado y funcional</strong></p>
                         <p><strong>🔒 Acceso restringido a administradores autorizados</strong></p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Publicidad / Redes Sociales Tab -->
+            <div id="publicidad" class="tab-content">
+                <h2>📢 Publicidad y Redes Sociales</h2>
+
+                <div class="section">
+                    <h3>🔗 Enlaces de Redes Sociales</h3>
+                    <p style="color:#555; margin-bottom:10px;">Configura aquí los enlaces oficiales del club. Aparecerán como botones en la página principal (pie de página).</p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 800px;">
+                        <div>
+                            <label style="display:block; margin-bottom:6px; font-weight:600;">📘 Facebook (URL)</label>
+                            <input type="url" id="facebookUrlInput" placeholder="https://www.facebook.com/tu-pagina" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                            <small style="color:#666;">Ejemplo: https://www.facebook.com/cdsanabriacf</small>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:6px; font-weight:600;">📸 Instagram (URL)</label>
+                            <input type="url" id="instagramUrlInput" placeholder="https://www.instagram.com/tu-cuenta" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                            <small style="color:#666;">Ejemplo: https://www.instagram.com/cdsanabriacf</small>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <button class="btn btn-success" onclick="saveSocialLinks()">💾 Guardar Enlaces</button>
+                        <button class="btn" onclick="loadSocialLinks()">↻ Recargar</button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>🖼️ Anuncios para Carrusel (3 por vista)</h3>
+                    <p style="color:#555; margin-bottom:10px;">Crea anuncios con imagen, título y enlace. Se mostrarán en la página principal en un carrusel que avanza automáticamente.</p>
+
+                    <div id="adForm" style="background:#fff; border:1px solid #e9ecef; border-radius:10px; padding:15px; margin-bottom:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Título *</label>
+                                <input id="adTitle" type="text" placeholder="Ej: Patrocinador Oficial" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Empresa</label>
+                                <input id="adCompany" type="text" placeholder="Nombre de la empresa" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">URL (al hacer clic)</label>
+                                <input id="adUrl" type="url" placeholder="https://sitio-del-patrocinador.com" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Estado</label>
+                                <select id="adStatus" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Fecha inicio</label>
+                                <input id="adStart" type="date" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Fecha fin</label>
+                                <input id="adEnd" type="date" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Posición (orden)</label>
+                                <input id="adPosition" type="number" min="1" value="1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" />
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600;">Imagen *</label>
+                                <input id="adImage" type="file" accept="image/*" style="width:100%; padding:8px;" />
+                                <small style="color:#666;">Se recomienda formato horizontal.</small>
+                            </div>
+                        </div>
+                        <div id="adPreview" style="margin-top:12px; display:none;">
+                            <img id="adPreviewImg" style="max-width:320px; max-height:160px; border-radius:8px; border:1px solid #eee;" />
+                        </div>
+                        <div style="margin-top:12px;">
+                            <button class="btn btn-success" onclick="addAdvertisement()">➕ Añadir Anuncio</button>
+                        </div>
+                    </div>
+
+                    <div id="adsList">
+                        <!-- Lista de anuncios renderizada dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+                <div class="section">
+                    <h3>📝 Notas</h3>
+                    <ul style="margin-left:20px; color:#555;">
+                        <li>Los botones de Facebook e Instagram aparecen en la parte inferior de la página principal.</li>
+                        <li>Si no configuras un enlace, el botón quedará desactivado.</li>
+                        <li>Puedes cambiar estos enlaces cuando quieras desde este panel.</li>
+                    </ul>
                 </div>
             </div>
 
@@ -552,6 +669,9 @@
                     <div id="playersListContainer">
                         <div id="playersList">
                             <!-- Los jugadores se cargarán aquí dinámicamente -->
+                            <div style="background:#fff; border:1px dashed #cbd5e1; padding:14px; border-radius:8px; color:#64748b;">
+                                Ejemplo: Juan Pérez — DNI 00000000A — Tel. 600 000 000 — Dorsal 9 — Alevín
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -830,6 +950,9 @@
                     <h3>📋 Lista de Eventos</h3>
                     <div id="eventsList">
                         <!-- Los eventos se cargarán aquí dinámicamente -->
+                        <div style="background:#fff; border:1px dashed #cbd5e1; padding:12px; border-radius:8px; color:#64748b;">
+                            Ejemplo: Convivencia del club — 01/06/2025 — 10:00-14:00 — Campo Municipal — Precio 5€
+                        </div>
                     </div>
                 </div>
             </div>
@@ -931,6 +1054,9 @@
                     <h3>📋 Lista de Competiciones</h3>
                     <div id="competitionsList">
                         <!-- Las competiciones se cargarán aquí dinámicamente -->
+                        <div style="background:#fff; border:1px dashed #cbd5e1; padding:12px; border-radius:8px; color:#64748b;">
+                            Ejemplo: Liga Alevín — 10 equipos — 01/09/2025 a 01/12/2025 — Fase regular
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1414,6 +1540,121 @@
                     <h3>📋 Historial de Exportaciones</h3>
                     <div id="exportHistory" style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6;">
                         <p style="text-align: center; color: #6c757d;">No hay exportaciones recientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Importar Datos Tab -->
+            <div id="importar" class="tab-content">
+                <h2>📥 Importar Datos desde Excel</h2>
+                
+                <div class="section">
+                    <h3>📋 Información de Importación</h3>
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p><strong>⚠️ Importante:</strong> Antes de importar, asegúrate de que el archivo Excel tenga el formato correcto.</p>
+                        <p><strong>📊 Formatos soportados:</strong> .xlsx, .xls, .csv</p>
+                        <p><strong>🔒 Seguridad:</strong> Los datos existentes no se sobrescribirán automáticamente.</p>
+                    </div>
+
+                    <!-- Importar Jugadores -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+                        <h4>⚽ Importar Jugadores</h4>
+                        <p style="margin-bottom: 20px; color: #666;">Importa jugadores desde un archivo Excel. Las columnas deben ser: Nombre, Apellidos, DNI, Teléfono, Dirección, Edad, Fecha de Nacimiento, Categoría, Dorsal, Nombre del Padre/Madre, DNI del Padre/Madre, Teléfono del Padre/Madre, Email del Padre/Madre.</p>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Categoría de Destino:</label>
+                            <select id="importPlayerCategory" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="">Seleccionar categoría</option>
+                                <option value="Prebenjamín">Prebenjamín</option>
+                                <option value="Benjamín">Benjamín</option>
+                                <option value="Alevín">Alevín</option>
+                                <option value="Infantil">Infantil</option>
+                                <option value="Aficionado">Aficionado</option>
+                            </select>
+                        </div>
+                        
+                        <input type="file" id="importPlayersFile" accept=".xlsx,.xls,.csv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+                        
+                        <button class="btn btn-success" onclick="importPlayers()" style="width: 100%;">
+                            📥 Importar Jugadores
+                        </button>
+                    </div>
+
+                    <!-- Importar Socios -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+                        <h4>👨‍👩‍👧‍👦 Importar Socios</h4>
+                        <p style="margin-bottom: 20px; color: #666;">Importa socios desde un archivo Excel. Las columnas deben ser: Nombre, Apellidos, DNI, Dirección, Teléfono, Email, Fecha de Nacimiento, Cuota.</p>
+                        
+                        <input type="file" id="importMembersFile" accept=".xlsx,.xls,.csv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+                        
+                        <button class="btn btn-primary" onclick="importMembers()" style="width: 100%;">
+                            📥 Importar Socios
+                        </button>
+                    </div>
+
+                    <!-- Importar Amigos -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+                        <h4>🤝 Importar Amigos del Club</h4>
+                        <p style="margin-bottom: 20px; color: #666;">Importa amigos del club desde un archivo Excel. Las columnas deben ser: Nombre, Apellidos, DNI, Teléfono, Email.</p>
+                        
+                        <input type="file" id="importFriendsFile" accept=".xlsx,.xls,.csv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+                        
+                        <button class="btn" onclick="importFriends()" style="width: 100%; background: #10b981; color: white;">
+                            📥 Importar Amigos
+                        </button>
+                    </div>
+
+                    <!-- Importar Entrenadores -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+                        <h4>👨‍🏫 Importar Entrenadores</h4>
+                        <p style="margin-bottom: 20px; color: #666;">Importa entrenadores desde un archivo Excel. Las columnas deben ser: Nombre, Apellidos, DNI, Teléfono, Email, Equipo Asignado, Licencia.</p>
+                        
+                        <input type="file" id="importCoachesFile" accept=".xlsx,.xls,.csv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+                        
+                        <button class="btn" onclick="importCoaches()" style="width: 100%; background: #f59e0b; color: white;">
+                            📥 Importar Entrenadores
+                        </button>
+                    </div>
+
+                    <!-- Plantillas de Excel -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px;">
+                        <h4>📋 Descargar Plantillas</h4>
+                        <p style="margin-bottom: 20px; color: #666;">Descarga las plantillas de Excel con el formato correcto para cada tipo de datos.</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <button class="btn" onclick="downloadTemplate('jugadores')" style="background: #059669; color: white;">
+                                📥 Plantilla Jugadores
+                            </button>
+                            <button class="btn" onclick="downloadTemplate('socios')" style="background: #3b82f6; color: white;">
+                                📥 Plantilla Socios
+                            </button>
+                            <button class="btn" onclick="downloadTemplate('amigos')" style="background: #10b981; color: white;">
+                                📥 Plantilla Amigos
+                            </button>
+                            <button class="btn" onclick="downloadTemplate('entrenadores')" style="background: #f59e0b; color: white;">
+                                📥 Plantilla Entrenadores
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progreso de Importación -->
+                    <div id="importProgress" style="display: none;"></div>
+
+                    <!-- Historial de Importaciones -->
+                    <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6;">
+                        <h4>📋 Historial de Importaciones</h4>
+                        <div id="importHistory" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6;">
+                            <p style="text-align: center; color: #6c757d;">No hay importaciones recientes</p>
+                        </div>
+                    </div>
+
+                    <!-- Información de Compatibilidad -->
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeaa7; margin-top: 20px;">
+                        <h4>📱 Compatibilidad Multiplataforma</h4>
+                        <p><strong>✅ PC/Desktop:</strong> Descarga directa de archivos</p>
+                        <p><strong>📱 Móvil/Tablet:</strong> Compartir archivos o copiar contenido</p>
+                        <p><strong>🌐 Navegadores:</strong> Chrome, Firefox, Safari, Edge</p>
+                        <p><strong>📊 Formatos:</strong> CSV, Excel (.xlsx, .xls)</p>
                     </div>
                 </div>
             </div>
@@ -1966,6 +2207,177 @@
         </div>
 
         <script>
+        // (restricciones de pestañas desactivadas y revertidas)
+        function logout() {
+            try {
+                // Borrar sesión y cerrar ventana sin mensajes
+                localStorage.removeItem('currentAdmin');
+                // Si se abrió en nueva pestaña, cerrarla; si no, redirigir a inicio
+                if (window.close) {
+                    window.close();
+                }
+                // Redundancia: redirigir a la página principal del sitio
+                window.location.href = 'index.html';
+            } catch (e) {
+                // Silencioso: no mostrar mensajes
+                window.location.href = 'index.html';
+            }
+        }
+        // ==== Publicidad: CRUD en localStorage ====
+        function loadAdvertisements() {
+            try {
+                const ads = JSON.parse(localStorage.getItem('clubAdvertisements') || '[]');
+                renderAdvertisements(ads);
+            } catch (e) {
+                console.error('❌ Error cargando anuncios', e);
+            }
+        }
+
+        function renderAdvertisements(ads) {
+            const container = document.getElementById('adsList');
+            if (!container) return;
+            if (ads.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">No hay anuncios. Añade el primero.</p>';
+                return;
+            }
+            const sorted = [...ads].sort((a,b)=> (a.position||0) - (b.position||0));
+            let html = '';
+            sorted.forEach(ad => {
+                html += `
+                    <div style="display:flex; gap:12px; align-items:center; background:#fff; border:1px solid #e9ecef; border-radius:10px; padding:10px; margin-bottom:10px;">
+                        ${ad.image ? `<img src="${ad.image}" style="width:120px; height:70px; object-fit:cover; border-radius:6px;">` : '<div style="width:120px; height:70px; background:#f3f4f6; border-radius:6px;"></div>'}
+                        <div style="flex:1;">
+                            <div style="font-weight:700; color:#1e3a8a;">${ad.title || 'Sin título'}</div>
+                            <div style="font-size:0.9em; color:#666;">${ad.company || ''}</div>
+                            <div style="font-size:0.85em; color:#666;">${ad.url || ''}</div>
+                            <div style="font-size:0.85em; color:#666;">Estado: ${ad.status} | Posición: ${ad.position || 0}</div>
+                        </div>
+                        <div>
+                            <button class="btn-small" onclick="toggleAdStatus('${ad.id}')">${ad.status==='active'?'⏸️ Desactivar':'▶️ Activar'}</button>
+                            <button class="btn-small delete" onclick="deleteAd('${ad.id}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function addAdvertisement() {
+            const title = document.getElementById('adTitle').value.trim();
+            const company = document.getElementById('adCompany').value.trim();
+            const url = document.getElementById('adUrl').value.trim();
+            const status = document.getElementById('adStatus').value;
+            const start = document.getElementById('adStart').value;
+            const end = document.getElementById('adEnd').value;
+            const position = parseInt(document.getElementById('adPosition').value) || 1;
+            const file = document.getElementById('adImage').files[0];
+
+            if (!title || !file) {
+                alert('❌ Título e imagen son obligatorios.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const ads = JSON.parse(localStorage.getItem('clubAdvertisements') || '[]');
+                const newAd = {
+                    id: 'AD_' + Date.now(),
+                    title, company, url, status,
+                    startDate: start || null,
+                    endDate: end || null,
+                    position,
+                    image: e.target.result,
+                    views: 0,
+                    clicks: 0
+                };
+                ads.push(newAd);
+                localStorage.setItem('clubAdvertisements', JSON.stringify(ads));
+                alert('✅ Anuncio añadido');
+                clearAdForm();
+                renderAdvertisements(ads);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearAdForm() {
+            ['adTitle','adCompany','adUrl','adStart','adEnd','adPosition'].forEach(id=>{
+                const el = document.getElementById(id);
+                if (el) el.value = id==='adPosition'?'1':'';
+            });
+            const img = document.getElementById('adImage');
+            if (img) img.value = '';
+            const prev = document.getElementById('adPreview');
+            if (prev) prev.style.display='none';
+        }
+
+        function toggleAdStatus(id) {
+            const ads = JSON.parse(localStorage.getItem('clubAdvertisements') || '[]');
+            const idx = ads.findIndex(a=>a.id===id);
+            if (idx!==-1) {
+                ads[idx].status = ads[idx].status==='active'?'inactive':'active';
+                localStorage.setItem('clubAdvertisements', JSON.stringify(ads));
+                renderAdvertisements(ads);
+            }
+        }
+
+        function deleteAd(id) {
+            if (!confirm('¿Eliminar este anuncio?')) return;
+            const ads = JSON.parse(localStorage.getItem('clubAdvertisements') || '[]');
+            const next = ads.filter(a=>a.id!==id);
+            localStorage.setItem('clubAdvertisements', JSON.stringify(next));
+            renderAdvertisements(next);
+        }
+
+        // Vista previa imagen
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('adImage');
+            const prev = document.getElementById('adPreview');
+            const prevImg = document.getElementById('adPreviewImg');
+            if (input) {
+                input.addEventListener('change', function(){
+                    const f = this.files[0];
+                    if (!f) { prev.style.display='none'; return; }
+                    const r = new FileReader();
+                    r.onload = e=>{ prevImg.src = e.target.result; prev.style.display='block'; };
+                    r.readAsDataURL(f);
+                });
+            }
+        });
+
+        // Cargar al entrar en la pestaña Publicidad
+        document.addEventListener('DOMContentLoaded', function(){
+            loadAdvertisements();
+        });
+        // --- Redes Sociales (Facebook / Instagram) ---
+        function loadSocialLinks() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('cdsanabriacfSettings') || '{}');
+                document.getElementById('facebookUrlInput').value = settings.facebookUrl || '';
+                document.getElementById('instagramUrlInput').value = settings.instagramUrl || '';
+            } catch (e) {
+                console.error('❌ Error cargando enlaces sociales', e);
+            }
+        }
+
+        function saveSocialLinks() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('cdsanabriacfSettings') || '{}');
+                settings.facebookUrl = document.getElementById('facebookUrlInput').value.trim();
+                settings.instagramUrl = document.getElementById('instagramUrlInput').value.trim();
+                localStorage.setItem('cdsanabriacfSettings', JSON.stringify(settings));
+                alert('✅ Enlaces de redes sociales guardados');
+                // Avisar a otras páginas que usen estos enlaces
+                window.postMessage({ type: 'UPDATE_SETTINGS', settings }, '*');
+            } catch (e) {
+                console.error('❌ Error guardando enlaces sociales', e);
+                alert('❌ Error guardando enlaces sociales');
+            }
+        }
+
+        // Cargar enlaces al iniciar panel
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSocialLinks();
+        });
         // Funciones para gestión de administradores de equipo
         function addTeamAdmin() {
             const email = document.getElementById('adminEmail').value.trim();
@@ -2259,6 +2671,7 @@
                 'entrenadores': 'Entrenadores',
                 'mensajes': 'Mensajes Push',
                 'exportar': 'Exportar Datos',
+                'importar': 'Importar Datos',
                 'publicidad': 'Publicidad',
                 'competiciones': 'Competiciones',
                 'multimedia': 'Multimedia',
@@ -5075,13 +5488,37 @@
             }
         }
 
-        // Función para descargar archivo CSV
+        // Función mejorada para descargar archivo CSV (compatible con móviles)
         function downloadCSV(csvContent, filename) {
             try {
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
                 
-                if (link.download !== undefined) {
+                // Detectar si es dispositivo móvil
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // Para dispositivos móviles, mostrar opciones de compartir
+                    if (navigator.share) {
+                        const file = new File([blob], filename, { type: 'text/csv' });
+                        navigator.share({
+                            title: 'Datos CDSANABRIACF',
+                            text: `Archivo ${filename} exportado desde CDSANABRIACF`,
+                            files: [file]
+                        }).then(() => {
+                            console.log('✅ Archivo compartido exitosamente');
+                            addToExportHistory(filename);
+                        }).catch((error) => {
+                            console.log('❌ Error compartiendo archivo:', error);
+                            // Fallback: mostrar contenido en nueva ventana
+                            showCSVInNewWindow(csvContent, filename);
+                        });
+                    } else {
+                        // Fallback para navegadores que no soportan Web Share API
+                        showCSVInNewWindow(csvContent, filename);
+                    }
+                } else {
+                    // Para PC, descarga directa
+                    const link = document.createElement('a');
                     const url = URL.createObjectURL(blob);
                     link.setAttribute('href', url);
                     link.setAttribute('download', filename);
@@ -5089,15 +5526,105 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
                 }
                 
                 // Registrar en historial
                 addToExportHistory(filename);
                 
-                console.log('✅ Archivo descargado:', filename);
+                console.log('✅ Archivo procesado:', filename);
+                
             } catch (error) {
-                console.error('❌ Error descargando archivo:', error);
-                alert('❌ Error al descargar el archivo. Inténtalo de nuevo.');
+                console.error('❌ Error procesando archivo:', error);
+                alert('❌ Error al procesar el archivo. Inténtalo de nuevo.');
+            }
+        }
+
+        // Función para mostrar CSV en nueva ventana (fallback para móviles)
+        function showCSVInNewWindow(csvContent, filename) {
+            try {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>${filename} - CDSANABRIACF</title>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+                            .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                            .header { text-align: center; margin-bottom: 20px; color: #1e3a8a; }
+                            .download-btn { 
+                                background: #059669; color: white; padding: 10px 20px; 
+                                border: none; border-radius: 5px; cursor: pointer; margin: 10px;
+                                font-size: 16px;
+                            }
+                            .copy-btn { 
+                                background: #3b82f6; color: white; padding: 10px 20px; 
+                                border: none; border-radius: 5px; cursor: pointer; margin: 10px;
+                                font-size: 16px;
+                            }
+                            pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+                            .instructions { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <h1>📊 ${filename}</h1>
+                                <p>Datos exportados desde CDSANABRIACF</p>
+                            </div>
+                            
+                            <div class="instructions">
+                                <h3>📱 Instrucciones para dispositivos móviles:</h3>
+                                <ul>
+                                    <li><strong>Copiar:</strong> Selecciona todo el contenido y cópialo</li>
+                                    <li><strong>Pegar en Excel:</strong> Abre Excel y pega los datos</li>
+                                    <li><strong>Guardar:</strong> Guarda como archivo .csv o .xlsx</li>
+                                </ul>
+                            </div>
+                            
+                            <button class="copy-btn" onclick="copyToClipboard()">📋 Copiar Contenido</button>
+                            <button class="download-btn" onclick="downloadFile()">📥 Descargar Archivo</button>
+                            
+                            <pre id="csvContent">${csvContent}</pre>
+                        </div>
+                        
+                        <script>
+                            function copyToClipboard() {
+                                const content = document.getElementById('csvContent').textContent;
+                                navigator.clipboard.writeText(content).then(() => {
+                                    alert('✅ Contenido copiado al portapapeles');
+                                }).catch(() => {
+                                    // Fallback para navegadores antiguos
+                                    const textArea = document.createElement('textarea');
+                                    textArea.value = content;
+                                    document.body.appendChild(textArea);
+                                    textArea.select();
+                                    document.execCommand('copy');
+                                    document.body.removeChild(textArea);
+                                    alert('✅ Contenido copiado al portapapeles');
+                                });
+                            }
+                            
+                            function downloadFile() {
+                                const content = document.getElementById('csvContent').textContent;
+                                const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = '${filename}';
+                                link.click();
+                                URL.revokeObjectURL(url);
+                            }
+                        </script>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            } catch (error) {
+                console.error('❌ Error mostrando CSV en nueva ventana:', error);
+                alert('❌ Error al mostrar el archivo. Inténtalo de nuevo.');
             }
         }
 
@@ -6094,6 +6621,567 @@
                 alert('❌ Error al cargar la información de contacto.');
             }
         }
+
+        // ===== MÓDULO DE IMPORTACIÓN DESDE EXCEL =====
+        
+        // Función mejorada para leer archivos Excel/CSV (compatible con móviles)
+        function readExcelFile(file, callback) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = e.target.result;
+                    const lines = data.split('\n');
+                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                    const rows = [];
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        if (lines[i].trim()) {
+                            const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                            const row = {};
+                            headers.forEach((header, index) => {
+                                row[header] = values[index] || '';
+                            });
+                            rows.push(row);
+                        }
+                    }
+                    
+                    callback(null, rows);
+                } catch (error) {
+                    callback(error, null);
+                }
+            };
+            
+            reader.onerror = function() {
+                callback(new Error('Error leyendo el archivo'), null);
+            };
+            
+            // Detectar tipo de archivo y leer apropiadamente
+            if (file.name.toLowerCase().endsWith('.csv')) {
+                reader.readAsText(file, 'UTF-8');
+            } else {
+                // Para archivos Excel (.xlsx, .xls), intentar leer como texto
+                reader.readAsText(file, 'UTF-8');
+            }
+        }
+
+        // Función para mostrar progreso de importación
+        function showImportProgress(current, total, type) {
+            const progress = Math.round((current / total) * 100);
+            const message = `📥 Importando ${type}... ${current}/${total} (${progress}%)`;
+            
+            // Mostrar progreso en la interfaz si existe
+            const progressElement = document.getElementById('importProgress');
+            if (progressElement) {
+                progressElement.innerHTML = `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                        <div style="font-weight: bold; color: #1e3a8a;">${message}</div>
+                        <div style="background: #ddd; height: 20px; border-radius: 10px; margin-top: 10px; overflow: hidden;">
+                            <div style="background: #059669; height: 100%; width: ${progress}%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Importar jugadores
+        function importPlayers() {
+            const fileInput = document.getElementById('importPlayersFile');
+            const category = document.getElementById('importPlayerCategory').value;
+            
+            if (!fileInput.files[0]) {
+                alert('❌ Por favor, selecciona un archivo Excel');
+                return;
+            }
+            
+            if (!category) {
+                alert('❌ Por favor, selecciona una categoría de destino');
+                return;
+            }
+            
+            readExcelFile(fileInput.files[0], function(error, data) {
+                if (error) {
+                    alert('❌ Error leyendo el archivo: ' + error.message);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    alert('❌ El archivo no contiene datos válidos');
+                    return;
+                }
+                
+                try {
+                    const players = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                    let importedCount = 0;
+                    let skippedCount = 0;
+                    
+                    // Mostrar progreso
+                    const progressElement = document.getElementById('importProgress');
+                    if (progressElement) {
+                        progressElement.style.display = 'block';
+                    }
+                    
+                    data.forEach((row, index) => {
+                        // Mostrar progreso cada 10 registros
+                        if (index % 10 === 0) {
+                            showImportProgress(index + 1, data.length, 'jugadores');
+                        }
+                        
+                        // Validar datos obligatorios
+                        if (!row.Nombre || !row.Apellidos || !row.DNI || !row.Teléfono) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Verificar si ya existe un jugador con ese DNI
+                        const existingPlayer = players.find(p => p.dni === row.DNI);
+                        if (existingPlayer) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Crear nuevo jugador
+                        const newPlayer = {
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            name: row.Nombre,
+                            surname: row.Apellidos,
+                            dni: row.DNI,
+                            phone: row.Teléfono,
+                            address: row.Dirección || '',
+                            age: parseInt(row.Edad) || 0,
+                            birthDate: row['Fecha de Nacimiento'] || '',
+                            category: category,
+                            dorsal: parseInt(row.Dorsal) || 0,
+                            guardianName: row['Nombre del Padre/Madre'] || '',
+                            guardianDNI: row['DNI del Padre/Madre'] || '',
+                            guardianPhone: row['Teléfono del Padre/Madre'] || '',
+                            guardianEmail: row['Email del Padre/Madre'] || '',
+                            registrationDate: new Date().toISOString(),
+                            status: 'activo'
+                        };
+                        
+                        players.push(newPlayer);
+                        importedCount++;
+                    });
+                    
+                    // Ocultar progreso al finalizar
+                    if (progressElement) {
+                        progressElement.style.display = 'none';
+                    }
+                    
+                    localStorage.setItem('clubPlayers', JSON.stringify(players));
+                    addToImportHistory('jugadores', importedCount, skippedCount);
+                    
+                    alert(`✅ Importación completada\n\n📊 ${importedCount} jugadores importados\n❌ ${skippedCount} registros omitidos\n📁 Categoría: ${category}`);
+                    
+                    // Limpiar formulario
+                    fileInput.value = '';
+                    document.getElementById('importPlayerCategory').value = '';
+                    
+                } catch (error) {
+                    console.error('❌ Error importando jugadores:', error);
+                    alert('❌ Error al importar jugadores. Inténtalo de nuevo.');
+                }
+            });
+        }
+
+        // Importar socios
+        function importMembers() {
+            const fileInput = document.getElementById('importMembersFile');
+            
+            if (!fileInput.files[0]) {
+                alert('❌ Por favor, selecciona un archivo Excel');
+                return;
+            }
+            
+            readExcelFile(fileInput.files[0], function(error, data) {
+                if (error) {
+                    alert('❌ Error leyendo el archivo: ' + error.message);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    alert('❌ El archivo no contiene datos válidos');
+                    return;
+                }
+                
+                try {
+                    const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                    let importedCount = 0;
+                    let skippedCount = 0;
+                    
+                    data.forEach(row => {
+                        // Validar datos obligatorios
+                        if (!row.Nombre || !row.Apellidos || !row.Teléfono) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Verificar si ya existe un socio con ese teléfono o email
+                        const existingMember = members.find(m => 
+                            m.telefono === row.Teléfono || 
+                            (row.Email && m.email === row.Email)
+                        );
+                        if (existingMember) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Crear nuevo socio
+                        const newMember = {
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            nombre: row.Nombre,
+                            apellidos: row.Apellidos,
+                            dni: row.DNI || '',
+                            direccion: row.Dirección || '',
+                            telefono: row.Teléfono,
+                            email: row.Email || '',
+                            fechaNacimiento: row['Fecha de Nacimiento'] || '',
+                            cuota: parseFloat(row.Cuota) || 20,
+                            fechaRegistro: new Date().toISOString(),
+                            fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                            estado: 'pendiente',
+                            pagado: false,
+                            numeroSocio: generarNumeroSocio()
+                        };
+                        
+                        members.push(newMember);
+                        importedCount++;
+                    });
+                    
+                    localStorage.setItem('clubMembers', JSON.stringify(members));
+                    addToImportHistory('socios', importedCount, skippedCount);
+                    
+                    alert(`✅ Importación completada\n\n📊 ${importedCount} socios importados\n❌ ${skippedCount} registros omitidos`);
+                    
+                    // Limpiar formulario
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    console.error('❌ Error importando socios:', error);
+                    alert('❌ Error al importar socios. Inténtalo de nuevo.');
+                }
+            });
+        }
+
+        // Importar amigos
+        function importFriends() {
+            const fileInput = document.getElementById('importFriendsFile');
+            
+            if (!fileInput.files[0]) {
+                alert('❌ Por favor, selecciona un archivo Excel');
+                return;
+            }
+            
+            readExcelFile(fileInput.files[0], function(error, data) {
+                if (error) {
+                    alert('❌ Error leyendo el archivo: ' + error.message);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    alert('❌ El archivo no contiene datos válidos');
+                    return;
+                }
+                
+                try {
+                    const friends = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                    let importedCount = 0;
+                    let skippedCount = 0;
+                    
+                    data.forEach(row => {
+                        // Validar datos obligatorios
+                        if (!row.Nombre || !row.Apellidos || !row.Teléfono) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Verificar si ya existe un amigo con ese teléfono o email
+                        const existingFriend = friends.find(f => 
+                            f.telefono === row.Teléfono || 
+                            (row.Email && f.email === row.Email)
+                        );
+                        if (existingFriend) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Crear nuevo amigo
+                        const newFriend = {
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            name: row.Nombre,
+                            surname: row.Apellidos,
+                            dni: row.DNI || '',
+                            telefono: row.Teléfono,
+                            email: row.Email || '',
+                            registrationDate: new Date().toISOString(),
+                            status: 'activo'
+                        };
+                        
+                        friends.push(newFriend);
+                        importedCount++;
+                    });
+                    
+                    localStorage.setItem('clubFriends', JSON.stringify(friends));
+                    addToImportHistory('amigos', importedCount, skippedCount);
+                    
+                    alert(`✅ Importación completada\n\n📊 ${importedCount} amigos importados\n❌ ${skippedCount} registros omitidos`);
+                    
+                    // Limpiar formulario
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    console.error('❌ Error importando amigos:', error);
+                    alert('❌ Error al importar amigos. Inténtalo de nuevo.');
+                }
+            });
+        }
+
+        // Importar entrenadores
+        function importCoaches() {
+            const fileInput = document.getElementById('importCoachesFile');
+            
+            if (!fileInput.files[0]) {
+                alert('❌ Por favor, selecciona un archivo Excel');
+                return;
+            }
+            
+            readExcelFile(fileInput.files[0], function(error, data) {
+                if (error) {
+                    alert('❌ Error leyendo el archivo: ' + error.message);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    alert('❌ El archivo no contiene datos válidos');
+                    return;
+                }
+                
+                try {
+                    const coaches = JSON.parse(localStorage.getItem('clubCoaches') || '[]');
+                    let importedCount = 0;
+                    let skippedCount = 0;
+                    
+                    data.forEach(row => {
+                        // Validar datos obligatorios
+                        if (!row.Nombre || !row.Apellidos || !row.Teléfono) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Verificar si ya existe un entrenador con ese teléfono o email
+                        const existingCoach = coaches.find(c => 
+                            c.phone === row.Teléfono || 
+                            (row.Email && c.email === row.Email)
+                        );
+                        if (existingCoach) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        // Crear nuevo entrenador
+                        const newCoach = {
+                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            name: row.Nombre,
+                            surname: row.Apellidos,
+                            dni: row.DNI || '',
+                            phone: row.Teléfono,
+                            email: row.Email || '',
+                            team: row['Equipo Asignado'] || '',
+                            license: row.Licencia || '',
+                            experience: parseInt(row.Experiencia) || 0,
+                            registrationDate: new Date().toISOString(),
+                            status: 'activo',
+                            accessCount: 0,
+                            lastAccess: null
+                        };
+                        
+                        coaches.push(newCoach);
+                        importedCount++;
+                    });
+                    
+                    localStorage.setItem('clubCoaches', JSON.stringify(coaches));
+                    addToImportHistory('entrenadores', importedCount, skippedCount);
+                    
+                    alert(`✅ Importación completada\n\n📊 ${importedCount} entrenadores importados\n❌ ${skippedCount} registros omitidos`);
+                    
+                    // Limpiar formulario
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    console.error('❌ Error importando entrenadores:', error);
+                    alert('❌ Error al importar entrenadores. Inténtalo de nuevo.');
+                }
+            });
+        }
+
+        // Descargar plantillas
+        function downloadTemplate(type) {
+            let headers = [];
+            let filename = '';
+            
+            switch(type) {
+                case 'jugadores':
+                    headers = ['Nombre', 'Apellidos', 'DNI', 'Teléfono', 'Dirección', 'Edad', 'Fecha de Nacimiento', 'Categoría', 'Dorsal', 'Nombre del Padre/Madre', 'DNI del Padre/Madre', 'Teléfono del Padre/Madre', 'Email del Padre/Madre'];
+                    filename = 'plantilla_jugadores.csv';
+                    break;
+                case 'socios':
+                    headers = ['Nombre', 'Apellidos', 'DNI', 'Dirección', 'Teléfono', 'Email', 'Fecha de Nacimiento', 'Cuota'];
+                    filename = 'plantilla_socios.csv';
+                    break;
+                case 'amigos':
+                    headers = ['Nombre', 'Apellidos', 'DNI', 'Teléfono', 'Email'];
+                    filename = 'plantilla_amigos.csv';
+                    break;
+                case 'entrenadores':
+                    headers = ['Nombre', 'Apellidos', 'DNI', 'Teléfono', 'Email', 'Equipo Asignado', 'Licencia', 'Experiencia'];
+                    filename = 'plantilla_entrenadores.csv';
+                    break;
+            }
+            
+            const csvContent = headers.join(',') + '\n';
+            downloadCSV(csvContent, filename);
+            alert(`✅ Plantilla descargada: ${filename}`);
+        }
+
+        // Agregar al historial de importaciones
+        function addToImportHistory(type, importedCount, skippedCount) {
+            try {
+                const history = JSON.parse(localStorage.getItem('importHistory') || '[]');
+                const importRecord = {
+                    type: type,
+                    importedCount: importedCount,
+                    skippedCount: skippedCount,
+                    date: new Date().toISOString(),
+                    admin: JSON.parse(localStorage.getItem('currentAdmin') || '{}').name || 'Administrador'
+                };
+                
+                history.unshift(importRecord);
+                
+                // Mantener solo los últimos 10 registros
+                if (history.length > 10) {
+                    history.splice(10);
+                }
+                
+                localStorage.setItem('importHistory', JSON.stringify(history));
+                loadImportHistory();
+                
+            } catch (error) {
+                console.error('❌ Error agregando al historial de importaciones:', error);
+            }
+        }
+
+        // Cargar historial de importaciones
+        function loadImportHistory() {
+            try {
+                const history = JSON.parse(localStorage.getItem('importHistory') || '[]');
+                const historyElement = document.getElementById('importHistory');
+                
+                if (!historyElement) return;
+                
+                if (history.length === 0) {
+                    historyElement.innerHTML = '<p style="text-align: center; color: #6c757d;">No hay importaciones recientes</p>';
+                    return;
+                }
+                
+                let html = '<div style="max-height: 300px; overflow-y: auto;">';
+                history.forEach(record => {
+                    const date = new Date(record.date).toLocaleString('es-ES');
+                    const typeNames = {
+                        'jugadores': 'Jugadores',
+                        'socios': 'Socios',
+                        'amigos': 'Amigos',
+                        'entrenadores': 'Entrenadores'
+                    };
+                    
+                    html += `
+                        <div style="border-bottom: 1px solid #dee2e6; padding: 10px 0;">
+                            <div style="font-weight: bold; color: #495057;">${typeNames[record.type] || record.type}</div>
+                            <div style="color: #6c757d; font-size: 0.9em;">
+                                📊 ${record.importedCount} importados | ❌ ${record.skippedCount} omitidos
+                            </div>
+                            <div style="color: #6c757d; font-size: 0.8em;">
+                                👤 ${record.admin} | 📅 ${date}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                historyElement.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ Error cargando historial de importaciones:', error);
+                document.getElementById('importHistory').innerHTML = '<p style="text-align: center; color: #dc2626;">Error al cargar el historial</p>';
+            }
+        }
+
+        // Cargar historial de importaciones al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadImportHistory();
+        });
+
+        // Verificar que la pestaña de importar existe y es visible
+        function checkImportTab() {
+            const importTab = document.querySelector('.nav-tab[onclick*="importar"]');
+            if (importTab) {
+                console.log('✅ Pestaña de importar encontrada:', importTab.textContent);
+                importTab.style.display = 'inline-block';
+                importTab.style.visibility = 'visible';
+                importTab.style.opacity = '1';
+            } else {
+                console.log('❌ Pestaña de importar NO encontrada');
+                // Crear la pestaña si no existe
+                createImportTab();
+            }
+        }
+        
+        function createImportTab() {
+            const navTabs = document.querySelector('.nav-tabs');
+            if (navTabs) {
+                const importTab = document.createElement('button');
+                importTab.className = 'nav-tab';
+                importTab.onclick = function() { showTab('importar'); };
+                importTab.textContent = '📥 Importar Datos';
+                importTab.style.background = '#10b981';
+                importTab.style.color = 'white';
+                importTab.style.border = '2px solid #059669';
+                
+                // Insertar después de la pestaña de exportar
+                const exportTab = document.querySelector('.nav-tab[onclick*="exportar"]');
+                if (exportTab) {
+                    exportTab.parentNode.insertBefore(importTab, exportTab.nextSibling);
+                    console.log('✅ Pestaña de importar creada dinámicamente');
+                }
+            }
+        }
+        
+        // Verificar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkImportTab, 1000);
+        });
+        
+        // Verificar inmediatamente
+        setTimeout(function() {
+            console.log('🔍 Verificando pestaña de importar...');
+            const importTab = document.querySelector('.nav-tab[onclick*="importar"]');
+            if (importTab) {
+                console.log('✅ Pestaña encontrada, forzando visibilidad');
+                importTab.style.cssText = `
+                    display: inline-block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    background: #10b981 !important;
+                    color: white !important;
+                    border: 2px solid #059669 !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                `;
+            } else {
+                console.log('❌ Pestaña no encontrada, creando...');
+                createImportTab();
+            }
+        }, 500);
 
         console.log('🚀 Panel de administración CDSANABRIACF cargado correctamente');
     </script>

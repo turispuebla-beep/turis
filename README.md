@@ -1,161 +1,194 @@
-# ⚽ TURISTEAM
+# 🏆 CDSANABRIACF - Club Deportivo Sanabriacf
 
-**Gestión Integral de Equipos de Fútbol**
+## 📋 Descripción del Proyecto
 
-## 📱 Aplicación Móvil Android
+**CDSANABRIACF** es una aplicación web completa para la gestión del Club Deportivo Sanabriacf, ubicado en Puebla de Sanabria, Zamora. La aplicación proporciona una plataforma integral para la administración de equipos, jugadores, socios, eventos y comunicación del club.
 
-TURISTEAM es una aplicación móvil desarrollada en Kotlin para la gestión eficiente de equipos de fútbol. La aplicación incluye funcionalidades para administrar equipos, partidos, comunicación y más. Cada equipo tiene su propio administrador que gestiona únicamente su equipo específico.
+## 🎯 Características Principales
 
-### 🚀 Características Principales
+### 👥 Gestión de Jugadores
+- **Registro completo** de jugadores con datos personales
+- **Estadísticas deportivas** (partidos, goles, asistencias, tarjetas)
+- **Posiciones** (portero, defensa, centrocampista, delantero, versátil)
+- **Fotos de jugadores** con vista previa
+- **Licencia federativa** y validación
+- **Datos de tutores** para menores de edad
+- **Consentimientos** obligatorios
 
-- **Gestión de Equipos**: Administra jugadores, entrenadores y personal técnico
-- **Partidos y Calendario**: Programa y gestiona partidos de fútbol
-- **Comunicación**: Chat en tiempo real entre jugadores y entrenadores
-- **Estadísticas**: Seguimiento de rendimiento y estadísticas de jugadores
-- **Tienda del Equipo**: Gestión de equipamiento y merchandising
-- **Competiciones**: Organización de ligas, torneos y competiciones
+### ⚽ Gestión de Equipos
+- **5 categorías:** Prebenjamín, Benjamín, Alevín, Infantil, Aficionado
+- **Creación de equipos** personalizados
+- **Asignación de entrenadores**
+- **Horarios de entrenamiento**
+- **Campos de entrenamiento**
+- **Estado activo/inactivo**
 
-### 📥 Descarga
+### 👨‍👩‍👧‍👦 Gestión de Socios
+- **Registro de socios** con validación automática
+- **Sistema de cuotas** (Adultos: 20€, Menores: 10€)
+- **Validación por administradores**
+- **Expiración automática** en 7 días
+- **Numeración automática** de socios
 
-- **APK**: `app-debug.apk` (25MB)
-- **Versión**: 1.0
-- **Android mínimo**: API 28 (Android 9.0)
+### 🤝 Amigos del Club
+- **Registro gratuito**
+- **Acceso limitado** (calendario, equipos, resultados)
+- **Sin cuota** de inscripción
 
-### 🛠️ Tecnologías Utilizadas
+### 📅 Calendario y Eventos
+- **Gestión de eventos** del club
+- **Tipos de eventos:** entrenamientos, partidos, reuniones
+- **Calendario visual** mensual
+- **Próximas actividades**
 
-- **Lenguaje**: Kotlin
-- **UI**: Material Design Components
-- **Arquitectura**: MVVM con ViewBinding
-- **Base de datos**: Room Database
-- **Backend**: Firebase (Firestore, Authentication)
-- **Notificaciones**: Firebase Cloud Messaging
-- **Roles**: Administradores por equipo, Super Administrador
+### 📢 Publicidad y Colaboradores
+- **Sistema de anuncios** publicitarios
+- **Carrusel de anuncios**
+- **Estadísticas** de visualizaciones
+- **Gestión de colaboradores**
 
-## 🌐 Página Web
+### 📱 Redes Sociales
+- **Integración con Facebook** e Instagram
+- **URLs configurables** desde panel de administración
+- **Botones operativos** en página principal
 
-La página web (`index.html`) proporciona información sobre la aplicación y permite descargar la APK directamente. Cada equipo puede personalizar su página web a través del panel de administración.
+### 🎨 Personalización
+- **Logo del club** configurable
+- **Colores del tema** personalizables
+- **Mensajes** personalizables
+- **Favicon** del escudo del Sanabria
 
-### 🎨 Características de la Web
+## 🔧 Panel de Administración
 
-- **Diseño Responsivo**: Adaptable a móviles y tablets
-- **Interfaz Moderna**: Gradientes y animaciones CSS
-- **Descarga Directa**: Botón para descargar la APK
-- **Información Detallada**: Explicación de todas las funcionalidades futbolísticas
-- **Personalización**: Cada equipo puede personalizar colores, logos y contenido
+### 👨‍💼 Tipos de Administradores
+1. **Administrador Principal:** `amco@gmx.es` / `533712`
+2. **Segundo Administrador:** `cdsanabriacf@gmail.com` / `admin123`
+3. **Administradores de Equipo:** Configurables por categoría
+
+### 🛠️ Funcionalidades del Panel
+- **Gestión completa** de jugadores y equipos
+- **Validación de socios** y amigos
+- **Configuración** de redes sociales
+- **Gestión de publicidad**
+- **Personalización** del sitio web
+- **Estadísticas** y reportes
+
+## 📍 Información del Club
+
+- **Nombre:** Club Deportivo Sanabriacf (CDSANABRIACF)
+- **Dirección:** Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora
+- **CIF:** G49115413
+- **Email:** club@cdsanabriacf.com
+- **Teléfono:** +34 600 000 000
+- **WhatsApp:** +34 600 000 000
+- **Horarios:** Lunes a Viernes: 9:00 - 18:00
+
+## 🏆 Categorías de Equipos
+
+1. **Prebenjamín** (6-8 años)
+2. **Benjamín** (8-10 años)
+3. **Alevín** (10-12 años)
+4. **Infantil** (12-14 años)
+5. **Aficionado** (18+ años)
+
+## 🚀 Tecnologías Utilizadas
+
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Almacenamiento:** LocalStorage
+- **Diseño:** Responsive Design
+- **Iconos:** Emoji y Font Awesome
+- **Compatibilidad:** Navegadores modernos
 
 ## 📁 Estructura del Proyecto
 
 ```
-TURISTEAM/
-├── app/
-│   ├── src/main/
-│   │   ├── java/com/example/turisteam/
-│   │   │   └── MainActivity.kt
-│   │   └── res/
-│   │       ├── layout/
-│   │       │   └── activity_main.xml
-│   │       ├── values/
-│   │       │   ├── strings.xml
-│   │       │   ├── colors.xml
-│   │       │   └── themes.xml
-│   │       └── values-night/
-│   │           └── themes.xml
-│   └── build.gradle.kts
-├── build.gradle.kts
-├── index.html
-├── app-debug.apk
-└── README.md
+CDSANABRIACF/
+├── index.html              # Página principal
+├── admin-panel.html        # Panel de administración
+├── escudo-sanabria.jpeg    # Logo del club
+├── README.md              # Este archivo
+└── assets/                # Recursos adicionales
 ```
 
-## 🚀 Instalación y Uso
+## 🔐 Sistema de Autenticación
 
-### Para Desarrolladores
+### Credenciales de Acceso
+- **Admin Principal:** `amco@gmx.es` / `533712`
+- **Segundo Admin:** `cdsanabriacf@gmail.com` / `admin123`
+- **Socios:** Email/telefono + contraseña personal
+- **Amigos:** Email/telefono (sin contraseña)
 
-1. **Clona el repositorio**
-2. **Abre el proyecto en Android Studio**
-3. **Sincroniza las dependencias**
-4. **Compila el proyecto**: `./gradlew assembleDebug`
+## 📊 Funcionalidades por Usuario
 
-### Para Usuarios
+### 👥 Socios
+- ✅ Ver equipos y jugadores
+- ✅ Acceso a calendario completo
+- ✅ Ver resultados y eventos
+- ✅ Acceso a galería multimedia
+- ✅ Ver documentos del club
 
-1. **Descarga la APK** desde la página web
-2. **Habilita la instalación desde fuentes desconocidas**
-3. **Instala la aplicación**
-4. **¡Disfruta de TURISTEAM!**
+### 🤝 Amigos del Club
+- ✅ Ver equipos y jugadores
+- ✅ Acceso a calendario
+- ✅ Ver resultados
+- ❌ Acceso limitado a eventos
+- ❌ Sin acceso a documentos
 
-## 📋 Requisitos del Sistema
+### 👨‍💼 Administradores
+- ✅ Gestión completa de jugadores
+- ✅ Gestión de equipos
+- ✅ Validación de socios
+- ✅ Configuración del sitio
+- ✅ Gestión de publicidad
+- ✅ Estadísticas completas
 
-- **Android**: 9.0 (API 28) o superior
-- **RAM**: 2GB mínimo
-- **Almacenamiento**: 50MB disponibles
-- **Conexión**: Internet para sincronización
+## 🎨 Características de Diseño
 
-## 🔧 Configuración
+- **Colores principales:** Rojo (#dc2626) y Azul (#3b82f6)
+- **Diseño responsive** para móviles y desktop
+- **Interfaz moderna** con animaciones
+- **Accesibilidad** mejorada
+- **Navegación intuitiva**
 
-### Variables de Entorno
+## 📱 Redes Sociales
 
-Crear un archivo `.env` en el directorio raíz:
+- **Facebook:** Configurable desde panel de administración
+- **Instagram:** Configurable desde panel de administración
+- **Botones operativos** en página principal
+- **URLs personalizables**
 
-```env
-# Credenciales del Super Administrador
-REACT_APP_SUPER_ADMIN_EMAIL=tu-email@turisteam.com
-REACT_APP_SUPER_ADMIN_PASSWORD=tu-contraseña-segura
+## 🔄 Actualizaciones Recientes
 
-# Configuración del Backend
-JWT_SECRET=tu-jwt-secret-muy-seguro
-DATABASE_URL=tu-url-de-base-de-datos
-```
+### ✅ Funcionalidades Implementadas
+- Sistema completo de gestión de jugadores
+- Estadísticas deportivas avanzadas
+- Gestión de equipos personalizada
+- Sistema de redes sociales
+- Configuración de dirección y CIF
+- Panel de administración mejorado
+- Validación automática de socios
+- Sistema de publicidad
 
-### Firebase (Opcional)
+## 🚀 Próximas Funcionalidades
 
-La aplicación está configurada para usar Firebase. Para configurar tu propio backend:
+- [ ] Sistema de convocatorias
+- [ ] Notificaciones automáticas
+- [ ] Reportes avanzados
+- [ ] Integración con redes sociales
+- [ ] Sistema de pagos online
+- [ ] App móvil
 
-1. Crea un proyecto en Firebase Console
-2. Descarga el archivo `google-services.json`
-3. Colócalo en la carpeta `app/`
-4. Configura las reglas de Firestore
+## 📞 Soporte y Contacto
 
-## 🔒 Seguridad
-
-Para información detallada sobre seguridad, consulta el archivo [SECURITY.md](SECURITY.md).
-
-### Cambios de Seguridad Implementados:
-- ✅ Eliminadas credenciales hardcodeadas
-- ✅ Validación de autenticación en servidor
-- ✅ Uso de variables de entorno para datos sensibles
-- ✅ Permisos granulares por roles
-
-### 🔐 Cambio de Contraseña del Administrador
-
-**Opción 1: Script Automático (Recomendado)**
-```bash
-node scripts/change-admin-password.js
-```
-
-**Opción 2: Manual**
-1. Edita el archivo `.env`
-2. Cambia `REACT_APP_SUPER_ADMIN_PASSWORD=tu-nueva-contraseña`
-3. Reinicia la aplicación
-
-**Requisitos de Contraseña Segura:**
-- Mínimo 12 caracteres
-- Al menos una mayúscula
-- Al menos una minúscula
-- Al menos un número
-- Al menos un carácter especial
-
-## 📞 Soporte
-
-Para soporte técnico o preguntas sobre la aplicación:
-
-- **Email**: soporte@turisteam.com
-- **Documentación**: Disponible en la aplicación
-- **FAQ**: Sección de ayuda integrada
+Para soporte técnico o consultas sobre el proyecto:
+- **Email:** club@cdsanabriacf.com
+- **Desarrollador:** Equipo de desarrollo CDSANABRIACF
 
 ## 📄 Licencia
 
-© 2024 TURISTEAM. Todos los derechos reservados.
+Este proyecto es propiedad del Club Deportivo Sanabriacf (CDSANABRIACF).
 
 ---
 
-**Desarrollado con ❤️ para la gestión eficiente de equipos de fútbol**
+**© 2024 CDSANABRIACF - Club Deportivo Sanabriacf**
+*Miembro de TURISTEAM*

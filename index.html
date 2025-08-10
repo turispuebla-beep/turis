@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDSANABRIACF - Club Deportivo Sanabria</title>
+    <link rel="icon" type="image/x-icon" href="CDSANABRIACF/escudo-sanabria.jpeg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --text-color: #1f2937;
+            --text-light-color: #6b7280;
+            --button-color: #10b981;
+            --button-hover-color: #059669;
+            --background-color: #ffffff;
+            --card-background-color: #f8fafc;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+
+        /* Header mejorado */
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+            border: 4px solid white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: white;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .location {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* Navegación */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        /* Secciones de equipos */
+        .teams-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .team-card {
+            background: var(--card-background-color);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--accent-color);
+        }
+
+        .team-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .team-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .team-description {
+            color: var(--text-light-color);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light-color);
+        }
+
+        /* Sección de características */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--card-background-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .feature-description {
+            color: var(--text-light-color);
+            line-height: 1.6;
+        }
+
+        /* Botones de acción */
+        .cta-section {
+            text-align: center;
+            background: var(--background-color);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .download-button {
+            background: var(--button-color);
+        }
+
+        .download-button:hover {
+            background: var(--button-hover-color);
+        }
+
+        /* Footer mejorado */
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 30px 0;
+            background: rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .footer-section p, .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .privacy-policy {
+            cursor: pointer;
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .privacy-content {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        /* Modal de administración */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .admin-modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .admin-modal input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .admin-modal button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        .admin-modal button:hover {
+            background: var(--secondary-color);
+        }
+
+        .admin-modal .close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .admin-modal .close:hover {
+            color: #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .fixed-shield {
+                width: 60px;
+                height: 60px;
+                top: 10px;
+                left: 10px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="container">
+        <!-- Header con logo -->
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="CDSANABRIACF/escudo-sanabria.jpeg" alt="CDSANABRIACF Logo">
+                </div>
+                <div>
+                    <h1>CDSANABRIACF</h1>
+                    <p class="subtitle">Club Deportivo Sanabria</p>
+                    <p class="location">Sanabria, Zamora, España</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Menú de navegación -->
+        <nav class="nav-menu">
+            <a href="#equipos" class="nav-item">⚽ Equipos</a>
+            <a href="#entrenador" class="nav-item">👨‍💼 Entrenador</a>
+            <a href="#socios" class="nav-item">👥 Socio/a</a>
+            <a href="#amigos" class="nav-item">🤝 Amigos del Club</a>
+            <a href="#calendario" class="nav-item">📅 Calendario</a>
+            <a href="#resultados" class="nav-item">🏆 Resultados</a>
+            <a href="#eventos" class="nav-item">🎉 Eventos</a>
+            <a href="#fotos" class="nav-item">📸 Fotos y Videos</a>
+            <a href="#documentos" class="nav-item">📄 Documentos</a>
+        </nav>
+
+        <!-- Sección de Equipos -->
+        <section id="equipos" class="teams-section">
+            <h2 class="section-title">Nuestros Equipos</h2>
+            <div class="teams-grid">
+                <div class="team-card animate-fade-in">
+                    <div class="team-icon">⚽</div>
+                    <h3 class="team-title">Prebenjamín</h3>
+                    <p class="team-description">Equipo de fútbol base para niños de 6-7 años. Formación en valores y técnica básica.</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Jugadores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Entrenadores</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card animate-fade-in">
+                    <div class="team-icon">⚽</div>
+                    <h3 class="team-title">Benjamín</h3>
+                    <p class="team-description">Equipo para niños de 8-9 años. Desarrollo de habilidades técnicas y tácticas.</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Jugadores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Entrenadores</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card animate-fade-in">
+                    <div class="team-icon">⚽</div>
+                    <h3 class="team-title">Alevín</h3>
+                    <p class="team-description">Equipo para niños de 10-11 años. Competición local y desarrollo integral.</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">20</div>
+                            <div class="stat-label">Jugadores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Entrenadores</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card animate-fade-in">
+                    <div class="team-icon">⚽</div>
+                    <h3 class="team-title">Infantil</h3>
+                    <p class="team-description">Equipo para niños de 12-13 años. Competición regional y alto rendimiento.</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">22</div>
+                            <div class="stat-label">Jugadores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Entrenadores</div>
+                        </div>
+                    </div>
+             </div>
+
+                <div class="team-card animate-fade-in">
+                    <div class="team-icon">⚽</div>
+                    <h3 class="team-title">Aficionado</h3>
+                    <p class="team-description">Equipo de fútbol para adultos aficionados. Deporte y convivencia.</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">25</div>
+                            <div class="stat-label">Jugadores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Entrenadores</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de características -->
+        <section class="features">
+                         <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">Aplicación Móvil</h3>
+                 <p class="feature-description">
+                    Descarga nuestra aplicación móvil para acceder a toda la información del club, 
+                    calendario de partidos, resultados y comunicación en tiempo real.
+                 </p>
+             </div>
+
+                         <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Gestión Integral</h3>
+                 <p class="feature-description">
+                    Sistema completo de gestión para equipos, jugadores, entrenadores, 
+                    partidos, eventos y comunicación interna del club.
+                 </p>
+             </div>
+
+                         <div class="feature-card">
+                 <div class="feature-icon">📊</div>
+                 <h3 class="feature-title">Estadísticas</h3>
+                 <p class="feature-description">
+                    Seguimiento detallado del rendimiento de jugadores y equipos. 
+                    Estadísticas de partidos y progreso individual.
+                 </p>
+             </div>
+
+                         <div class="feature-card">
+                 <div class="feature-icon">🛒</div>
+                <h3 class="feature-title">Tienda del Club</h3>
+                 <p class="feature-description">
+                    Adquiere equipamiento oficial del club: camisetas, balones, 
+                    material deportivo y merchandising exclusivo.
+                 </p>
+             </div>
+
+                         <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3 class="feature-title">Galería Multimedia</h3>
+                 <p class="feature-description">
+                    Fotos y videos de partidos, entrenamientos y eventos del club. 
+                    Recuerdos inolvidables de la temporada.
+                 </p>
+             </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3 class="feature-title">Documentación</h3>
+                <p class="feature-description">
+                    Acceso a documentos oficiales, reglamentos, formularios 
+                    y toda la documentación del club en formato digital.
+                </p>
+        </div>
+        </section>
+
+        <!-- Sección de descarga -->
+        <div class="cta-section">
+            <h2>¡Únete a CDSANABRIACF!</h2>
+            <p>Descarga nuestra aplicación móvil y mantente conectado con tu club</p>
+            
+            <div class="download-section">
+                <a href="app-debug.apk" class="cta-button download-button" download>
+                    📱 Descargar APK
+                </a>
+                <a href="#contact" class="cta-button">
+                    📧 Contactar
+                </a>
+                <button onclick="openAdminModal()" class="cta-button">
+                    🔧 Panel Admin
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer con información de contacto -->
+                 <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>📧 info@cdsanabriacf.com</p>
+                    <p>📞 +34 123 456 789</p>
+                    <p>📍 Sanabria, Zamora, España</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <a href="#equipos">Equipos</a>
+                    <a href="#calendario">Calendario</a>
+                    <a href="#eventos">Eventos</a>
+                    <a href="#documentos">Documentos</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Redes Sociales</h3>
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">YouTube</a>
+                </div>
+            </div>
+            
+            <div class="privacy-policy" onclick="togglePrivacy()">
+                📋 Política de Protección de Datos
+            </div>
+            <div id="privacy-content" class="privacy-content">
+                <h4>Política de Protección de Datos de CDSANABRIACF</h4>
+                <p>En cumplimiento del Reglamento General de Protección de Datos (RGPD), CDSANABRIACF informa que:</p>
+                <ul>
+                    <li>Los datos personales se recopilan únicamente para fines deportivos y de gestión del club</li>
+                    <li>Se garantiza la confidencialidad y seguridad de todos los datos</li>
+                    <li>Los usuarios pueden ejercer sus derechos de acceso, rectificación y cancelación</li>
+                    <li>No se ceden datos a terceros sin consentimiento expreso</li>
+                    <li>Los datos se conservan únicamente durante el tiempo necesario</li>
+                </ul>
+                <p>Para más información, contacta con: protecciondatos@cdsanabriacf.com</p>
+            </div>
+            
+            <p style="margin-top: 20px; opacity: 0.7;">
+                &copy; 2024 CDSANABRIACF. Todos los derechos reservados.
+            </p>
+         </footer>
+    </div>
+
+    <!-- Modal de administración -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <span class="close" onclick="closeAdminModal()">&times;</span>
+            <h2>🔧 Acceso Administración</h2>
+            <p>Ingresa las credenciales del administrador único</p>
+            
+            <form id="adminForm" onsubmit="validateAdmin(event)">
+                <input type="email" id="adminEmail" placeholder="Email del administrador" required>
+                <input type="password" id="adminPassword" placeholder="Contraseña" required>
+                <br><br>
+                <button type="submit">Acceder</button>
+                <button type="button" onclick="closeAdminModal()">Cancelar</button>
+            </form>
+            
+            <div id="adminMessage" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración del sitio
+                 let siteSettings = {
+            siteTitle: 'CDSANABRIACF - Club Deportivo Sanabria',
+            siteSubtitle: 'Club Deportivo Sanabria',
+            contactEmail: 'info@cdsanabriacf.com',
+            phoneNumber: '+34 123 456 789',
+            address: 'Sanabria, Zamora, España',
+            primaryColor: '#1e3a8a',
+            secondaryColor: '#3b82f6',
+            accentColor: '#f59e0b'
+        };
+
+        // Función para mostrar/ocultar política de privacidad
+        function togglePrivacy() {
+            const content = document.getElementById('privacy-content');
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Funciones del modal de administración
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'block';
+            document.getElementById('adminEmail').focus();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminForm').reset();
+            document.getElementById('adminMessage').style.display = 'none';
+        }
+
+        function validateAdmin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const messageDiv = document.getElementById('adminMessage');
+            
+            // Verificar credenciales del super admin
+            if (email === 'amco@gmx.es' && password === '533712') {
+                messageDiv.style.display = 'block';
+                messageDiv.style.backgroundColor = '#d4edda';
+                messageDiv.style.color = '#155724';
+                messageDiv.style.border = '1px solid #c3e6cb';
+                messageDiv.innerHTML = '✅ Acceso correcto. Redirigiendo...';
+                
+                setTimeout(() => {
+                    closeAdminModal();
+                    window.open('CDSANABRIACF/admin-panel.html', '_blank');
+                }, 1500);
+            } else {
+                messageDiv.style.display = 'block';
+                messageDiv.style.backgroundColor = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.style.border = '1px solid #f5c6cb';
+                messageDiv.innerHTML = '❌ Credenciales incorrectas. Acceso denegado.';
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminModal();
+            }
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAdminModal();
+            }
+        });
+
+        // Animación de scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animación de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.team-card, .feature-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            cards.forEach(card => {
+                    card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        });
+
+        // Función para descargar APK
+        function downloadAPK() {
+            const link = document.createElement('a');
+            link.href = 'app-debug.apk';
+            link.download = 'CDSANABRIACF.apk';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html> 

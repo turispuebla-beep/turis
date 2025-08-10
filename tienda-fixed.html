@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626, #3b82f6);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #dc2626;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .store-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .store-info h3 {
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+
+        .store-info p {
+            margin-bottom: 5px;
+        }
+
+        .official-store-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .official-store-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+
+        .product-stock {
+            margin-bottom: 20px;
+        }
+
+        .stock-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background: #f3f4f6;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .stock-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .stock-low {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stock-out {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .buy-button {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .buy-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-required {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .login-required:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .no-products {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-products h2 {
+            color: #dc2626;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #dc2626;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .alert.show {
+            transform: translateX(0);
+        }
+
+        .alert-success {
+            background: #10b981;
+        }
+
+        .alert-error {
+            background: #ef4444;
+        }
+
+        .alert-info {
+            background: #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Volver al Inicio</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Tienda CDSANABRIACF</h1>
+            <p>Productos oficiales del club con entrega en mano</p>
+            
+                         <div class="store-info">
+                 <h3>📦 Información de la Tienda</h3>
+                 <p><strong>Entrega:</strong> <span id="deliveryInfo">Entrega en mano en el campo</span></p>
+                 <p><strong>Restricción:</strong> Solo socios y amigos del club pueden realizar compras</p>
+                 <p><strong>Nota:</strong> Esta tienda es para recoger en las instalaciones del club. Para envío a casa, visita la tienda oficial.</p>
+                 <a href="#" id="officialStoreLink" class="official-store-link" target="_blank">
+                     🛒 Visitar Tienda Oficial (Envío a Casa)
+                 </a>
+             </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="camisetas">Camisetas</button>
+                <button class="filter-btn" data-filter="equipaciones">Equipaciones</button>
+                <button class="filter-btn" data-filter="accesorios">Accesorios</button>
+                <button class="filter-btn" data-filter="calzado">Calzado</button>
+                <button class="filter-btn" data-filter="otros">Otros</button>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div id="productsContainer">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        let products = [];
+        let currentFilter = 'all';
+        let isLoggedIn = false;
+        let userType = '';
+
+        // Cargar productos desde localStorage
+        function loadProducts() {
+            const stored = localStorage.getItem('cdsanabriacfProducts');
+            if (stored) {
+                products = JSON.parse(stored);
+                console.log('✅ Productos cargados:', products.length);
+            }
+        }
+
+                 // Cargar configuración de tienda
+         function loadStoreSettings() {
+             const stored = localStorage.getItem('cdsanabriacfStoreSettings');
+             if (stored) {
+                 const settings = JSON.parse(stored);
+                 document.getElementById('deliveryInfo').textContent = settings.deliveryInfo || 'Entrega en mano en el campo';
+                 
+                 if (settings.officialStoreUrl) {
+                     const link = document.getElementById('officialStoreLink');
+                     link.href = settings.officialStoreUrl;
+                 }
+             }
+         }
+
+        // Verificar si el usuario está logueado
+        function checkLoginStatus() {
+            const loggedInUser = localStorage.getItem('cdsanabriacfLoggedInUser');
+            if (loggedInUser) {
+                const user = JSON.parse(loggedInUser);
+                isLoggedIn = true;
+                userType = user.type; // 'socio' o 'amigo'
+                console.log('✅ Usuario logueado:', userType);
+            }
+        }
+
+        // Renderizar productos
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="no-products">
+                        <h2>🏪 No hay productos disponibles</h2>
+                        <p>Los administradores aún no han agregado productos a la tienda.</p>
+                        <p>¡Vuelve más tarde!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const filteredProducts = currentFilter === 'all' 
+                ? products 
+                : products.filter(p => p.category === currentFilter);
+
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-products">
+                        <h2>🔍 No se encontraron productos</h2>
+                        <p>No hay productos en la categoría seleccionada.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredProducts.map(product => {
+                const totalStock = Object.values(product.stock).reduce((sum, stock) => sum + stock, 0);
+                const stockItems = Object.entries(product.stock).map(([size, stock]) => {
+                    let stockClass = 'stock-available';
+                    if (stock === 0) stockClass = 'stock-out';
+                    else if (stock < 3) stockClass = 'stock-low';
+                    
+                    return `<span class="stock-item ${stockClass}">${size}: ${stock}</span>`;
+                }).join('');
+
+                const canBuy = isLoggedIn && (userType === 'socio' || userType === 'amigo') && totalStock > 0;
+                
+                return `
+                    <div class="product-card">
+                        <div class="product-image">${product.image}</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-description">${product.description || 'Sin descripción'}</div>
+                        <div class="product-price">€${product.price.toFixed(2)}</div>
+                        <div class="product-stock">
+                            ${stockItems}
+                        </div>
+                        ${canBuy 
+                            ? `<button class="buy-button" onclick="buyProduct(${product.id})">
+                                 🛒 Comprar Ahora
+                               </button>`
+                            : !isLoggedIn 
+                                ? `<button class="login-required" onclick="showLoginRequired()">
+                                     🔐 Inicia sesión para comprar
+                                   </button>`
+                                : totalStock === 0
+                                    ? `<button class="buy-button" disabled>
+                                         ❌ Sin stock
+                                       </button>`
+                                    : `<button class="buy-button" disabled>
+                                         ❌ Solo socios y amigos
+                                       </button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Comprar producto
+        function buyProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const totalStock = Object.values(product.stock).reduce((sum, stock) => sum + stock, 0);
+            if (totalStock === 0) {
+                showAlert('❌ No hay stock disponible para este producto', 'error');
+                return;
+            }
+
+                         // Simular proceso de compra
+             showAlert('✅ Compra realizada. Te contactaremos para coordinar la recogida en el campo.', 'success');
+            
+            // Aquí se podría implementar la lógica real de compra
+            console.log('Compra realizada:', product.name);
+        }
+
+        // Mostrar mensaje de login requerido
+        function showLoginRequired() {
+            showAlert('🔐 Debes iniciar sesión como socio o amigo para realizar compras', 'info');
+        }
+
+        // Filtrar productos
+        function filterProducts(filter) {
+            currentFilter = filter;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderProducts();
+        }
+
+        // Mostrar alerta
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => alert.classList.add('show'), 100);
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => document.body.removeChild(alert), 300);
+            }, 4000);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            loadStoreSettings();
+            checkLoginStatus();
+            renderProducts();
+
+            // Event listeners para filtros
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    filterProducts(filter);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

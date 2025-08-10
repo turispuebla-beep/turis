@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Amigos del Club - CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .login-section {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .content-section {
+            display: none;
+            padding: 30px;
+        }
+
+        .navigation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: #6c757d;
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-day {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            min-height: 60px;
+            position: relative;
+        }
+
+        .calendar-day.today {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+        }
+
+        .calendar-day.has-event {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+        }
+
+        .calendar-day .date {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .calendar-day .event-indicator {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #ff9800;
+            border-radius: 50%;
+        }
+
+        .event-list {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .event-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        .event-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .competition-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 15px;
+        }
+
+        .competition-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .competition-info {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .competition-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-inscripcion {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-activo {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-finalizado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .logout-btn {
+            background: rgba(220,53,69,0.8);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220,53,69,1);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                padding: 5px;
+                min-height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <div class="header">
+                <h1>🤝 Amigos del Club</h1>
+                <p>CDSANABRIACF - Acceso Limitado</p>
+            </div>
+
+            <div class="info-box">
+                <h3>🔐 Acceso para Amigos del Club</h3>
+                <p>Para acceder al contenido del club, introduce tu correo electrónico o número de teléfono registrado.</p>
+                <ul>
+                    <li>No necesitas contraseña</li>
+                    <li>Solo puedes ver calendario y competiciones</li>
+                    <li>Acceso de solo lectura</li>
+                </ul>
+            </div>
+
+            <div class="login-form">
+                <h3>📧 Acceso por Email o Teléfono</h3>
+                <div class="form-group">
+                    <label for="identifier">Email o Teléfono *</label>
+                    <input type="text" id="identifier" placeholder="ejemplo@email.com o 612345678" required>
+                </div>
+                <button class="btn" onclick="authenticateFriend()">🔑 Acceder</button>
+                <button class="btn btn-secondary" onclick="goBack()" style="margin-left: 10px;">⬅️ Volver</button>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div id="contentSection" class="content-section">
+            <div class="header">
+                <h1>🤝 Panel de Amigos del Club</h1>
+                <p>CDSANABRIACF - Contenido Limitado</p>
+                <div id="userInfo" class="user-info"></div>
+                <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+            </div>
+
+            <div class="navigation">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showTab('calendario')">📅 Calendario</button>
+                    <button class="nav-tab" onclick="showTab('competiciones')">🏆 Competiciones</button>
+                </div>
+            </div>
+
+            <!-- Calendario Tab -->
+            <div id="calendario" class="tab-content active">
+                <div class="section">
+                    <h2>📅 Calendario de Actividades</h2>
+                    <div id="calendarContainer">
+                        <div class="no-data">Cargando calendario...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competiciones Tab -->
+            <div id="competiciones" class="tab-content">
+                <div class="section">
+                    <h2>🏆 Competiciones</h2>
+                    <div id="competitionsContainer">
+                        <div class="no-data">Cargando competiciones...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFriend = null;
+
+        function authenticateFriend() {
+            const identifier = document.getElementById('identifier').value.trim();
+            
+            if (!identifier) {
+                alert('❌ Por favor, introduce tu email o teléfono.');
+                return;
+            }
+
+            try {
+                // Buscar en localStorage
+                const friends = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                const friend = friends.find(f => 
+                    (f.email && f.email.toLowerCase() === identifier.toLowerCase()) ||
+                    (f.phone && f.phone === identifier)
+                );
+
+                if (!friend) {
+                    alert('❌ No se encontró ningún amigo del club con esos datos.\n\n💡 Contacta con un administrador para registrarte.');
+                    return;
+                }
+
+                if (friend.status !== 'active') {
+                    alert('❌ Tu cuenta está inactiva.\n\n💡 Contacta con un administrador para activar tu cuenta.');
+                    return;
+                }
+
+                // Actualizar información de acceso
+                friend.lastAccess = new Date().toISOString();
+                friend.accessCount = (friend.accessCount || 0) + 1;
+
+                // Guardar cambios
+                const updatedFriends = friends.map(f => f.id === friend.id ? friend : f);
+                localStorage.setItem('clubFriends', JSON.stringify(updatedFriends));
+
+                // Guardar sesión actual
+                currentFriend = friend;
+                localStorage.setItem('currentFriend', JSON.stringify(friend));
+
+                // Mostrar contenido
+                showContent();
+                loadCalendar();
+                loadCompetitions();
+
+                console.log('🤝 Amigo del club autenticado:', friend.name + ' ' + friend.surname);
+
+            } catch (error) {
+                console.error('❌ Error en autenticación:', error);
+                alert('❌ Error en el sistema de autenticación. Inténtalo de nuevo.');
+            }
+        }
+
+        function showContent() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('contentSection').style.display = 'block';
+            
+            // Mostrar información del usuario
+            if (currentFriend) {
+                document.getElementById('userInfo').textContent = `👤 ${currentFriend.name} ${currentFriend.surname}`;
+            }
+        }
+
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+
+            // Desactivar todos los botones
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+
+            // Mostrar pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadCalendar() {
+            try {
+                const events = JSON.parse(localStorage.getItem('clubCalendarEvents') || '[]');
+                const container = document.getElementById('calendarContainer');
+
+                if (events.length === 0) {
+                    container.innerHTML = '<div class="no-data">No hay actividades programadas en el calendario.</div>';
+                    return;
+                }
+
+                // Generar calendario del mes actual
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+                
+                let html = '<div class="calendar-grid">';
+                
+                // Días de la semana
+                const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                daysOfWeek.forEach(day => {
+                    html += `<div class="calendar-day" style="background: #e9ecef; font-weight: bold;">${day}</div>`;
+                });
+
+                // Obtener primer día del mes
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                
+                // Días vacíos al inicio
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    html += '<div class="calendar-day"></div>';
+                }
+
+                // Días del mes
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(currentYear, currentMonth, day);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const dayEvents = events.filter(e => e.date === dateStr);
+                    
+                    const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+                    const hasEvent = dayEvents.length > 0;
+                    
+                    let dayClass = 'calendar-day';
+                    if (isToday) dayClass += ' today';
+                    if (hasEvent) dayClass += ' has-event';
+                    
+                    html += `<div class="${dayClass}">
+                        <div class="date">${day}</div>
+                        ${hasEvent ? '<div class="event-indicator"></div>' : ''}
+                    </div>`;
+                }
+
+                html += '</div>';
+
+                // Lista de próximos eventos
+                const upcomingEvents = events
+                    .filter(e => new Date(e.date) >= today)
+                    .sort((a, b) => new Date(a.date) - new Date(b.date))
+                    .slice(0, 10);
+
+                if (upcomingEvents.length > 0) {
+                    html += '<h3>📅 Próximas Actividades</h3>';
+                    html += '<div class="event-list">';
+                    
+                    upcomingEvents.forEach(event => {
+                        const eventDate = new Date(event.date);
+                        const typeIcon = event.type === 'match' ? '⚽' : event.type === 'training' ? '🏃' : '📋';
+                        
+                        html += `
+                            <div class="event-item">
+                                <div class="event-title">${typeIcon} ${event.title}</div>
+                                <div class="event-details">
+                                    📆 ${eventDate.toLocaleDateString('es-ES')} | 
+                                    ⏰ ${event.startTime} - ${event.endTime} | 
+                                    📍 ${event.location} | 
+                                    🏷️ ${event.category}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                }
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando calendario:', error);
+                document.getElementById('calendarContainer').innerHTML = '<div class="no-data">Error al cargar el calendario.</div>';
+            }
+        }
+
+        function loadCompetitions() {
+            try {
+                const competitions = JSON.parse(localStorage.getItem('clubCompetitions') || '[]');
+                const container = document.getElementById('competitionsContainer');
+
+                if (competitions.length === 0) {
+                    container.innerHTML = '<div class="no-data">No hay competiciones disponibles.</div>';
+                    return;
+                }
+
+                let html = '';
+                competitions.forEach(competition => {
+                    const statusClass = `status-${competition.status}`;
+                    const statusText = {
+                        'inscripcion': 'Inscripción Abierta',
+                        'activo': 'En Curso',
+                        'finalizado': 'Finalizado'
+                    }[competition.status] || competition.status;
+
+                    html += `
+                        <div class="competition-card">
+                            <div class="competition-title">🏆 ${competition.name}</div>
+                            <div class="competition-info">📋 Categoría: ${competition.category}</div>
+                            <div class="competition-info">🎯 Tipo: ${competition.type}</div>
+                            <div class="competition-info">📅 Fecha: ${new Date(competition.startDate).toLocaleDateString('es-ES')} - ${new Date(competition.endDate).toLocaleDateString('es-ES')}</div>
+                            <div class="competition-info">👥 Equipos: ${competition.teams.length}/${competition.maxTeams}</div>
+                            ${competition.description ? `<div class="competition-info">📝 ${competition.description}</div>` : ''}
+                            <span class="competition-status ${statusClass}">${statusText}</span>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Error cargando competiciones:', error);
+                document.getElementById('competitionsContainer').innerHTML = '<div class="no-data">Error al cargar las competiciones.</div>';
+            }
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('currentFriend');
+                currentFriend = null;
+                document.getElementById('contentSection').style.display = 'none';
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('identifier').value = '';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Verificar si ya hay una sesión activa
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedFriend = localStorage.getItem('currentFriend');
+            if (savedFriend) {
+                try {
+                    currentFriend = JSON.parse(savedFriend);
+                    showContent();
+                    loadCalendar();
+                    loadCompetitions();
+                } catch (error) {
+                    console.error('❌ Error restaurando sesión:', error);
+                    localStorage.removeItem('currentFriend');
+                }
+            }
+        });
+
+        console.log('🤝 Página de acceso para amigos del club cargada');
+    </script>
+</body>
+</html>
+

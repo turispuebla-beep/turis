@@ -1,12 +1,4 @@
-val org.gradle.accessors.dm.LibrariesForLibs.mpandroidchart: kotlin.Any
-    get() {
-        TODO()
-    }
 
-val org.gradle.accessors.dm.LibrariesForLibs.compressor: kotlin.Any
-    get() {
-        TODO()
-    }
 
 plugins {
     alias(libs.plugins.android.application)
@@ -66,11 +58,10 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // ThreeTen
-    implementation("org.threeten:threetenbp:1.6.8")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
     // Gráficos y estadísticas
-    implementation(libs.mpandroidchart)
+    // implementation(libs.mpandroidchart) // Comentado temporalmente
     
     // Excel
     implementation("org.apache.poi:poi:5.2.3")
@@ -129,50 +120,15 @@ dependencies {
     // Material Design
     implementation("com.google.android.material:material:1.11.0")
 
-    // ThreeTenABP (for better date/time handling)
-    implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
-    
-    // Image Compression
-    implementation(libs.compressor)
+    // ThreeTenABP (for better date/time handling) - Ya incluido arriba
     
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     
-    // Socket.IO
-    implementation(dependencyNotation = libs.coil)
-    // AndroidX
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.swiperefreshlayout)
-    
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.firestore)
-    
-    // Lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.livedata)
-    
-    // Navigation
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
-    
-    // Image Loading
-    implementation(libs.coil)
-    
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.play.services)
-    
     // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

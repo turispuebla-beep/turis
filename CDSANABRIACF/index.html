@@ -234,10 +234,11 @@
             display: flex;
             transition: transform 0.5s ease-in-out;
             height: 100%;
+            will-change: transform;
         }
 
         .carousel-slide {
-            min-width: 100%;
+            min-width: calc(100% / 3);
             position: relative;
             display: flex;
             align-items: center;
@@ -333,6 +334,10 @@
             
             .carousel-container {
                 height: 200px;
+            }
+            /* En móviles mostramos 1 por vista */
+            .carousel-slide {
+                min-width: 100%;
             }
             
             .carousel-slide-title {
@@ -581,6 +586,9 @@
                 <button class="access-btn" onclick="showLoginModal(createSocioLoginForm())" style="background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                     👨‍👩‍👧‍👦 Socios
                 </button>
+                <button class="access-btn" onclick="openOnlineStore()" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    🏪 TIENDA
+                </button>
                 <button class="access-btn" onclick="showLoginModal(createAmigoLoginForm())" style="background: var(--secondary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                     🤝 Amigos del Club
                 </button>
@@ -696,22 +704,18 @@
                 </button>
             </div>
             
-            <!-- Botón de Tienda -->
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="tienda-completa.html" style="
-                    display: inline-block;
-                    background: linear-gradient(135deg, #dc2626, #3b82f6);
-                    color: white;
-                    padding: 15px 30px;
-                    border-radius: 25px;
-                    text-decoration: none;
-                    font-weight: 600;
-                    font-size: 1.1rem;
-                    transition: transform 0.3s, box-shadow 0.3s;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 15px rgba(220, 38, 38, 0.3)'" 
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'">
-                    🏪 Visitar Tienda CDSANABRIACF
+            <!-- Botón de Tienda movido al menú superior -->
+        </div>
+
+        <!-- Redes Sociales -->
+        <div id="socialSection" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px 0; text-align:center;">
+            <h3 style="color: var(--text-color); margin-bottom: 12px;">Síguenos en redes</h3>
+            <div id="socialButtons" style="display: inline-flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a id="facebookLink" href="#" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #1877f2; color: white; padding: 10px 16px; border-radius: 24px; text-decoration: none; font-weight: 700;">
+                    <span>📘</span> <span>Facebook</span>
+                </a>
+                <a id="instagramLink" href="#" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #e1306c; color: white; padding: 10px 16px; border-radius: 24px; text-decoration: none; font-weight: 700;">
+                    <span>📸</span> <span>Instagram</span>
                 </a>
             </div>
         </div>
@@ -743,6 +747,12 @@
                     </div>
                     
                     <div class="form-group">
+                        <label for="socioFechaNacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" id="socioFechaNacimiento" required onchange="actualizarCuotaSocioPorEdad()">
+                        <small id="socioEdadInfo" style="display:block; color:#6b7280; margin-top:6px;">Edad: -</small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="socioDNI">DNI</label>
                         <input type="text" id="socioDNI">
                     </div>
@@ -764,7 +774,18 @@
                     
                     <div class="form-group">
                         <label for="socioCuota">Cuota de Socio (€)</label>
-                        <input type="number" id="socioCuota" value="25" min="0" step="0.01">
+                        <input type="number" id="socioCuota" value="20" min="0" step="0.01" readonly>
+                        <div style="display:flex; gap:14px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+                            <label style="display:inline-flex; align-items:center; gap:6px;">
+                                <input type="radio" name="socioCuotaRadio" value="20" checked onchange="seleccionarCuotaManual(20)">
+                                <span style="font-weight:700; color:#dc2626;">Cuota: 20 € (Adulto)</span>
+                            </label>
+                            <label style="display:inline-flex; align-items:center; gap:6px;">
+                                <input type="radio" name="socioCuotaRadio" value="10" onchange="seleccionarCuotaManual(10)">
+                                <span style="font-weight:700; color:#dc2626;">Cuota: 10 € (Menor)</span>
+                            </label>
+                        </div>
+                        <small style="display:block; color:#6b7280; margin-top:6px;">Adulto (≥18): 20 € · Menor (≤17): 10 €</small>
                     </div>
                     
                     <div class="form-group">
@@ -836,7 +857,7 @@
             <div id="contactInfo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: center;">
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">📧 Email</h4>
-                    <p id="contactEmail" style="color: var(--text-light-color);">club@cdsanabriacf.com</p>
+                    <p id="contactEmail" style="color: var(--text-light-color);">cdsanabriacf@gmail.com</p>
                 </div>
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">📱 Teléfono</h4>
@@ -844,7 +865,7 @@
                 </div>
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">📍 Dirección</h4>
-                    <p id="contactAddress" style="color: var(--text-light-color);">Calle del Club, 123, Ciudad</p>
+                    <p id="contactAddress" style="color: var(--text-light-color);">Crta. del Pinar, s/n, 49300 Puebla de Sanabria, Zamora</p>
                 </div>
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">🌐 Sitio Web</h4>
@@ -857,6 +878,10 @@
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">⏰ Horarios</h4>
                     <p id="contactHours" style="color: var(--text-light-color);">Lunes a Viernes: 9:00 - 18:00</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-color); margin-bottom: 10px;">🏷️ CIF</h4>
+                    <p id="contactCIF" style="color: var(--text-light-color);">G49115413</p>
                 </div>
             </div>
         </div>
@@ -872,7 +897,7 @@
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Responsable del Tratamiento</h4>
                 <p>Club Deportivo Sanabriacf (CDSANABRIACF)<br>
                 Dirección: [Dirección del club]<br>
-                Email: club@cdsanabriacf.com<br>
+                Email: cdsanabriacf@gmail.com<br>
                 Teléfono: +34 600 000 000</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Finalidad del Tratamiento</h4>
@@ -899,10 +924,25 @@
                 <p>Sus datos no serán cedidos a terceros salvo obligación legal o cuando sea necesario para la prestación de los servicios solicitados.</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Derechos</h4>
-                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición contactando con nosotros en club@cdsanabriacf.com</p>
+                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición contactando con nosotros en cdsanabriacf@gmail.com</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Autoridad de Control</h4>
                 <p>Puede presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) si considera que el tratamiento no se ajusta a la normativa vigente.</p>
+
+                <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Ejemplos genéricos de datos gestionados</h4>
+                <p style="margin-bottom: 10px;">A modo informativo, estos son ejemplos genéricos de los tipos de datos gestionados por cada módulo del club:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Jugadores</strong>: "Juan Pérez — DNI 00000000A — Tel. 600 000 000 — Dorsal 9 — Alevín"</li>
+                    <li><strong>Socios</strong>: "María García — Tel. 600 111 111 — Email ejemplo@correo.com — Cuota 20/10€"</li>
+                    <li><strong>Amigos del club</strong>: "Luis López — Tel. 600 222 222 — Email amigo@correo.com (acceso limitado)"</li>
+                    <li><strong>Entrenadores</strong>: "Ana Torres — Tel. 600 333 333 — Email coach@correo.com — Equipo: Infantil"</li>
+                    <li><strong>Eventos</strong>: "Convivencia del club — Fecha 01/06/2025 — Precio 5€ — Inscritos mínimos 10"</li>
+                    <li><strong>Competiciones</strong>: "Liga Alevín — 10 equipos — Fase regular"</li>
+                    <li><strong>Tienda</strong>: "Camiseta Oficial — Tallas S-XXL — Color Rojo/Azul — Stock 20 — Entrega en mano"</li>
+                    <li><strong>Compras</strong>: "Cliente socio: Carlos Ruiz — Variante M Rojo — Precio 20€ — Estado Completada"</li>
+                    <li><strong>Multimedia</strong>: "Foto entrenamiento 2025-05-01.jpg — Vídeo partido 2025-05-10.mp4 — Documento norma.pdf"</li>
+                    <li><strong>Publicidad</strong>: "Patrocinador X — Banner 1200x600 — URL https://ejemplo.com"</li>
+                </ul>
 
                 <p style="margin-top: 20px; font-style: italic; color: var(--text-color);">
                     Última actualización: Diciembre 2024
@@ -926,7 +966,7 @@
         let teamSettings = {
             teamName: 'CDSANABRIACF',
             teamSubtitle: 'Club Deportivo Sanabriacf - Pasión por el Fútbol',
-            contactEmail: 'info@cdsanabriacf.com',
+            contactEmail: 'cdsanabriacf@gmail.com',
             phoneNumber: '+34 123 456 789',
             address: 'Calle del Deporte 123, San Abriacf, España',
             primaryColor: '#dc2626', // Rojo por defecto
@@ -1024,6 +1064,9 @@
 
             // Aplicar publicidad
             applyAdvertisements();
+
+            // Aplicar redes sociales si están configuradas
+            applySocialLinks();
         }
 
         // Función para aplicar color blanco al texto CDSANABRIACF
@@ -1099,13 +1142,13 @@
 
         // Función para cargar el logo por defecto
         function loadDefaultLogo() {
-            const logoElement = document.querySelector('.team-logo');
-            if (logoElement) {
+                const logoElement = document.querySelector('.team-logo');
+                if (logoElement) {
                 // Usar la foto como ejemplo pero mantener el sistema anterior
                 logoElement.innerHTML = '🛡️';
-                logoElement.style.fontSize = '3rem';
-                logoElement.style.color = 'var(--primary-color)';
-                logoElement.style.border = '4px solid var(--secondary-color)';
+                    logoElement.style.fontSize = '3rem';
+                    logoElement.style.color = 'var(--primary-color)';
+                    logoElement.style.border = '4px solid var(--secondary-color)';
                 console.log('✅ Logo por defecto cargado (escudo)');
             }
         }
@@ -1214,8 +1257,66 @@
             }
             if (event.key === 'cdsanabriacfSettings') {
                 loadLogoMessage();
+                applySocialLinks();
             }
         });
+
+        // Cargar enlaces de redes sociales desde configuración
+        function applySocialLinks() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('cdsanabriacfSettings') || '{}');
+                const facebook = settings.facebookUrl || '';
+                const instagram = settings.instagramUrl || '';
+
+                const fbLink = document.getElementById('facebookLink');
+                const igLink = document.getElementById('instagramLink');
+
+                if (fbLink) {
+                    if (facebook) {
+                        fbLink.href = facebook;
+                        fbLink.style.opacity = '1';
+                        fbLink.dataset.disabled = 'false';
+                    } else {
+                        fbLink.href = '#';
+                        fbLink.style.opacity = '0.8';
+                        fbLink.dataset.disabled = 'true';
+                        fbLink.title = 'Añade el enlace de Facebook desde el Panel de Administración';
+                    }
+                }
+
+                if (igLink) {
+                    if (instagram) {
+                        igLink.href = instagram;
+                        igLink.style.opacity = '1';
+                        igLink.dataset.disabled = 'false';
+                    } else {
+                        igLink.href = '#';
+                        igLink.style.opacity = '0.8';
+                        igLink.dataset.disabled = 'true';
+                        igLink.title = 'Añade el enlace de Instagram desde el Panel de Administración';
+                    }
+                }
+
+                attachSocialHandlers();
+            } catch (e) {
+                console.error('Error aplicando enlaces sociales', e);
+            }
+        }
+
+        function attachSocialHandlers() {
+            const setup = (el, name) => {
+                if (!el) return;
+                el.onclick = (ev) => {
+                    const isDisabled = el.dataset.disabled === 'true' || el.href.endsWith('#');
+                    if (isDisabled) {
+                        ev.preventDefault();
+                        alert(`🔗 El enlace de ${name} aún no está configurado. Ve al Panel de Administración → 📢 Publicidad para añadirlo.`);
+                    }
+                };
+            };
+            setup(document.getElementById('facebookLink'), 'Facebook');
+            setup(document.getElementById('instagramLink'), 'Instagram');
+        }
 
         // Función para acceder al panel de administración
         function openAdminPanel() {
@@ -1260,8 +1361,8 @@
                     
                     // Guardar sesión del administrador principal
                     const admin = {
-                        id: 'ADMIN_CDSANABRIACF',
-                        name: 'Administrador Principal CDSANABRIACF',
+                            id: 'ADMIN_CDSANABRIACF',
+                            name: 'Administrador Principal CDSANABRIACF',
                         email: email,
                         teamId: 'CDSANABRIACF',
                         role: 'super_admin',
@@ -1287,7 +1388,7 @@
             // Verificar si es un administrador de equipo
             const teamAdmins = JSON.parse(localStorage.getItem('teamAdmins') || '[]');
             const admin = teamAdmins.find(a => a.email === email && a.password === password);
-
+            
             if (admin) {
                 if (admin.status !== 'active') {
                     alert('❌ Tu cuenta está desactivada. Contacta con el administrador principal.');
@@ -1318,29 +1419,7 @@
                 return;
             }
 
-            // Verificar si es el segundo administrador (cdsanabriacf)
-            if (email.toLowerCase() === 'cdsanabriacf@gmail.com' && password === 'admin123') {
-                console.log('✅ Autenticación exitosa como segundo administrador');
-                
-                // Guardar sesión del segundo administrador
-                const adminSession = {
-                    id: 'ADMIN_CDSANABRIACF_2',
-                    name: 'Segundo Administrador CDSANABRIACF',
-                    email: email,
-                    teamId: 'CDSANABRIACF',
-                    role: 'super_admin',
-                    loginTime: new Date().toISOString()
-                };
-                
-                localStorage.setItem('currentAdmin', JSON.stringify(adminSession));
-                
-                closeLoginModal();
-                alert('✅ Autenticación exitosa.\nRedirigiendo al panel de administración...');
-                
-                // Abrir el panel de administración
-                window.open('admin-panel.html', '_blank');
-                return;
-            }
+            // (Administrador secundario limitado desactivado y credenciales revertidas)
 
             // Si no es ni admin principal ni de equipo
             alert('❌ Verifica tus credenciales.');
@@ -1818,9 +1897,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             startCurrentDayTimer();
             loadMultimediaGallery();
+            clearOldContactInfo(); // Limpiar email anterior del localStorage
             loadContactInfoFromSettings();
             loadClubLogo(); // Cargar el logo del club
             limpiarSociosExpirados(); // Limpiar socios expirados
+            ensureDefaultOnlineStoreLink();
         });
 
         // ===== FUNCIONES PARA POLÍTICA DE PROTECCIÓN DE DATOS =====
@@ -1840,6 +1921,20 @@
 
         // ===== FUNCIONES PARA DATOS DE CONTACTO =====
         
+        // Limpiar localStorage con email anterior
+        function clearOldContactInfo() {
+            try {
+                const contactInfo = JSON.parse(localStorage.getItem('clubContactInfo') || 'null');
+                if (contactInfo && contactInfo.email && contactInfo.email !== 'cdsanabriacf@gmail.com') {
+                    contactInfo.email = 'cdsanabriacf@gmail.com';
+                    localStorage.setItem('clubContactInfo', JSON.stringify(contactInfo));
+                    console.log('✅ Email actualizado en localStorage');
+                }
+            } catch (error) {
+                console.error('❌ Error limpiando datos de contacto:', error);
+            }
+        }
+        
         function loadContactInfoFromSettings() {
             try {
                 const contactInfo = JSON.parse(localStorage.getItem('clubContactInfo') || 'null');
@@ -1852,9 +1947,9 @@
                     const whatsappElement = document.getElementById('contactWhatsApp');
                     const hoursElement = document.getElementById('contactHours');
                     
-                    if (emailElement) emailElement.textContent = contactInfo.email || 'club@cdsanabriacf.com';
+                    if (emailElement) emailElement.textContent = 'cdsanabriacf@gmail.com';
                     if (phoneElement) phoneElement.textContent = contactInfo.phone || '+34 600 000 000';
-                    if (addressElement) addressElement.textContent = contactInfo.address || 'Calle del Club, 123, Ciudad';
+                    if (addressElement) addressElement.textContent = contactInfo.address || 'Crta. del Pinar, s/n, 49300 Puebla de Sanabria, Zamora';
                     if (websiteElement) websiteElement.textContent = contactInfo.website || 'www.cdsanabriacf.com';
                     if (whatsappElement) whatsappElement.textContent = contactInfo.whatsapp || '+34 600 000 000';
                     if (hoursElement) hoursElement.textContent = contactInfo.hours || 'Lunes a Viernes: 9:00 - 18:00';
@@ -1867,21 +1962,52 @@
         }
 
         // ===== FUNCIONES PARA REGISTRO DE SOCIOS =====
+        function calcularEdad(fechaStr) {
+            const hoy = new Date();
+            const cumple = new Date(fechaStr);
+            let edad = hoy.getFullYear() - cumple.getFullYear();
+            const m = hoy.getMonth() - cumple.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < cumple.getDate())) {
+                edad--;
+            }
+            return edad;
+        }
+
+        function actualizarCuotaSocioPorEdad() {
+            const fecha = document.getElementById('socioFechaNacimiento').value;
+            const cuotaInput = document.getElementById('socioCuota');
+            const edadInfo = document.getElementById('socioEdadInfo');
+            if (!fecha) return;
+            const edad = calcularEdad(fecha);
+            if (edadInfo) edadInfo.textContent = `Edad: ${edad} años`;
+            const esMenor = edad <= 17;
+            const monto = esMenor ? 10 : 20;
+            cuotaInput.value = monto;
+            // Sincronizar radios
+            const radios = document.getElementsByName('socioCuotaRadio');
+            radios.forEach(r => { r.checked = (parseInt(r.value) === monto); });
+        }
+
+        function seleccionarCuotaManual(monto) {
+            const cuotaInput = document.getElementById('socioCuota');
+            cuotaInput.value = monto;
+        }
         
         function registerSocio(event) {
             event.preventDefault();
             
             const nombre = document.getElementById('socioNombre').value.trim();
             const apellidos = document.getElementById('socioApellidos').value.trim();
+            const fechaNacimiento = document.getElementById('socioFechaNacimiento').value;
             const dni = document.getElementById('socioDNI').value.trim();
             const direccion = document.getElementById('socioDireccion').value.trim();
             const telefono = document.getElementById('socioTelefono').value.trim();
             const email = document.getElementById('socioEmail').value.trim();
-            const cuota = parseFloat(document.getElementById('socioCuota').value) || 25;
+            const cuota = parseFloat(document.getElementById('socioCuota').value) || 20;
             const consentimiento = document.getElementById('socioConsentimiento').checked;
             
-            if (!nombre || !apellidos || !telefono) {
-                alert('Por favor, completa los campos obligatorios: Nombre, Apellidos y Teléfono');
+            if (!nombre || !apellidos || !telefono || !fechaNacimiento) {
+                alert('Por favor, completa los campos obligatorios: Nombre, Apellidos, Teléfono y Fecha de Nacimiento');
                 return;
             }
             
@@ -1900,6 +2026,7 @@
                 telefono: telefono,
                 email: email,
                 cuota: cuota,
+                fechaNacimiento: fechaNacimiento,
                 fechaRegistro: new Date().toISOString(),
                 fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 días
                 estado: 'pendiente', // pendiente, confirmado, expirado
@@ -2141,8 +2268,7 @@
             try {
                 const advertisements = JSON.parse(localStorage.getItem('clubAdvertisements') || '[]');
                 const carouselAds = advertisements.filter(ad => 
-                    ad.type === 'carrusel' && 
-                    ad.status === 'active' && 
+                    (ad.status === 'active') && 
                     (!ad.startDate || new Date(ad.startDate) <= new Date()) &&
                     (!ad.endDate || new Date(ad.endDate) >= new Date())
                 );
@@ -2181,21 +2307,26 @@
             let slidesHTML = '';
             let dotsHTML = '';
             
-            carouselSlides.forEach((ad, index) => {
-                // Generar slide
-                slidesHTML += `
-                    <div class="carousel-slide" onclick="handleAdClick('${ad.id}')">
-                        ${ad.image ? `<img src="${ad.image}" alt="${ad.title}">` : ''}
-                        <div class="carousel-slide-content">
-                            <div class="carousel-slide-title">${ad.title}</div>
-                            <div class="carousel-slide-company">${ad.company}</div>
+            // 3 por vista: agrupamos en páginas de 3
+            const itemsPerView = window.innerWidth <= 768 ? 1 : 3;
+            const pages = Math.ceil(carouselSlides.length / itemsPerView);
+
+            for (let p = 0; p < pages; p++) {
+                const start = p * itemsPerView;
+                const group = carouselSlides.slice(start, start + itemsPerView);
+                group.forEach((ad) => {
+                    slidesHTML += `
+                        <div class="carousel-slide" onclick="handleAdClick('${ad.id}')">
+                            ${ad.image ? `<img src="${ad.image}" alt="${ad.title}">` : ''}
+                            <div class="carousel-slide-content">
+                                <div class="carousel-slide-title">${ad.title || ''}</div>
+                                <div class="carousel-slide-company">${ad.company || ''}</div>
+                            </div>
                         </div>
-                    </div>
-                `;
-                
-                // Generar punto
-                dotsHTML += `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`;
-            });
+                    `;
+                });
+                dotsHTML += `<div class="carousel-dot ${p === 0 ? 'active' : ''}" onclick="goToSlide(${p})"></div>`;
+            }
             
             slidesContainer.innerHTML = slidesHTML;
             dotsContainer.innerHTML = dotsHTML;
@@ -2211,32 +2342,30 @@
             
             if (slides.length === 0) return;
             
-            // Ocultar todos los slides
-            slides.forEach(slide => slide.style.display = 'none');
+            const itemsPerView = window.innerWidth <= 768 ? 1 : 3;
+            const pages = Math.ceil(slides.length / itemsPerView);
+            if (index >= pages) index = 0;
+            if (index < 0) index = pages - 1;
+
             dots.forEach(dot => dot.classList.remove('active'));
-            
-            // Mostrar slide actual
-            if (slides[index]) {
-                slides[index].style.display = 'flex';
-                dots[index].classList.add('active');
-            }
+            if (dots[index]) dots[index].classList.add('active');
+
+            const offset = index * 100; // 100% por página
+            const slidesContainer = document.getElementById('carouselSlides');
+            slidesContainer.style.transform = `translateX(-${offset}%)`;
             
             currentSlide = index;
         }
 
         // Cambiar slide
         function changeSlide(direction) {
-            const totalSlides = carouselSlides.length;
-            if (totalSlides === 0) return;
-            
+            const itemsPerView = window.innerWidth <= 768 ? 1 : 3;
+            const totalItems = document.querySelectorAll('.carousel-slide').length;
+            const pages = Math.ceil(totalItems / itemsPerView);
+            if (pages === 0) return;
             let newIndex = currentSlide + direction;
-            
-            if (newIndex >= totalSlides) {
-                newIndex = 0;
-            } else if (newIndex < 0) {
-                newIndex = totalSlides - 1;
-            }
-            
+            if (newIndex >= pages) newIndex = 0;
+            if (newIndex < 0) newIndex = pages - 1;
             showSlide(newIndex);
         }
 
@@ -2339,6 +2468,165 @@
             }
         }
 
+        // ===== TIENDA: Abrir enlace online asignado por el administrador =====
+        function openOnlineStore() {
+            try {
+                const links = JSON.parse(localStorage.getItem('cdsanabriacfOnlineLinks') || '[]');
+                if (Array.isArray(links) && links.length > 0 && links[0].url) {
+                    const url = links[0].url;
+                    window.open(url, '_blank');
+                } else {
+                    const defaultUrl = 'https://sanabriacf.akinda.com/shop';
+                    // Abrir la tienda oficial por defecto
+                    window.open(defaultUrl, '_blank');
+                    // Opcional: sembrar el enlace por defecto para que quede fijo pero editable
+                    const seeded = [{ name: 'Tienda Oficial', url: defaultUrl }];
+                    localStorage.setItem('cdsanabriacfOnlineLinks', JSON.stringify(seeded));
+                }
+            } catch (e) {
+                console.error('Error abriendo tienda online', e);
+                alert('❌ No se pudo abrir la tienda online.');
+            }
+        }
+
+        // Garantiza que exista un enlace por defecto a la tienda oficial si no hay ninguno guardado
+        function ensureDefaultOnlineStoreLink() {
+            try {
+                const stored = localStorage.getItem('cdsanabriacfOnlineLinks');
+                if (!stored) {
+                    const defaultUrl = 'https://sanabriacf.akinda.com/shop';
+                    const seeded = [{ name: 'Tienda Oficial', url: defaultUrl }];
+                    localStorage.setItem('cdsanabriacfOnlineLinks', JSON.stringify(seeded));
+                }
+            } catch (e) {
+                console.warn('No se pudo asegurar el enlace por defecto de tienda', e);
+            }
+        }
+
+    </script>
+
+    <!-- Login de Administrador con modal bonito y compatibilidad con dos cuentas -->
+    <script>
+        function showAdminLoginModal() {
+            // Si ya existe, no duplicar
+            const existing = document.getElementById('loginModal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'loginModal';
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="closeAdminLoginModal()">&times;</span>
+                    <h2>👑 Acceso de Administrador</h2>
+                    <p style="color: #059669; font-weight: bold; margin-bottom: 12px;">Introduce tus credenciales</p>
+                    <form onsubmit="return handleAdminLoginSubmit(event)" autocomplete="off">
+                        <div class="form-group">
+                            <label for="adminEmailModal">Correo Electrónico</label>
+                            <input type="email" id="adminEmailModal" required autocomplete="off" autocapitalize="none" autocorrect="off" name="admin_email_field">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPasswordModal">Contraseña</label>
+                            <input type="password" id="adminPasswordModal" required placeholder="••••••••" autocomplete="new-password" name="admin_password_field">
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-primary">Acceder</button>
+                            <button type="button" class="btn-secondary" onclick="closeAdminLoginModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Limpiar cualquier valor previo y desactivar autofill del navegador
+            try {
+                const emailInput = modal.querySelector('#adminEmailModal');
+                const passInput = modal.querySelector('#adminPasswordModal');
+                if (emailInput) {
+                    emailInput.value = '';
+                    emailInput.setAttribute('autocomplete', 'off');
+                    emailInput.setAttribute('autocapitalize', 'none');
+                    emailInput.setAttribute('autocorrect', 'off');
+                }
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.setAttribute('autocomplete', 'new-password');
+                }
+            } catch (_) {}
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.remove();
+        }
+
+        function handleAdminLoginSubmit(ev) {
+            ev.preventDefault();
+            const email = (document.getElementById('adminEmailModal').value || '').trim().toLowerCase();
+            const password = (document.getElementById('adminPasswordModal').value || '').trim();
+
+            // Admin principal
+            if (email === 'amco@gmx.es' && password === '533712') {
+                closeAdminLoginModal();
+                window.open('admin-panel.html', '_blank');
+                return false;
+            }
+            // Segundo admin (acepta ambas variantes de correo)
+            if ((email === 'cdsanabriacf@gmail.com' || email === 'cdsanabria@gmail.com') && password === 'admin123') {
+                closeAdminLoginModal();
+                window.open('admin-panel.html', '_blank');
+                return false;
+            }
+            // Error genérico
+            document.getElementById('adminPasswordModal').value = '';
+            return false;
+        }
+
+        // Sobrescribir el disparador de acceso admin para usar el modal
+        (function ensureAdminButtonUsesModal(){
+            try {
+                // Si existe un botón flotante creado por script, aseguremos su onclick
+                const buttons = Array.from(document.querySelectorAll('button, a'));
+                buttons.forEach(b => {
+                    const oc = (b.getAttribute('onclick') || '').toString();
+                    if (oc.includes('openAdminPanel')) {
+                        b.setAttribute('onclick','showAdminLoginModal()');
+                    }
+                });
+            } catch (_) {}
+            // Exponer función pública para otros llamadores
+            window.openAdminPanel = showAdminLoginModal;
+        })();
+    </script>
+
+    <!-- Sobrescritura segura del acceso de administradores -->
+    <script>
+        // Esta función sobrescribe la anterior para asegurar acceso a los dos administradores solicitados
+        function openAdminPanel() {
+            const email = prompt('📧 Ingresa tu email de administrador:');
+            if (!email) return;
+
+            const password = prompt('🔐 Ingresa tu contraseña:');
+            if (!password) return;
+
+            const e = email.trim().toLowerCase();
+            const p = password.trim();
+
+            // Admin principal
+            if (e === 'amco@gmx.es' && p === '533712') {
+                window.open('admin-panel.html', '_blank');
+                return;
+            }
+
+            // Segundo admin
+            if (e === 'cdsanabriacf@gmail.com' && p === 'admin123') {
+                window.open('admin-panel.html', '_blank');
+                return;
+            }
+
+            alert('❌ Credenciales incorrectas. Acceso denegado.');
+        }
     </script>
 </body>
 </html> 

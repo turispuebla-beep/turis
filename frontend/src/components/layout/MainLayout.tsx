@@ -1,34 +1,63 @@
-import { Box, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, useTheme, useMediaQuery } from '@mui/material';
-import { Menu as MenuIcon, Newspaper, Person, Notifications, Login, Logout, SportsSoccer, BarChart, AdminPanelSettings } from '@mui/icons-material';
-import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { NotificationManager } from '../notifications/NotificationManager';
-import { GlobalSearch } from '../search/GlobalSearch';
+import React from 'react';
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Box, 
+  Container, 
+  useTheme, 
+  useMediaQuery,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Fab,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon
+} from '@mui/material';
+import {
+  Home as HomeIcon,
+  SportsSoccer as TeamsIcon,
+  Event as EventsIcon,
+  PhotoCamera as MediaIcon,
+  People as MembersIcon,
+  Settings as SettingsIcon,
+  Menu as MenuIcon,
+  Add as AddIcon,
+  Notifications as NotificationsIcon,
+  Chat as ChatIcon
+} from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
-import { usePermissions } from '../../hooks/usePermissions';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export function MainLayout() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
-  const { isSuperAdmin } = usePermissions();
+  const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-      const menuItems = [
-        { text: 'Noticias', icon: <Newspaper />, path: '/' },
-        { text: 'Equipos', icon: <SportsSoccer />, path: '/teams' },
-        { text: 'Estadísticas', icon: <BarChart />, path: '/stats' },
-        { text: 'Perfil', icon: <Person />, path: '/profile', requiresAuth: true },
-        { text: 'Notificaciones', icon: <Notifications />, path: '/notifications', requiresAuth: true },
-        { 
-          text: 'Gestión de Equipos',
-          icon: <AdminPanelSettings />,
-          path: '/admin/teams',
-          requiresAuth: true,
-          requiresSuperAdmin: true
-        },
-    ];
+  const navigationItems = [
+    { label: 'Inicio', icon: <HomeIcon />, path: '/' },
+    { label: 'Equipos', icon: <TeamsIcon />, path: '/teams' },
+    { label: 'Eventos', icon: <EventsIcon />, path: '/events' },
+    { label: 'Medios', icon: <MediaIcon />, path: '/media' },
+    { label: 'Miembros', icon: <MembersIcon />, path: '/members' },
+  ];
+
+  const speedDialActions = [
+    { icon: <AddIcon />, name: 'Nuevo Evento', action: () => navigate('/events/new') },
+    { icon: <ChatIcon />, name: 'Chat', action: () => navigate('/chat') },
+    { icon: <NotificationsIcon />, name: 'Notificaciones', action: () => navigate('/notifications') },
+  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -37,91 +66,136 @@ export function MainLayout() {
     }
   };
 
-  const handleAuthAction = () => {
-    if (isAuthenticated) {
-      logout();
-      navigate('/');
-    } else {
-      navigate('/login');
-    }
-  };
-
-  const drawerContent = (
-    <List>
-      {menuItems.map((item) => (
-        (!item.requiresAuth || isAuthenticated) && (!item.requiresSuperAdmin || isSuperAdmin()) && (
+  const drawer = (
+    <Box sx={{ width: 250 }}>
+      <Toolbar>
+        <Typography variant="h6" noWrap component="div">
+          CDSANABRIACF
+        </Typography>
+      </Toolbar>
+      <List>
+        {navigationItems.map((item) => (
           <ListItem 
             button 
-            key={item.text} 
+            key={item.label}
             onClick={() => handleNavigation(item.path)}
+            selected={location.pathname === item.path}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemText primary={item.label} />
           </ListItem>
-        )
-      ))}
-    </List>
+        ))}
+      </List>
+    </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed">
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* AppBar */}
+      <AppBar 
+        position="fixed" 
+        sx={{ 
+          zIndex: theme.zIndex.drawer + 1,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        }}
+      >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={() => setDrawerOpen(!drawerOpen)}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
+          {isMobile && (
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => setDrawerOpen(!drawerOpen)}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           
-          <Typography variant="h6" component="div" sx={{ display: { xs: 'block', sm: 'none' }, mr: 2 }}>
-            TURISTEAM
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            CDSANABRIACF
           </Typography>
 
-          <Box sx={{ flexGrow: 1, mx: 2, display: { xs: 'none', sm: 'block' } }}>
-            <GlobalSearch />
-          </Box>
+          {!isMobile && (
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              {navigationItems.map((item) => (
+                <Typography
+                  key={item.label}
+                  variant="body2"
+                  sx={{ 
+                    cursor: 'pointer',
+                    opacity: location.pathname === item.path ? 1 : 0.7,
+                    '&:hover': { opacity: 1 }
+                  }}
+                  onClick={() => handleNavigation(item.path)}
+                >
+                  {item.label}
+                </Typography>
+              ))}
+            </Box>
+          )}
 
-          <IconButton 
-            color="inherit"
-            onClick={handleAuthAction}
-          >
-            {isAuthenticated ? <Logout /> : <Login />}
-          </IconButton>
+          {isAuthenticated && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body2">
+                {user?.name || 'Usuario'}
+              </Typography>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        variant={isMobile ? 'temporary' : 'permanent'}
-        open={isMobile ? drawerOpen : true}
-        onClose={() => setDrawerOpen(false)}
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
-            marginTop: { sm: '64px' },
-          },
-        }}
-      >
-        {drawerContent}
-      </Drawer>
+      {/* Drawer para móviles */}
+      {isMobile && (
+        <Drawer
+          variant="temporary"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: 250,
+              background: 'linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)'
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      )}
 
+      {/* Contenido principal */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - 240px)` },
-          marginTop: '64px',
+          pt: { xs: 8, md: 9 },
+          pb: { xs: 8, md: 2 },
+          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+          minHeight: '100vh'
         }}
       >
-        <Outlet />
-        {isAuthenticated && <NotificationManager />}
+        <Container maxWidth="lg" sx={{ py: 3 }}>
+          {children}
+        </Container>
       </Box>
+
+      {/* Speed Dial para acciones rápidas */}
+      {isAuthenticated && (
+        <SpeedDial
+          ariaLabel="Acciones rápidas"
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+        >
+          {speedDialActions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              tooltipTitle={action.name}
+              onClick={action.action}
+            />
+          ))}
+        </SpeedDial>
+      )}
     </Box>
   );
-}
+};

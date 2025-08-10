@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Socios - CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light-color: #6b7280;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .login-section {
+            text-align: center;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: var(--text-light-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: #e9ecef;
+            color: var(--text-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 300px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección de Login -->
+        <div id="loginSection" class="login-section">
+            <div class="header">
+                <h1>👨‍👩‍👧‍👦 Acceso Socios</h1>
+                <p>Club Deportivo Sanabriacf - Área de Socios</p>
+            </div>
+            
+            <div class="content">
+                <div class="info-box">
+                    <h3>ℹ️ Información para Socios</h3>
+                    <ul>
+                        <li>Acceso completo a todas las funcionalidades del club</li>
+                        <li>Inscripción en eventos y actividades</li>
+                        <li>Acceso a documentos y multimedia</li>
+                        <li>Información exclusiva del club</li>
+                        <li>Para acceder, introduce tu email o teléfono registrado</li>
+                    </ul>
+                </div>
+
+                <form onsubmit="authenticateMember(event)">
+                    <div class="form-group">
+                        <label for="identifier">📧 Email o 📱 Teléfono:</label>
+                        <input type="text" id="identifier" placeholder="Introduce tu email o teléfono" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">🔐 Acceder</button>
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">⬅️ Volver</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sección de Contenido -->
+        <div id="contentSection" class="content-section">
+            <div class="header">
+                <h1>👨‍👩‍👧‍👦 Área de Socios</h1>
+                <p>Bienvenido al área exclusiva de socios</p>
+            </div>
+            
+            <div class="content">
+                <div class="user-info">
+                    <h3 id="userInfo">Cargando información del socio...</h3>
+                    <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+                </div>
+
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showTab('equipos')">⚽ Equipos</button>
+                    <button class="nav-tab" onclick="showTab('calendario')">📅 Calendario</button>
+                    <button class="nav-tab" onclick="showTab('eventos')">🎉 Eventos</button>
+                    <button class="nav-tab" onclick="showTab('competiciones')">🏆 Competiciones</button>
+                    <button class="nav-tab" onclick="showTab('multimedia')">📸 Multimedia</button>
+                    <button class="nav-tab" onclick="showTab('documentos')">📄 Documentos</button>
+                </div>
+
+                <div id="equipos" class="tab-content active">
+                    <h3>⚽ Equipos del Club</h3>
+                    <div id="teamsContainer">
+                        <p>Cargando equipos...</p>
+                    </div>
+                </div>
+
+                <div id="calendario" class="tab-content">
+                    <h3>📅 Calendario de Actividades</h3>
+                    <div id="calendarContainer">
+                        <p>Cargando calendario...</p>
+                    </div>
+                </div>
+
+                <div id="eventos" class="tab-content">
+                    <h3>🎉 Eventos del Club</h3>
+                    <div id="eventsContainer">
+                        <p>Cargando eventos...</p>
+                    </div>
+                </div>
+
+                <div id="competiciones" class="tab-content">
+                    <h3>🏆 Competiciones</h3>
+                    <div id="competitionsContainer">
+                        <p>Cargando competiciones...</p>
+                    </div>
+                </div>
+
+                <div id="multimedia" class="tab-content">
+                    <h3>📸 Galería Multimedia</h3>
+                    <div id="multimediaContainer">
+                        <p>Cargando galería multimedia...</p>
+                    </div>
+                </div>
+
+                <div id="documentos" class="tab-content">
+                    <h3>📄 Documentos del Club</h3>
+                    <div id="documentsContainer">
+                        <p>Cargando documentos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMember = null;
+
+        // Autenticación de socios
+        function authenticateMember(event) {
+            event.preventDefault();
+            
+            const identifier = document.getElementById('identifier').value.trim();
+            if (!identifier) {
+                alert('❌ Por favor, introduce tu email o teléfono.');
+                return;
+            }
+
+            try {
+                const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                
+                // Buscar por email o teléfono
+                const member = members.find(m => 
+                    (m.email && m.email.toLowerCase() === identifier.toLowerCase()) ||
+                    (m.phone && m.phone === identifier)
+                );
+                
+                if (!member) {
+                    alert('❌ No se encontró ningún socio con esos datos.\n\nSi eres socio y no puedes acceder, contacta con un administrador.');
+                    return;
+                }
+                
+                if (member.status !== 'active') {
+                    alert('❌ Tu cuenta de socio está inactiva.\n\nContacta con un administrador para activar tu cuenta.');
+                    return;
+                }
+
+                // Verificar si el socio está confirmado (dentro de los 7 días)
+                const registrationDate = new Date(member.registrationDate);
+                const now = new Date();
+                const daysDiff = (now - registrationDate) / (1000 * 60 * 60 * 24);
+                
+                if (daysDiff > 7 && member.status !== 'confirmed') {
+                    alert('❌ Tu cuenta de socio ha expirado por falta de confirmación.\n\nContacta con un administrador para reactivar tu cuenta.');
+                    return;
+                }
+                
+                // Actualizar información de acceso
+                member.lastAccess = new Date().toISOString();
+                member.accessCount = (member.accessCount || 0) + 1;
+                
+                // Guardar cambios
+                const updatedMembers = members.map(m => m.id === member.id ? member : m);
+                localStorage.setItem('clubMembers', JSON.stringify(updatedMembers));
+                
+                // Guardar sesión actual
+                currentMember = member;
+                localStorage.setItem('currentMember', JSON.stringify(member));
+                
+                showContent();
+                loadAllContent();
+                
+                alert(`✅ Bienvenido ${member.name} ${member.surname}.\nAcceso concedido como socio del club.`);
+                
+            } catch (error) {
+                console.error('❌ Error en autenticación de socio:', error);
+                alert('❌ Error en el sistema de autenticación. Inténtalo de nuevo.');
+            }
+        }
+
+        // Mostrar contenido después del login
+        function showContent() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('contentSection').style.display = 'block';
+            
+            if (currentMember) {
+                document.getElementById('userInfo').innerHTML = `
+                    👤 <strong>${currentMember.name} ${currentMember.surname}</strong><br>
+                    <small>📧 ${currentMember.email} | 📱 ${currentMember.phone}</small><br>
+                    <small>🏷️ Socio #${currentMember.memberNumber}</small>
+                `;
+            }
+        }
+
+        // Cambiar entre pestañas
+        function showTab(tabName) {
+            // Ocultar todos los contenidos
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remover clase active de todos los botones
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Mostrar el contenido seleccionado
+            document.getElementById(tabName).classList.add('active');
+            
+            // Marcar el botón como activo
+            event.target.classList.add('active');
+        }
+
+        // Cargar todo el contenido
+        function loadAllContent() {
+            loadTeams();
+            loadCalendar();
+            loadEvents();
+            loadCompetitions();
+            loadMultimedia();
+            loadDocuments();
+        }
+
+        // Cargar equipos
+        function loadTeams() {
+            const players = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+            const categories = ['prebenajmin', 'benjamin', 'alevin', 'infantil', 'aficionado'];
+            const categoryNames = {
+                'prebenajmin': 'Prebenjamín',
+                'benjamin': 'Benjamín', 
+                'alevin': 'Alevín',
+                'infantil': 'Infantil',
+                'aficionado': 'Aficionado'
+            };
+
+            let html = '<div style="display: grid; gap: 20px;">';
+            
+            categories.forEach(category => {
+                const categoryPlayers = players.filter(p => p.category === category && p.status === 'active');
+                html += `
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h4 style="color: var(--primary-color); margin-bottom: 15px;">${categoryNames[category]} (${categoryPlayers.length} jugadores)</h4>
+                        ${categoryPlayers.length > 0 ? 
+                            `<div style="display: grid; gap: 10px;">
+                                ${categoryPlayers.map(p => `
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                                        <strong>${p.name} ${p.surname}</strong>
+                                        ${p.number ? ` - Dorsal: ${p.number}` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>` :
+                            '<p style="color: var(--text-light-color); font-style: italic;">No hay jugadores registrados en esta categoría</p>'
+                        }
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('teamsContainer').innerHTML = html;
+        }
+
+        // Cargar calendario
+        function loadCalendar() {
+            const events = JSON.parse(localStorage.getItem('clubCalendarEvents') || '[]');
+            const upcomingEvents = events.filter(e => new Date(e.date) >= new Date()).slice(0, 10);
+
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            if (upcomingEvents.length > 0) {
+                upcomingEvents.forEach(event => {
+                    const eventDate = new Date(event.date).toLocaleDateString('es-ES');
+                    html += `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h4 style="color: var(--primary-color); margin-bottom: 10px;">${event.title}</h4>
+                            <p><strong>📅 Fecha:</strong> ${eventDate}</p>
+                            <p><strong>⏰ Hora:</strong> ${event.time}</p>
+                            <p><strong>📍 Lugar:</strong> ${event.location || 'Por determinar'}</p>
+                            <p><strong>📝 Descripción:</strong> ${event.description}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p style="color: var(--text-light-color); font-style: italic;">No hay eventos próximos programados</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('calendarContainer').innerHTML = html;
+        }
+
+        // Cargar eventos
+        function loadEvents() {
+            const events = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+            const activeEvents = events.filter(e => e.status === 'active');
+
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            if (activeEvents.length > 0) {
+                activeEvents.forEach(event => {
+                    const eventDate = new Date(event.date).toLocaleDateString('es-ES');
+                    const isRegistered = event.registeredMembers && event.registeredMembers.includes(currentMember.id);
+                    
+                    html += `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h4 style="color: var(--primary-color); margin-bottom: 10px;">${event.title}</h4>
+                            <p><strong>📅 Fecha:</strong> ${eventDate}</p>
+                            <p><strong>💰 Precio:</strong> ${event.price === '0' ? 'Gratuito' : `${event.price}€`}</p>
+                            <p><strong>👥 Inscritos:</strong> ${event.registeredMembers?.length || 0}/${event.maxParticipants}</p>
+                            <p><strong>📝 Descripción:</strong> ${event.description}</p>
+                            ${isRegistered ? 
+                                '<p style="color: #28a745; font-weight: bold;">✅ Ya estás inscrito en este evento</p>' :
+                                `<button onclick="registerForEvent('${event.id}')" class="btn" style="margin-top: 10px;">📝 Inscribirse</button>`
+                            }
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p style="color: var(--text-light-color); font-style: italic;">No hay eventos activos en este momento</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('eventsContainer').innerHTML = html;
+        }
+
+        // Inscribirse en evento
+        function registerForEvent(eventId) {
+            try {
+                const events = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+                const event = events.find(e => e.id === eventId);
+                
+                if (!event) {
+                    alert('❌ Evento no encontrado.');
+                    return;
+                }
+                
+                if (event.registeredMembers && event.registeredMembers.includes(currentMember.id)) {
+                    alert('❌ Ya estás inscrito en este evento.');
+                    return;
+                }
+                
+                if (event.registeredMembers && event.registeredMembers.length >= event.maxParticipants) {
+                    alert('❌ Este evento ya está completo.');
+                    return;
+                }
+                
+                // Inscribir al socio
+                if (!event.registeredMembers) event.registeredMembers = [];
+                event.registeredMembers.push(currentMember.id);
+                
+                // Guardar cambios
+                const updatedEvents = events.map(e => e.id === eventId ? event : e);
+                localStorage.setItem('clubEvents', JSON.stringify(updatedEvents));
+                
+                alert('✅ Te has inscrito correctamente en el evento.');
+                loadEvents(); // Recargar eventos
+                
+            } catch (error) {
+                console.error('❌ Error inscribiéndose en evento:', error);
+                alert('❌ Error al inscribirse en el evento.');
+            }
+        }
+
+        // Cargar competiciones
+        function loadCompetitions() {
+            const competitions = JSON.parse(localStorage.getItem('clubCompetitions') || '[]');
+            const activeCompetitions = competitions.filter(c => c.status === 'active');
+
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            if (activeCompetitions.length > 0) {
+                activeCompetitions.forEach(comp => {
+                    const startDate = new Date(comp.startDate).toLocaleDateString('es-ES');
+                    const endDate = new Date(comp.endDate).toLocaleDateString('es-ES');
+                    html += `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h4 style="color: var(--primary-color); margin-bottom: 10px;">${comp.name}</h4>
+                            <p><strong>🏷️ Categoría:</strong> ${comp.category}</p>
+                            <p><strong>🏆 Tipo:</strong> ${comp.type}</p>
+                            <p><strong>📅 Fechas:</strong> ${startDate} - ${endDate}</p>
+                            <p><strong>👥 Equipos:</strong> ${comp.teams?.length || 0} participantes</p>
+                            <p><strong>📝 Descripción:</strong> ${comp.description}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p style="color: var(--text-light-color); font-style: italic;">No hay competiciones activas en este momento</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('competitionsContainer').innerHTML = html;
+        }
+
+        // Cargar multimedia
+        function loadMultimedia() {
+            const photos = JSON.parse(localStorage.getItem('clubPhotos') || '[]');
+            const videos = JSON.parse(localStorage.getItem('clubVideos') || '[]');
+
+            let html = '<div style="display: grid; gap: 20px;">';
+            
+            if (photos.length > 0 || videos.length > 0) {
+                html += '<h4>📸 Fotos del Club</h4>';
+                if (photos.length > 0) {
+                    html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">';
+                    photos.slice(0, 6).forEach(photo => {
+                        html += `
+                            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <img src="${photo.data}" alt="${photo.name}" style="width: 100%; height: 150px; object-fit: cover;">
+                                <div style="padding: 10px;">
+                                    <p style="font-size: 14px; color: var(--text-color);">${photo.name}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<p style="color: var(--text-light-color); font-style: italic;">No hay fotos disponibles</p>';
+                }
+                
+                html += '<h4 style="margin-top: 30px;">🎥 Videos del Club</h4>';
+                if (videos.length > 0) {
+                    html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">';
+                    videos.slice(0, 3).forEach(video => {
+                        html += `
+                            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                <video src="${video.data}" controls style="width: 100%; height: 200px; object-fit: cover;"></video>
+                                <div style="padding: 10px;">
+                                    <p style="font-size: 14px; color: var(--text-color);">${video.name}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<p style="color: var(--text-light-color); font-style: italic;">No hay videos disponibles</p>';
+                }
+            } else {
+                html += '<p style="color: var(--text-light-color); font-style: italic;">No hay contenido multimedia disponible</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('multimediaContainer').innerHTML = html;
+        }
+
+        // Cargar documentos
+        function loadDocuments() {
+            const documents = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            if (documents.length > 0) {
+                documents.forEach(doc => {
+                    const uploadDate = new Date(doc.uploadDate).toLocaleDateString('es-ES');
+                    html += `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h4 style="color: var(--primary-color); margin-bottom: 10px;">${doc.name}</h4>
+                            <p><strong>📅 Fecha:</strong> ${uploadDate}</p>
+                            <p><strong>📏 Tamaño:</strong> ${doc.size}</p>
+                            <p><strong>📝 Descripción:</strong> ${doc.description || 'Sin descripción'}</p>
+                            <button onclick="viewDocument('${doc.id}')" class="btn" style="margin-top: 10px;">📄 Ver Documento</button>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p style="color: var(--text-light-color); font-style: italic;">No hay documentos disponibles</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('documentsContainer').innerHTML = html;
+        }
+
+        // Ver documento
+        function viewDocument(docId) {
+            const documents = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+            const doc = documents.find(d => d.id === docId);
+            
+            if (doc) {
+                const link = document.createElement('a');
+                link.href = doc.data;
+                link.target = '_blank';
+                link.click();
+            } else {
+                alert('❌ Documento no encontrado.');
+            }
+        }
+
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                currentMember = null;
+                localStorage.removeItem('currentMember');
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('contentSection').style.display = 'none';
+                document.getElementById('identifier').value = '';
+            }
+        }
+
+        // Volver a la página principal
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Verificar sesión al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedMember = JSON.parse(localStorage.getItem('currentMember') || 'null');
+            if (savedMember) {
+                currentMember = savedMember;
+                showContent();
+                loadAllContent();
+            }
+        });
+    </script>
+</body>
+</html>
+
