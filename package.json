@@ -8,7 +8,7 @@
     "dev": "nodemon server.js",
     "dev:simple": "ts-node src/simple/server.ts",
     "dev:mock": "ts-node src/simple/server-mock.ts",
-    "build": "tsc",
+    "build": "echo 'No build needed - using server.js'",
     "watch-ts": "tsc -w",
     "test": "jest",
     "test:watch": "jest --watch",
