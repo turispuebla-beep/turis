@@ -248,3 +248,4 @@ Para problemas o preguntas:
 2. Verificar la conexión a MongoDB
 3. Comprobar las variables de entorno
 4. Ejecutar `npm run init-db` para resetear la base de datos
+

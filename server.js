@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -45,7 +45,8 @@ app.get('/', (req, res) => {
     message: '🚀 API CD Sanabria CF funcionando correctamente',
     version: '1.0.0',
     status: 'online',
-    note: 'Usando datos simulados (sin MongoDB)'
+    note: 'Usando datos simulados (sin MongoDB)',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -185,5 +186,4 @@ app.listen(PORT, () => {
   console.log(`📝 NOTA: Usando datos simulados (sin MongoDB)`);
 });
 
-export default app;
-
+module.exports = app;

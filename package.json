@@ -4,8 +4,8 @@
   "description": "Backend para la aplicación web de gestión de club de fútbol",
   "main": "dist/server.js",
   "scripts": {
-    "start": "ts-node src/simple/server-mock.ts",
-    "dev": "nodemon src/simple/server.ts",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "dev:simple": "ts-node src/simple/server.ts",
     "dev:mock": "ts-node src/simple/server-mock.ts",
     "build": "tsc",
