@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpiar TODOS los Socios - Agresivo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #dc2626;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+        .info {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        #status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ LIMPIAR TODOS LOS SOCIOS - AGRESIVO</h1>
+        
+        <div class="info">
+            <h3>⚠️ ATENCIÓN MÁXIMA</h3>
+            <p><strong>Este script eliminará TODOS los socios de TODAS las ubicaciones posibles.</strong></p>
+            <p>Incluye localStorage, IndexedDB, sessionStorage y cualquier otra ubicación.</p>
+            <p>Esta acción es irreversible y afectará a todas las páginas del proyecto.</p>
+        </div>
+
+        <div id="status"></div>
+        
+        <button class="btn" onclick="limpiarTodosSociosAgresivo()">🗑️ LIMPIAR TODOS LOS SOCIOS</button>
+        <button class="btn" onclick="verEstadoCompleto()" style="background: #059669;">👁️ Ver Estado Completo</button>
+        <button class="btn" onclick="limpiarTodoLocalStorage()" style="background: #f59e0b;">🧹 Limpiar Todo localStorage</button>
+        <button class="btn" onclick="window.close()" style="background: #6b7280;">❌ Cerrar</button>
+    </div>
+
+    <script>
+        // Función para mostrar estado
+        function mostrarStatus(mensaje, tipo) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = mensaje;
+            statusDiv.className = tipo;
+        }
+
+        // Función para ver estado completo
+        function verEstadoCompleto() {
+            try {
+                let mensaje = `📊 ESTADO COMPLETO DE SOCIOS:\n\n`;
+                
+                // Verificar todas las posibles ubicaciones
+                const ubicaciones = [
+                    'clubMembers',
+                    'socios', 
+                    'sociosData',
+                    'members',
+                    'clubData',
+                    'userData',
+                    'appData'
+                ];
+                
+                ubicaciones.forEach(ubicacion => {
+                    try {
+                        const datos = JSON.parse(localStorage.getItem(ubicacion) || '[]');
+                        if (datos.length > 0) {
+                            mensaje += `📍 ${ubicacion}: ${datos.length} socios\n`;
+                            datos.forEach((socio, index) => {
+                                mensaje += `  ${index + 1}. ${socio.nombre || 'Sin nombre'} ${socio.apellidos || ''} (${socio.dni || 'Sin DNI'})\n`;
+                            });
+                        }
+                    } catch (e) {
+                        // Ignorar errores de parsing
+                    }
+                });
+                
+                // Verificar sessionStorage
+                try {
+                    const sessionSocios = JSON.parse(sessionStorage.getItem('socios') || '[]');
+                    if (sessionSocios.length > 0) {
+                        mensaje += `\n📍 sessionStorage 'socios': ${sessionSocios.length} socios\n`;
+                    }
+                } catch (e) {}
+                
+                alert(mensaje);
+            } catch (error) {
+                alert('Error al verificar estado: ' + error.message);
+            }
+        }
+
+        // Función para limpiar todo localStorage
+        function limpiarTodoLocalStorage() {
+            if (!confirm('⚠️ ¿Estás SEGURO de que quieres limpiar TODO el localStorage?\n\nEsto eliminará TODOS los datos del proyecto.')) {
+                return;
+            }
+            
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+                mostrarStatus('✅ localStorage y sessionStorage completamente limpiados', 'success');
+                alert('✅ ¡localStorage y sessionStorage completamente limpiados!\n\nTodos los datos han sido eliminados.');
+            } catch (error) {
+                mostrarStatus('❌ Error al limpiar: ' + error.message, 'error');
+            }
+        }
+
+        // Función para limpiar todos los socios de forma agresiva
+        function limpiarTodosSociosAgresivo() {
+            if (!confirm('⚠️ ¿Estás SEGURO de que quieres eliminar TODOS los socios?\n\nEsta acción es irreversible y eliminará socios de todas las ubicaciones.')) {
+                return;
+            }
+
+            try {
+                mostrarStatus('🔄 Limpiando socios de forma agresiva...', 'warning');
+                
+                // 1. Limpiar todas las posibles ubicaciones en localStorage
+                const ubicaciones = [
+                    'clubMembers',
+                    'socios', 
+                    'sociosData',
+                    'members',
+                    'clubData',
+                    'userData',
+                    'appData'
+                ];
+                
+                ubicaciones.forEach(ubicacion => {
+                    localStorage.removeItem(ubicacion);
+                });
+                
+                // 2. Limpiar sessionStorage
+                sessionStorage.removeItem('socios');
+                sessionStorage.removeItem('clubMembers');
+                
+                // 3. Limpiar contadores y notificaciones
+                localStorage.removeItem('contadoresDuplicados');
+                localStorage.removeItem('socioCounter');
+                localStorage.removeItem('memberCounter');
+                
+                // 4. Limpiar notificaciones relacionadas con socios
+                const notificaciones = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                const notificacionesFiltradas = notificaciones.filter(n => 
+                    n.tipo !== 'nuevo_socio' && n.tipo !== 'socio_eliminado' && n.tipo !== 'member_added'
+                );
+                localStorage.setItem('notificacionesAdmin', JSON.stringify(notificacionesFiltradas));
+                
+                // 5. Intentar limpiar IndexedDB de forma agresiva
+                if (window.indexedDB) {
+                    // Intentar múltiples nombres de base de datos
+                    const dbNames = ['CDSANABRIACF', 'ClubDB', 'SanabriaDB', 'AppDB'];
+                    
+                    dbNames.forEach(dbName => {
+                        try {
+                            const request = indexedDB.open(dbName, 1);
+                            request.onsuccess = function(event) {
+                                const db = event.target.result;
+                                const objectStores = ['socios', 'members', 'clubMembers', 'users'];
+                                
+                                objectStores.forEach(storeName => {
+                                    if (db.objectStoreNames.contains(storeName)) {
+                                        try {
+                                            const transaction = db.transaction([storeName], 'readwrite');
+                                            const store = transaction.objectStore(storeName);
+                                            store.clear();
+                                        } catch (e) {
+                                            console.log('Error limpiando store:', storeName, e);
+                                        }
+                                    }
+                                });
+                            };
+                        } catch (e) {
+                            console.log('Error con DB:', dbName, e);
+                        }
+                    });
+                }
+                
+                // 6. Forzar limpieza adicional
+                setTimeout(() => {
+                    // Intentar eliminar cualquier dato restante
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && (key.includes('socio') || key.includes('member') || key.includes('club'))) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                    
+                    mostrarStatus('✅ Socios eliminados de forma agresiva de todas las ubicaciones', 'success');
+                    setTimeout(() => {
+                        alert('✅ ¡Socios eliminados completamente de todas las ubicaciones!\n\nAhora puedes añadir nuevos socios desde cero.');
+                        verEstadoCompleto();
+                    }, 1000);
+                }, 2000);
+                
+            } catch (error) {
+                mostrarStatus('❌ Error al limpiar socios: ' + error.message, 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Verificar estado al cargar
+        window.onload = function() {
+            verEstadoCompleto();
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+

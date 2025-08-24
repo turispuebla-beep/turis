@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpiar Socios - Inmediato</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #dc2626;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+        .info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        #status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Limpiar Socios - Inmediato</h1>
+        
+        <div class="info">
+            <h3>⚠️ ATENCIÓN</h3>
+            <p><strong>Este script eliminará TODOS los socios de la base de datos.</strong></p>
+            <p>Esta acción es irreversible y afectará a todas las páginas del proyecto.</p>
+        </div>
+
+        <div id="status"></div>
+        
+        <button class="btn" onclick="limpiarSociosInmediato()">🗑️ LIMPIAR SOCIOS AHORA</button>
+        <button class="btn" onclick="verEstadoActual()" style="background: #059669;">👁️ Ver Estado Actual</button>
+        <button class="btn" onclick="window.close()" style="background: #6b7280;">❌ Cerrar</button>
+    </div>
+
+    <script>
+        // Función para mostrar estado
+        function mostrarStatus(mensaje, tipo) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = mensaje;
+            statusDiv.className = tipo;
+        }
+
+        // Función para ver estado actual
+        function verEstadoActual() {
+            try {
+                // Verificar localStorage
+                const sociosLocalStorage = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const sociosIndexedDB = JSON.parse(localStorage.getItem('socios') || '[]');
+                
+                let mensaje = `📊 Estado Actual:\n\n`;
+                mensaje += `localStorage 'clubMembers': ${sociosLocalStorage.length} socios\n`;
+                mensaje += `localStorage 'socios': ${sociosIndexedDB.length} socios\n`;
+                
+                if (sociosLocalStorage.length > 0) {
+                    mensaje += `\nSocios en localStorage:\n`;
+                    sociosLocalStorage.forEach((socio, index) => {
+                        mensaje += `${index + 1}. ${socio.nombre} ${socio.apellidos} (${socio.dni})\n`;
+                    });
+                }
+                
+                if (sociosIndexedDB.length > 0) {
+                    mensaje += `\nSocios en IndexedDB:\n`;
+                    sociosIndexedDB.forEach((socio, index) => {
+                        mensaje += `${index + 1}. ${socio.nombre} ${socio.apellidos} (${socio.dni})\n`;
+                    });
+                }
+                
+                alert(mensaje);
+            } catch (error) {
+                alert('Error al verificar estado: ' + error.message);
+            }
+        }
+
+        // Función para limpiar socios inmediatamente
+        function limpiarSociosInmediato() {
+            if (!confirm('⚠️ ¿Estás SEGURO de que quieres eliminar TODOS los socios?\n\nEsta acción es irreversible.')) {
+                return;
+            }
+
+            try {
+                mostrarStatus('🔄 Limpiando socios...', '');
+                
+                // 1. Limpiar localStorage
+                localStorage.removeItem('clubMembers');
+                localStorage.removeItem('socios');
+                localStorage.removeItem('contadoresDuplicados');
+                
+                // 2. Limpiar notificaciones relacionadas con socios
+                const notificaciones = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                const notificacionesFiltradas = notificaciones.filter(n => 
+                    n.tipo !== 'nuevo_socio' && n.tipo !== 'socio_eliminado'
+                );
+                localStorage.setItem('notificacionesAdmin', JSON.stringify(notificacionesFiltradas));
+                
+                // 3. Intentar limpiar IndexedDB si existe
+                if (window.indexedDB) {
+                    const request = indexedDB.open('CDSANABRIACF', 1);
+                    request.onsuccess = function(event) {
+                        const db = event.target.result;
+                        if (db.objectStoreNames.contains('socios')) {
+                            const transaction = db.transaction(['socios'], 'readwrite');
+                            const store = transaction.objectStore('socios');
+                            const clearRequest = store.clear();
+                            
+                            clearRequest.onsuccess = function() {
+                                mostrarStatus('✅ Socios eliminados correctamente de IndexedDB y localStorage', 'success');
+                                setTimeout(() => {
+                                    alert('✅ ¡Socios eliminados completamente!\n\nAhora puedes añadir nuevos socios desde cero.');
+                                }, 1000);
+                            };
+                            
+                            clearRequest.onerror = function() {
+                                mostrarStatus('⚠️ Socios eliminados de localStorage, pero error en IndexedDB', 'error');
+                            };
+                        } else {
+                            mostrarStatus('✅ Socios eliminados de localStorage (IndexedDB no disponible)', 'success');
+                            setTimeout(() => {
+                                alert('✅ ¡Socios eliminados de localStorage!\n\nAhora puedes añadir nuevos socios desde cero.');
+                            }, 1000);
+                        }
+                    };
+                    
+                    request.onerror = function() {
+                        mostrarStatus('✅ Socios eliminados de localStorage (IndexedDB no disponible)', 'success');
+                        setTimeout(() => {
+                            alert('✅ ¡Socios eliminados de localStorage!\n\nAhora puedes añadir nuevos socios desde cero.');
+                        }, 1000);
+                    };
+                } else {
+                    mostrarStatus('✅ Socios eliminados de localStorage (IndexedDB no disponible)', 'success');
+                    setTimeout(() => {
+                        alert('✅ ¡Socios eliminados de localStorage!\n\nAhora puedes añadir nuevos socios desde cero.');
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                mostrarStatus('❌ Error al limpiar socios: ' + error.message, 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Verificar estado al cargar
+        window.onload = function() {
+            verEstadoActual();
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+

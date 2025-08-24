@@ -4,6 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 
+// Importar rutas
+import sociosRoutes from './routes/sociosRoutes';
+
 // Configuración de variables de entorno
 dotenv.config();
 
@@ -29,10 +32,13 @@ const connectDB = async () => {
     }
 };
 
-// Rutas (se añadirán más adelante)
+// Rutas
 app.get('/', (req, res) => {
-    res.json({ message: 'API de TURISTEAM' });
+    res.json({ message: 'API de CDSANABRIACF' });
 });
+
+// API Routes
+app.use('/api/socios', sociosRoutes);
 
 // Puerto
 const PORT = process.env.PORT || 5000;

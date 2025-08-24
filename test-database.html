@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Base de Datos - CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-danger {
+            background: #dc2626;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        .data-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .data-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Test Base de Datos - CDSANABRIACF</h1>
+        
+        <!-- Estado de la Base de Datos -->
+        <div class="section">
+            <h2>📊 Estado de la Base de Datos</h2>
+            <div id="dbStatus">Verificando...</div>
+            <div id="stats" class="stats"></div>
+        </div>
+
+        <!-- Gestión de Socios -->
+        <div class="section">
+            <h2>👥 Gestión de Socios</h2>
+            <form id="socioForm">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="socioNombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellidos:</label>
+                    <input type="text" id="socioApellidos" required>
+                </div>
+                <div class="form-group">
+                    <label>DNI:</label>
+                    <input type="text" id="socioDNI">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <input type="tel" id="socioTelefono" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="socioEmail">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="date" id="socioFechaNac">
+                </div>
+                <button type="submit" class="btn btn-success">➕ Registrar Socio</button>
+            </form>
+            
+            <h3>Socios Registrados</h3>
+            <div id="sociosList" class="data-list"></div>
+        </div>
+
+        <!-- Gestión de Amigos -->
+        <div class="section">
+            <h2>🤝 Gestión de Amigos</h2>
+            <form id="amigoForm">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="amigoNombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellidos:</label>
+                    <input type="text" id="amigoApellidos" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <input type="tel" id="amigoTelefono" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="amigoEmail" required>
+                </div>
+                <button type="submit" class="btn btn-success">➕ Registrar Amigo</button>
+            </form>
+            
+            <h3>Amigos Registrados</h3>
+            <div id="amigosList" class="data-list"></div>
+        </div>
+
+        <!-- Gestión de Encuentros -->
+        <div class="section">
+            <h2>⚽ Gestión de Encuentros</h2>
+            <form id="encuentroForm">
+                <div class="form-group">
+                    <label>Equipo Local:</label>
+                    <input type="text" id="encuentroLocal" required>
+                </div>
+                <div class="form-group">
+                    <label>Equipo Visitante:</label>
+                    <input type="text" id="encuentroVisitante" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="encuentroFecha" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora:</label>
+                    <input type="time" id="encuentroHora" required>
+                </div>
+                <div class="form-group">
+                    <label>Campo:</label>
+                    <input type="text" id="encuentroCampo" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="encuentroCategoria" required>
+                        <option value="">Seleccionar</option>
+                        <option value="prebenjamin">Prebenjamín</option>
+                        <option value="benjamin">Benjamín</option>
+                        <option value="alevin">Alevín</option>
+                        <option value="infantil">Infantil</option>
+                        <option value="aficionado">Aficionado</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">➕ Agregar Encuentro</button>
+            </form>
+            
+            <h3>Encuentros Programados</h3>
+            <div id="encuentrosList" class="data-list"></div>
+        </div>
+
+        <!-- Utilidades -->
+        <div class="section">
+            <h2>🔧 Utilidades</h2>
+            <button onclick="exportarDatos()" class="btn">📤 Exportar Datos</button>
+            <button onclick="crearBackup()" class="btn">💾 Crear Backup</button>
+            <button onclick="limpiarDatosAntiguos()" class="btn btn-danger">🗑️ Limpiar Datos Antiguos</button>
+            <button onclick="limpiarTodo()" class="btn btn-danger">💥 Limpiar Todo</button>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="data-manager.js"></script>
+    <script>
+        // Esperar a que la base de datos esté lista
+        async function init() {
+            while (!window.dataManager || !window.dataManager.db.isInitialized) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            console.log('✅ Base de datos lista');
+            actualizarEstado();
+            cargarDatos();
+        }
+
+        async function actualizarEstado() {
+            const statusDiv = document.getElementById('dbStatus');
+            const statsDiv = document.getElementById('stats');
+            
+            try {
+                const stats = await window.dataManager.obtenerEstadisticas();
+                
+                statusDiv.innerHTML = '<span style="color: green;">✅ Base de datos funcionando correctamente</span>';
+                
+                statsDiv.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalSocios}</div>
+                        <div>Socios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalAmigos}</div>
+                        <div>Amigos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalJugadores}</div>
+                        <div>Jugadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalEncuentros}</div>
+                        <div>Encuentros</div>
+                    </div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function cargarDatos() {
+            await cargarSocios();
+            await cargarAmigos();
+            await cargarEncuentros();
+        }
+
+        async function cargarSocios() {
+            try {
+                const socios = await window.dataManager.obtenerSocios();
+                const container = document.getElementById('sociosList');
+                
+                if (socios.length === 0) {
+                    container.innerHTML = '<p>No hay socios registrados</p>';
+                    return;
+                }
+                
+                container.innerHTML = socios.map(socio => `
+                    <div class="data-item">
+                        <strong>${socio.nombre} ${socio.apellidos}</strong><br>
+                        Tel: ${socio.telefono} | Estado: ${socio.estado} | Cuota: ${socio.cuota}€
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando socios:', error);
+            }
+        }
+
+        async function cargarAmigos() {
+            try {
+                const amigos = await window.dataManager.obtenerAmigos();
+                const container = document.getElementById('amigosList');
+                
+                if (amigos.length === 0) {
+                    container.innerHTML = '<p>No hay amigos registrados</p>';
+                    return;
+                }
+                
+                container.innerHTML = amigos.map(amigo => `
+                    <div class="data-item">
+                        <strong>${amigo.nombre} ${amigo.apellidos}</strong><br>
+                        Tel: ${amigo.telefono} | Email: ${amigo.email}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando amigos:', error);
+            }
+        }
+
+        async function cargarEncuentros() {
+            try {
+                const encuentros = await window.dataManager.obtenerEncuentros();
+                const container = document.getElementById('encuentrosList');
+                
+                if (encuentros.length === 0) {
+                    container.innerHTML = '<p>No hay encuentros programados</p>';
+                    return;
+                }
+                
+                container.innerHTML = encuentros.map(encuentro => `
+                    <div class="data-item">
+                        <strong>${encuentro.equipo_local} vs ${encuentro.equipo_visitante}</strong><br>
+                        ${encuentro.fecha} ${encuentro.hora} | ${encuentro.campo} | ${encuentro.categoria}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando encuentros:', error);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('socioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const socioData = {
+                    nombre: document.getElementById('socioNombre').value,
+                    apellidos: document.getElementById('socioApellidos').value,
+                    dni: document.getElementById('socioDNI').value,
+                    telefono: document.getElementById('socioTelefono').value,
+                    email: document.getElementById('socioEmail').value,
+                    fecha_nacimiento: document.getElementById('socioFechaNac').value
+                };
+                
+                await window.dataManager.registrarSocio(socioData);
+                alert('✅ Socio registrado correctamente');
+                this.reset();
+                await cargarDatos();
+                await actualizarEstado();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('amigoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const amigoData = {
+                    nombre: document.getElementById('amigoNombre').value,
+                    apellidos: document.getElementById('amigoApellidos').value,
+                    telefono: document.getElementById('amigoTelefono').value,
+                    email: document.getElementById('amigoEmail').value
+                };
+                
+                await window.dataManager.registrarAmigo(amigoData);
+                alert('✅ Amigo registrado correctamente');
+                this.reset();
+                await cargarDatos();
+                await actualizarEstado();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('encuentroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const encuentroData = {
+                    equipo_local: document.getElementById('encuentroLocal').value,
+                    equipo_visitante: document.getElementById('encuentroVisitante').value,
+                    fecha: document.getElementById('encuentroFecha').value,
+                    hora: document.getElementById('encuentroHora').value,
+                    campo: document.getElementById('encuentroCampo').value,
+                    categoria: document.getElementById('encuentroCategoria').value
+                };
+                
+                await window.dataManager.agregarEncuentro(encuentroData);
+                alert('✅ Encuentro agregado correctamente');
+                this.reset();
+                await cargarDatos();
+                await actualizarEstado();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        async function exportarDatos() {
+            try {
+                const datos = await window.dataManager.exportarDatos();
+                const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cdsanabria_datos.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('✅ Datos exportados correctamente');
+            } catch (error) {
+                alert('❌ Error exportando datos: ' + error.message);
+            }
+        }
+
+        async function crearBackup() {
+            try {
+                await window.dataManager.crearBackup();
+                alert('✅ Backup creado correctamente');
+            } catch (error) {
+                alert('❌ Error creando backup: ' + error.message);
+            }
+        }
+
+        async function limpiarDatosAntiguos() {
+            if (confirm('¿Estás seguro de que quieres limpiar los datos antiguos?')) {
+                try {
+                    const eliminados = await window.dataManager.limpiarDatosAntiguos();
+                    alert(`✅ Limpiados ${eliminados} registros antiguos`);
+                    await cargarDatos();
+                    await actualizarEstado();
+                } catch (error) {
+                    alert('❌ Error limpiando datos: ' + error.message);
+                }
+            }
+        }
+
+        async function limpiarTodo() {
+            if (confirm('¿Estás SEGURO de que quieres eliminar TODOS los datos? Esta acción no se puede deshacer.')) {
+                try {
+                    localStorage.clear();
+                    alert('✅ Todos los datos han sido eliminados');
+                    location.reload();
+                } catch (error) {
+                    alert('❌ Error limpiando datos: ' + error.message);
+                }
+            }
+        }
+
+        // Inicializar
+        init();
+    </script>
+</body>
+</html>

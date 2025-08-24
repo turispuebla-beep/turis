@@ -1,44 +1,55 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IFriend extends Document {
-    name: string;
-    surname: string;
-    dni?: string;
-    phone: string;
-    email?: string;
-    gender: 'masculino' | 'femenino' | 'otro';
-    teamId: mongoose.Types.ObjectId;
+  nombre: string;
+  apellidos: string;
+  dni: string;
+  telefono: string;
+  email: string;
+  fechaRegistro: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const friendSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
-        trim: true
-    },
-    surname: {
-        type: String,
-        required: [true, 'Los apellidos son obligatorios'],
-        trim: true
-    },
-    dni: String,
-    phone: {
-        type: String,
-        required: [true, 'El teléfono es obligatorio']
-    },
-    email: String,
-    gender: {
-        type: String,
-        enum: ['masculino', 'femenino', 'otro'],
-        required: [true, 'El género es obligatorio']
-    },
-    teamId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team',
-        required: [true, 'El equipo es obligatorio']
-    }
+const friendSchema = new Schema<IFriend>({
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  apellidos: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  dni: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  telefono: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true
+  },
+  fechaRegistro: {
+    type: Date,
+    default: Date.now
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, {
-    timestamps: true
+  timestamps: true
 });
 
-export default mongoose.model<IFriend>('Friend', friendSchema);
+export const Friend = mongoose.model<IFriend>('Friend', friendSchema);

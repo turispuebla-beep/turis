@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Formularios - CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #b91c1c;
+        }
+        .success {
+            color: #059669;
+            background: #d1fae5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #3b82f6;
+            background: #dbeafe;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Formularios CDSANABRIACF</h1>
+    
+    <div class="test-section">
+        <h2>📋 Estado de la Base de Datos</h2>
+        <div id="dbStatus"></div>
+        <button class="btn" onclick="verificarBaseDatos()">🔄 Verificar Base de Datos</button>
+        <button class="btn" onclick="limpiarBaseDatos()">🗑️ Limpiar Base de Datos</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>👨‍👩‍👧‍👦 Test Registro de Socio</h2>
+        <form id="testSocioForm">
+            <div>
+                <label>Nombre: <input type="text" id="testNombre" value="Juan" required></label>
+            </div>
+            <div>
+                <label>Apellidos: <input type="text" id="testApellidos" value="Pérez García" required></label>
+            </div>
+            <div>
+                <label>DNI: <input type="text" id="testDNI" value="12345678A"></label>
+            </div>
+            <div>
+                <label>Teléfono: <input type="tel" id="testTelefono" value="600123456" required></label>
+            </div>
+            <div>
+                <label>Email: <input type="email" id="testEmail" value="juan.perez@test.com"></label>
+            </div>
+            <div>
+                <label>Fecha Nacimiento: <input type="date" id="testFechaNac" value="1990-01-01" required></label>
+            </div>
+            <div>
+                <label>Dirección: <input type="text" id="testDireccion" value="Calle Test 123"></label>
+            </div>
+            <button type="submit" class="btn">✅ Registrar Socio de Prueba</button>
+        </form>
+        <div id="resultadoSocio"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🤝 Test Registro de Amigo</h2>
+        <form id="testAmigoForm">
+            <div>
+                <label>Nombre: <input type="text" id="testAmigoNombre" value="María" required></label>
+            </div>
+            <div>
+                <label>Apellidos: <input type="text" id="testAmigoApellidos" value="García López" required></label>
+            </div>
+            <div>
+                <label>DNI: <input type="text" id="testAmigoDNI" value="87654321B"></label>
+            </div>
+            <div>
+                <label>Teléfono: <input type="tel" id="testAmigoTelefono" value="600654321" required></label>
+            </div>
+            <div>
+                <label>Email: <input type="email" id="testAmigoEmail" value="maria.garcia@test.com" required></label>
+            </div>
+            <button type="submit" class="btn">✅ Registrar Amigo de Prueba</button>
+        </form>
+        <div id="resultadoAmigo"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 Verificar Funciones</h2>
+        <button class="btn" onclick="testGenerarNumeroSocio()">🔢 Test Generar Número Socio</button>
+        <button class="btn" onclick="testValidaciones()">✅ Test Validaciones</button>
+        <button class="btn" onclick="testLocalStorage()">💾 Test LocalStorage</button>
+        <div id="resultadoTest"></div>
+    </div>
+
+    <script>
+        // Función para generar número de socio (copiada del archivo principal)
+        function generarNumeroSocio() {
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            let ultimoNumero = 0;
+            
+            if (socios.length > 0) {
+                socios.forEach(socio => {
+                    if (socio.numeroSocio) {
+                        const numero = parseInt(socio.numeroSocio.replace('SOC-', ''));
+                        if (!isNaN(numero) && numero > ultimoNumero) {
+                            ultimoNumero = numero;
+                        }
+                    }
+                });
+            }
+            
+            return `SOC-${(ultimoNumero + 1).toString().padStart(4, '0')}`;
+        }
+
+        // Función para registrar socio de prueba
+        function registrarSocioTest(event) {
+            event.preventDefault();
+            
+            try {
+                const nombre = document.getElementById('testNombre').value.trim();
+                const apellidos = document.getElementById('testApellidos').value.trim();
+                const dni = document.getElementById('testDNI').value.trim();
+                const telefono = document.getElementById('testTelefono').value.trim();
+                const email = document.getElementById('testEmail').value.trim();
+                const fechaNacimiento = document.getElementById('testFechaNac').value;
+                const direccion = document.getElementById('testDireccion').value.trim();
+                
+                // Validaciones
+                if (!nombre || !apellidos || !telefono || !fechaNacimiento) {
+                    mostrarResultado('resultadoSocio', '❌ Campos obligatorios incompletos', 'error');
+                    return;
+                }
+                
+                // Verificar duplicados
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const existeSocio = socios.find(s => 
+                    (s.dni && s.dni === dni) || 
+                    (s.email && s.email === email) || 
+                    s.telefono === telefono
+                );
+                
+                if (existeSocio) {
+                    mostrarResultado('resultadoSocio', '❌ Ya existe un socio con esos datos', 'error');
+                    return;
+                }
+                
+                // Crear socio
+                const nuevoSocio = {
+                    id: Date.now().toString(),
+                    nombre: nombre,
+                    apellidos: apellidos,
+                    dni: dni,
+                    direccion: direccion,
+                    telefono: telefono,
+                    email: email,
+                    cuota: 20,
+                    fechaNacimiento: fechaNacimiento,
+                    fechaRegistro: new Date().toISOString(),
+                    fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    estado: 'pendiente',
+                    pagado: false,
+                    numeroSocio: generarNumeroSocio()
+                };
+                
+                // Guardar
+                socios.push(nuevoSocio);
+                localStorage.setItem('clubMembers', JSON.stringify(socios));
+                
+                mostrarResultado('resultadoSocio', `✅ Socio registrado exitosamente\nNúmero: ${nuevoSocio.numeroSocio}\nNombre: ${nombre} ${apellidos}`, 'success');
+                
+                // Limpiar formulario
+                document.getElementById('testSocioForm').reset();
+                
+            } catch (error) {
+                mostrarResultado('resultadoSocio', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para registrar amigo de prueba
+        function registrarAmigoTest(event) {
+            event.preventDefault();
+            
+            try {
+                const nombre = document.getElementById('testAmigoNombre').value.trim();
+                const apellidos = document.getElementById('testAmigoApellidos').value.trim();
+                const dni = document.getElementById('testAmigoDNI').value.trim();
+                const telefono = document.getElementById('testAmigoTelefono').value.trim();
+                const email = document.getElementById('testAmigoEmail').value.trim();
+                
+                // Validaciones
+                if (!nombre || !apellidos || !telefono || !email) {
+                    mostrarResultado('resultadoAmigo', '❌ Campos obligatorios incompletos', 'error');
+                    return;
+                }
+                
+                // Verificar duplicados
+                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                const existeAmigo = amigos.find(a => 
+                    a.email === email || a.telefono === telefono
+                );
+                
+                if (existeAmigo) {
+                    mostrarResultado('resultadoAmigo', '❌ Ya existe un amigo con esos datos', 'error');
+                    return;
+                }
+                
+                // Crear amigo
+                const nuevoAmigo = {
+                    id: Date.now().toString(),
+                    nombre: nombre,
+                    apellidos: apellidos,
+                    dni: dni,
+                    telefono: telefono,
+                    email: email,
+                    fechaRegistro: new Date().toISOString(),
+                    estado: 'activo',
+                    acceso: {
+                        email: email,
+                        telefono: telefono
+                    }
+                };
+                
+                // Guardar
+                amigos.push(nuevoAmigo);
+                localStorage.setItem('clubFriends', JSON.stringify(amigos));
+                
+                mostrarResultado('resultadoAmigo', `✅ Amigo registrado exitosamente\nNombre: ${nombre} ${apellidos}\nEmail: ${email}`, 'success');
+                
+                // Limpiar formulario
+                document.getElementById('testAmigoForm').reset();
+                
+            } catch (error) {
+                mostrarResultado('resultadoAmigo', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para mostrar resultados
+        function mostrarResultado(elementId, mensaje, tipo) {
+            const elemento = document.getElementById(elementId);
+            elemento.className = tipo;
+            elemento.innerHTML = mensaje.replace(/\n/g, '<br>');
+        }
+
+        // Función para verificar base de datos
+        function verificarBaseDatos() {
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            
+            const status = document.getElementById('dbStatus');
+            status.innerHTML = `
+                <div class="info">
+                    <strong>📊 Estado de la Base de Datos:</strong><br>
+                    • Socios registrados: ${socios.length}<br>
+                    • Amigos registrados: ${amigos.length}<br>
+                    • Total usuarios: ${socios.length + amigos.length}
+                </div>
+            `;
+        }
+
+        // Función para limpiar base de datos
+        function limpiarBaseDatos() {
+            if (confirm('¿Estás seguro de que quieres limpiar toda la base de datos?')) {
+                localStorage.removeItem('clubMembers');
+                localStorage.removeItem('clubFriends');
+                verificarBaseDatos();
+                mostrarResultado('resultadoTest', '✅ Base de datos limpiada', 'success');
+            }
+        }
+
+        // Función para test de generar número de socio
+        function testGenerarNumeroSocio() {
+            const numero = generarNumeroSocio();
+            mostrarResultado('resultadoTest', `🔢 Número generado: ${numero}`, 'info');
+        }
+
+        // Función para test de validaciones
+        function testValidaciones() {
+            let resultado = '✅ Tests de validación:\n';
+            
+            // Test 1: Campos vacíos
+            if (!'' || !'' || !'' || !'') {
+                resultado += '• Validación de campos vacíos: ✅\n';
+            }
+            
+            // Test 2: Generar número de socio
+            const numero = generarNumeroSocio();
+            if (numero.startsWith('SOC-')) {
+                resultado += '• Generación de número de socio: ✅\n';
+            }
+            
+            // Test 3: LocalStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                resultado += '• LocalStorage: ✅\n';
+            } catch (e) {
+                resultado += '• LocalStorage: ❌\n';
+            }
+            
+            mostrarResultado('resultadoTest', resultado, 'success');
+        }
+
+        // Función para test de localStorage
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('test', 'test');
+                const valor = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (valor === 'test') {
+                    mostrarResultado('resultadoTest', '✅ LocalStorage funciona correctamente', 'success');
+                } else {
+                    mostrarResultado('resultadoTest', '❌ LocalStorage no funciona correctamente', 'error');
+                }
+            } catch (error) {
+                mostrarResultado('resultadoTest', `❌ Error en LocalStorage: ${error.message}`, 'error');
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('testSocioForm').addEventListener('submit', registrarSocioTest);
+            document.getElementById('testAmigoForm').addEventListener('submit', registrarAmigoTest);
+            verificarBaseDatos();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Socios - CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagnostico-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #b91c1c;
+        }
+        .success {
+            color: #059669;
+            background: #d1fae5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #3b82f6;
+            background: #dbeafe;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            color: #d97706;
+            background: #fef3c7;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .data-table th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnóstico de Socios CDSANABRIACF</h1>
+    
+    <div class="diagnostico-section">
+        <h2>📊 Estado Actual de localStorage</h2>
+        <button class="btn" onclick="diagnosticarLocalStorage()">🔍 Diagnosticar localStorage</button>
+        <button class="btn" onclick="limpiarDiagnostico()">🗑️ Limpiar Diagnóstico</button>
+        <div id="localStorageInfo"></div>
+    </div>
+    
+    <div class="diagnostico-section">
+        <h2>👥 Datos de Socios Detectados</h2>
+        <div id="sociosInfo"></div>
+    </div>
+    
+    <div class="diagnostico-section">
+        <h2>🤝 Datos de Amigos Detectados</h2>
+        <div id="amigosInfo"></div>
+    </div>
+    
+    <div class="diagnostico-section">
+        <h2>🔧 Herramientas de Reparación</h2>
+        <button class="btn" onclick="repararDatosSocios()">🔧 Reparar Datos de Socios</button>
+        <button class="btn" onclick="crearSocioPrueba()">➕ Crear Socio de Prueba</button>
+        <button class="btn" onclick="sincronizarConAdmin()">🔄 Sincronizar con Admin</button>
+        <div id="reparacionInfo"></div>
+    </div>
+    
+    <div class="diagnostico-section">
+        <h2>📋 Comparación de Estructuras</h2>
+        <div id="comparacionInfo"></div>
+    </div>
+
+    <script>
+        // Función para diagnosticar localStorage
+        function diagnosticarLocalStorage() {
+            const info = document.getElementById('localStorageInfo');
+            let html = '<div class="info"><h3>🔍 Análisis de localStorage:</h3>';
+            
+            try {
+                // Verificar todas las claves en localStorage
+                const todasLasClaves = Object.keys(localStorage);
+                html += `<p><strong>Total de claves en localStorage:</strong> ${todasLasClaves.length}</p>`;
+                
+                html += '<h4>📋 Claves encontradas:</h4><ul>';
+                todasLasClaves.forEach(clave => {
+                    const valor = localStorage.getItem(clave);
+                    const esJSON = esJSONValido(valor);
+                    html += `<li><strong>${clave}:</strong> ${esJSON ? 'JSON válido' : 'Texto plano'} (${valor.length} caracteres)</li>`;
+                });
+                html += '</ul>';
+                
+                // Verificar específicamente las claves de socios
+                const clavesSocios = ['clubMembers', 'socios', 'members', 'usuarios'];
+                html += '<h4>🔍 Buscando datos de socios:</h4>';
+                
+                clavesSocios.forEach(clave => {
+                    const valor = localStorage.getItem(clave);
+                    if (valor) {
+                        try {
+                            const datos = JSON.parse(valor);
+                            html += `<div class="success">✅ <strong>${clave}:</strong> Encontrado con ${datos.length} registros</div>`;
+                        } catch (e) {
+                            html += `<div class="error">❌ <strong>${clave}:</strong> JSON inválido</div>`;
+                        }
+                    } else {
+                        html += `<div class="warning">⚠️ <strong>${clave}:</strong> No encontrado</div>`;
+                    }
+                });
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error al diagnosticar: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+            
+            // Actualizar información de socios y amigos
+            mostrarDatosSocios();
+            mostrarDatosAmigos();
+        }
+        
+        // Función para verificar si un string es JSON válido
+        function esJSONValido(str) {
+            try {
+                JSON.parse(str);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Función para mostrar datos de socios
+        function mostrarDatosSocios() {
+            const info = document.getElementById('sociosInfo');
+            let html = '<div class="info"><h3>👥 Datos de Socios:</h3>';
+            
+            try {
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                
+                if (socios.length === 0) {
+                    html += '<div class="warning">⚠️ No hay socios registrados en clubMembers</div>';
+                } else {
+                    html += `<div class="success">✅ Encontrados ${socios.length} socios</div>`;
+                    
+                    html += '<table class="data-table">';
+                    html += '<tr><th>Nº Socio</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Estado</th><th>Propiedades</th></tr>';
+                    
+                    socios.forEach((socio, index) => {
+                        const propiedades = Object.keys(socio).join(', ');
+                        html += `
+                            <tr>
+                                <td>${socio.numeroSocio || 'N/A'}</td>
+                                <td>${socio.nombre || ''} ${socio.apellidos || ''}</td>
+                                <td>${socio.telefono || 'N/A'}</td>
+                                <td>${socio.email || 'N/A'}</td>
+                                <td>${socio.estado || 'pendiente'}</td>
+                                <td style="font-size: 10px;">${propiedades}</td>
+                            </tr>
+                        `;
+                    });
+                    html += '</table>';
+                    
+                    // Mostrar el primer socio como ejemplo
+                    if (socios.length > 0) {
+                        html += '<h4>📋 Ejemplo de estructura del primer socio:</h4>';
+                        html += '<pre>' + JSON.stringify(socios[0], null, 2) + '</pre>';
+                    }
+                }
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error al leer socios: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+        }
+        
+        // Función para mostrar datos de amigos
+        function mostrarDatosAmigos() {
+            const info = document.getElementById('amigosInfo');
+            let html = '<div class="info"><h3>🤝 Datos de Amigos:</h3>';
+            
+            try {
+                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                
+                if (amigos.length === 0) {
+                    html += '<div class="warning">⚠️ No hay amigos registrados en clubFriends</div>';
+                } else {
+                    html += `<div class="success">✅ Encontrados ${amigos.length} amigos</div>`;
+                    
+                    html += '<table class="data-table">';
+                    html += '<tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Estado</th><th>Propiedades</th></tr>';
+                    
+                    amigos.forEach((amigo, index) => {
+                        const propiedades = Object.keys(amigo).join(', ');
+                        html += `
+                            <tr>
+                                <td>${amigo.nombre || ''} ${amigo.apellidos || ''}</td>
+                                <td>${amigo.telefono || 'N/A'}</td>
+                                <td>${amigo.email || 'N/A'}</td>
+                                <td>${amigo.estado || 'activo'}</td>
+                                <td style="font-size: 10px;">${propiedades}</td>
+                            </tr>
+                        `;
+                    });
+                    html += '</table>';
+                }
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error al leer amigos: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+        }
+        
+        // Función para reparar datos de socios
+        function repararDatosSocios() {
+            const info = document.getElementById('reparacionInfo');
+            let html = '<div class="info"><h3>🔧 Reparación de Datos:</h3>';
+            
+            try {
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                let reparados = 0;
+                
+                socios.forEach(socio => {
+                    // Asegurar que tenga todas las propiedades necesarias
+                    if (!socio.numeroSocio) {
+                        socio.numeroSocio = generarNumeroSocio();
+                        reparados++;
+                    }
+                    if (!socio.estado) {
+                        socio.estado = 'pendiente';
+                        reparados++;
+                    }
+                    if (!socio.fechaRegistro) {
+                        socio.fechaRegistro = new Date().toISOString();
+                        reparados++;
+                    }
+                });
+                
+                if (reparados > 0) {
+                    localStorage.setItem('clubMembers', JSON.stringify(socios));
+                    html += `<div class="success">✅ Reparados ${reparados} socios</div>`;
+                } else {
+                    html += '<div class="success">✅ No se necesitaron reparaciones</div>';
+                }
+                
+                // Actualizar la vista
+                mostrarDatosSocios();
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error en reparación: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+        }
+        
+        // Función para generar número de socio
+        function generarNumeroSocio() {
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            let ultimoNumero = 0;
+            
+            if (socios.length > 0) {
+                socios.forEach(socio => {
+                    if (socio.numeroSocio) {
+                        const numero = parseInt(socio.numeroSocio.replace('SOC-', ''));
+                        if (!isNaN(numero) && numero > ultimoNumero) {
+                            ultimoNumero = numero;
+                        }
+                    }
+                });
+            }
+            
+            return `SOC-${(ultimoNumero + 1).toString().padStart(4, '0')}`;
+        }
+        
+        // Función para crear socio de prueba
+        function crearSocioPrueba() {
+            const info = document.getElementById('reparacionInfo');
+            let html = '<div class="info"><h3>➕ Creando Socio de Prueba:</h3>';
+            
+            try {
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                
+                const socioPrueba = {
+                    id: Date.now().toString(),
+                    nombre: 'Socio',
+                    apellidos: 'de Prueba',
+                    dni: 'TEST123456',
+                    direccion: 'Dirección de Prueba',
+                    telefono: '600000000',
+                    email: 'socio.prueba@test.com',
+                    cuota: 20,
+                    fechaNacimiento: '1990-01-01',
+                    fechaRegistro: new Date().toISOString(),
+                    fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    estado: 'pendiente',
+                    pagado: false,
+                    numeroSocio: generarNumeroSocio()
+                };
+                
+                socios.push(socioPrueba);
+                localStorage.setItem('clubMembers', JSON.stringify(socios));
+                
+                html += `<div class="success">✅ Socio de prueba creado: ${socioPrueba.numeroSocio}</div>`;
+                
+                // Actualizar la vista
+                mostrarDatosSocios();
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error al crear socio de prueba: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+        }
+        
+        // Función para sincronizar con admin
+        function sincronizarConAdmin() {
+            const info = document.getElementById('reparacionInfo');
+            let html = '<div class="info"><h3>🔄 Sincronización con Admin:</h3>';
+            
+            try {
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                
+                // Convertir estructura para compatibilidad con admin
+                const sociosCompatibles = socios.map(socio => ({
+                    ...socio,
+                    numero_socio: socio.numeroSocio,
+                    fecha_registro: socio.fechaRegistro,
+                    fecha_nacimiento: socio.fechaNacimiento
+                }));
+                
+                // Guardar en formato compatible
+                localStorage.setItem('clubMembers', JSON.stringify(sociosCompatibles));
+                
+                html += `<div class="success">✅ Sincronizados ${socios.length} socios para admin</div>`;
+                
+                // Actualizar la vista
+                mostrarDatosSocios();
+                
+            } catch (error) {
+                html += `<div class="error">❌ Error en sincronización: ${error.message}</div>`;
+            }
+            
+            html += '</div>';
+            info.innerHTML = html;
+        }
+        
+        // Función para limpiar diagnóstico
+        function limpiarDiagnostico() {
+            document.getElementById('localStorageInfo').innerHTML = '';
+            document.getElementById('sociosInfo').innerHTML = '';
+            document.getElementById('amigosInfo').innerHTML = '';
+            document.getElementById('reparacionInfo').innerHTML = '';
+            document.getElementById('comparacionInfo').innerHTML = '';
+        }
+        
+        // Auto-diagnóstico al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            diagnosticarLocalStorage();
+        });
+    </script>
+</body>
+</html>
+

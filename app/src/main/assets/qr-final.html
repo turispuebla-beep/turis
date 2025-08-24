@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR CDSANABRIACF</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #3b82f6;
+        }
+        #qrcode {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .example {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ CDSANABRIACF</h1>
+        <p>Generador de Código QR</p>
+        
+        <div>
+            <label for="urlInput">Pega aquí la URL de tu página web:</label>
+            <input type="url" id="urlInput" placeholder="https://ejemplo.com/mi-pagina.html">
+            <div class="example">
+                <strong>Ejemplo:</strong> file:///C:/Users/marsa/AndroidStudioProjects/CDSANABRIACF/CDSANABRIACF/index.html
+            </div>
+        </div>
+        
+        <button onclick="generarQR()">🔄 Generar QR</button>
+        <button onclick="descargarQR()">📥 Descargar</button>
+        
+        <div id="qrcode">
+            <p>Pega la URL y haz clic en "Generar QR"</p>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let qrCanvas = null;
+        
+        function generarQR() {
+            try {
+                const url = document.getElementById('urlInput').value.trim();
+                
+                if (!url) {
+                    alert('Por favor, pega la URL de tu página web');
+                    return;
+                }
+                
+                // Limpiar contenedor
+                document.getElementById('qrcode').innerHTML = '';
+                document.getElementById('status').innerHTML = '<p>Generando QR para: ' + url + '</p>';
+                
+                // Generar QR
+                QRCode.toCanvas(url, {
+                    width: 250,
+                    height: 250,
+                    color: {
+                        dark: '#1e3a8a',
+                        light: '#ffffff'
+                    }
+                }, function (error, canvas) {
+                    if (error) {
+                        document.getElementById('status').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                        document.getElementById('qrcode').innerHTML = '<p style="color: red;">Error generando QR</p>';
+                    } else {
+                        qrCanvas = canvas;
+                        document.getElementById('qrcode').appendChild(canvas);
+                        document.getElementById('status').innerHTML = '<p style="color: green;">✅ QR generado correctamente</p>';
+                    }
+                });
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        }
+        
+        function descargarQR() {
+            if (!qrCanvas) {
+                alert('Primero genera el QR');
+                return;
+            }
+            
+            try {
+                const link = document.createElement('a');
+                link.download = 'CDSANABRIACF-QR.png';
+                link.href = qrCanvas.toDataURL();
+                link.click();
+                document.getElementById('status').innerHTML = '<p style="color: green;">✅ QR descargado como "CDSANABRIACF-QR.png"</p>';
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<p style="color: red;">Error al descargar</p>';
+            }
+        }
+        
+        // Permitir generar con Enter
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generarQR();
+            }
+        });
+    </script>
+</body>
+</html>

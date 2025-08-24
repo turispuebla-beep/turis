@@ -1,84 +1,103 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IMember extends Document {
-    name: string;
-    surname: string;
-    dni?: string;
-    phone: string;
-    email?: string;
-    address?: string;
-    memberNumber: number;
-    registrationDate: Date;
-    status: 'pending' | 'active' | 'inactive';
-    gender: 'masculino' | 'femenino' | 'otro';
-    teamId: mongoose.Types.ObjectId;
-    expirationDate?: Date;
+  numeroSocio: string;
+  nombre: string;
+  apellidos: string;
+  dni: string;
+  direccion: string;
+  telefono: string;
+  email: string;
+  fechaRegistro: Date;
+  estado: 'pendiente' | 'confirmado' | 'rechazado';
+  pagado: boolean;
+  fechaConfirmacion?: Date;
+  confirmadoPor?: mongoose.Types.ObjectId;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const memberSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
-        trim: true
-    },
-    surname: {
-        type: String,
-        required: [true, 'Los apellidos son obligatorios'],
-        trim: true
-    },
-    dni: String,
-    phone: {
-        type: String,
-        required: [true, 'El teléfono es obligatorio']
-    },
-    email: String,
-    address: String,
-    memberNumber: {
-        type: Number,
-        required: true,
-        unique: true
-    },
-    registrationDate: {
-        type: Date,
-        default: Date.now
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'active', 'inactive'],
-        default: 'pending'
-    },
-    gender: {
-        type: String,
-        enum: ['masculino', 'femenino', 'otro'],
-        required: [true, 'El género es obligatorio']
-    },
-    teamId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team',
-        required: [true, 'El equipo es obligatorio']
-    },
-    expirationDate: Date
+const memberSchema = new Schema<IMember>({
+  numeroSocio: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  apellidos: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  dni: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  direccion: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  telefono: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true
+  },
+  fechaRegistro: {
+    type: Date,
+    default: Date.now
+  },
+  estado: {
+    type: String,
+    enum: ['pendiente', 'confirmado', 'rechazado'],
+    default: 'pendiente'
+  },
+  pagado: {
+    type: Boolean,
+    default: false
+  },
+  fechaConfirmacion: {
+    type: Date
+  },
+  confirmadoPor: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, {
-    timestamps: true
+  timestamps: true
 });
 
-// Middleware para generar número de socio/a automáticamente
+// Auto-generate numeroSocio before saving
 memberSchema.pre('save', async function(next) {
-    if (this.isNew) {
-        const lastMember = await this.constructor.findOne({}, {}, { sort: { memberNumber: -1 } });
-        this.memberNumber = lastMember ? lastMember.memberNumber + 1 : 1;
+  if (this.isNew && !this.numeroSocio) {
+    const lastMember = await mongoose.model('Member').findOne().sort({ numeroSocio: -1 });
+    let nextNumber = 1;
+    
+    if (lastMember) {
+      const lastNumber = parseInt(lastMember.numeroSocio.replace('SOC-', ''));
+      nextNumber = lastNumber + 1;
     }
-    next();
+    
+    this.numeroSocio = `SOC-${nextNumber.toString().padStart(4, '0')}`;
+  }
+  next();
 });
 
-// Middleware para establecer fecha de expiración automática para socios/as pendientes
-memberSchema.pre('save', function(next) {
-    if (this.isNew && this.status === 'pending') {
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 7); // 7 días para confirmar
-        this.expirationDate = expirationDate;
-    }
-    next();
-});
-
-export default mongoose.model<IMember>('Member', memberSchema);
+export const Member = mongoose.model<IMember>('Member', memberSchema);

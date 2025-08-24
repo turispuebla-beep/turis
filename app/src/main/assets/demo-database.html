@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Base de Datos - CDSANABRIACF</title>
+    <script src="database.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #dc2626;
+            --secondary-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light-color: #6b7280;
+            --background-color: #ffffff;
+            --card-background-color: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .demo-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-card {
+            background: var(--card-background-color);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .demo-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .demo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light-color);
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b91c1c;
+        }
+
+        .btn-secondary {
+            background: var(--text-light-color);
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: #059669;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #059669;
+        }
+
+        .status-offline {
+            background: #dc2626;
+        }
+
+        .data-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .data-preview pre {
+            font-size: 0.8rem;
+            color: var(--text-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light-color);
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Volver</a>
+    
+    <div class="container">
+        <header>
+            <h1>🗄️ Demo Base de Datos</h1>
+            <p class="subtitle">CDSANABRIACF - Sistema de Base de Datos Estable</p>
+        </header>
+
+        <div class="demo-section">
+            <h2>📊 Estado de la Base de Datos</h2>
+            <div class="demo-stats" id="dbStats">
+                <div class="stat-item">
+                    <div class="stat-number" id="sociosCount">-</div>
+                    <div class="stat-label">Socios</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="amigosCount">-</div>
+                    <div class="stat-label">Amigos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="jugadoresCount">-</div>
+                    <div class="stat-label">Jugadores</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="equiposCount">-</div>
+                    <div class="stat-label">Equipos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="eventosCount">-</div>
+                    <div class="stat-label">Eventos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="documentosCount">-</div>
+                    <div class="stat-label">Documentos</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <span class="status-indicator status-online"></span>
+                <strong>Base de datos IndexedDB activa y funcionando</strong>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🛠️ Funciones de Base de Datos</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>👥 Gestión de Socios</h3>
+                    <p>Gestión completa de socios con validación de datos y numeración automática.</p>
+                    <button class="btn" onclick="demoAddSocio()">➕ Añadir Socio Demo</button>
+                    <button class="btn btn-secondary" onclick="demoViewSocios()">👁️ Ver Socios</button>
+                    <div id="sociosPreview" class="data-preview" style="display: none;"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🤝 Gestión de Amigos</h3>
+                    <p>Registro de amigos del club con acceso limitado a información.</p>
+                    <button class="btn" onclick="demoAddAmigo()">➕ Añadir Amigo Demo</button>
+                    <button class="btn btn-secondary" onclick="demoViewAmigos()">👁️ Ver Amigos</button>
+                    <div id="amigosPreview" class="data-preview" style="display: none;"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>⚽ Gestión de Jugadores</h3>
+                    <p>Registro completo de jugadores con categorías y datos de padres.</p>
+                    <button class="btn" onclick="demoAddJugador()">➕ Añadir Jugador Demo</button>
+                    <button class="btn btn-secondary" onclick="demoViewJugadores()">👁️ Ver Jugadores</button>
+                    <div id="jugadoresPreview" class="data-preview" style="display: none;"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>📊 Exportación de Datos</h3>
+                    <p>Exportación en formato CSV y JSON para respaldos y análisis.</p>
+                    <button class="btn btn-success" onclick="demoExportSocios()">📤 Exportar Socios</button>
+                    <button class="btn btn-success" onclick="demoExportAll()">📤 Exportar Todo</button>
+                    <div id="exportStatus"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>💾 Respaldo y Restauración</h3>
+                    <p>Sistema de respaldo completo y restauración de datos.</p>
+                    <button class="btn btn-success" onclick="demoBackup()">💾 Crear Respaldo</button>
+                    <button class="btn btn-secondary" onclick="demoRestore()">🔄 Restaurar</button>
+                    <div id="backupStatus"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🔍 Búsqueda y Filtros</h3>
+                    <p>Búsqueda avanzada y filtros por categorías y estados.</p>
+                    <button class="btn" onclick="demoSearch()">🔍 Buscar Socios</button>
+                    <button class="btn btn-secondary" onclick="demoFilterJugadores()">⚽ Filtrar Jugadores</button>
+                    <div id="searchResults" class="data-preview" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📈 Características de la Base de Datos</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>✅ Persistencia Estable</h3>
+                    <ul>
+                        <li>IndexedDB para almacenamiento robusto</li>
+                        <li>Fallback a localStorage si es necesario</li>
+                        <li>Datos persistentes entre sesiones</li>
+                        <li>Integridad de datos garantizada</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🔐 Seguridad</h3>
+                    <ul>
+                        <li>Validación de datos en tiempo real</li>
+                        <li>DNI único por persona</li>
+                        <li>Contraseñas encriptadas</li>
+                        <li>Acceso controlado por roles</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>📊 Exportación Completa</h3>
+                    <ul>
+                        <li>Exportación en formato CSV</li>
+                        <li>Exportación en formato JSON</li>
+                        <li>Respaldo completo de datos</li>
+                        <li>Restauración de respaldos</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>⚡ Rendimiento</h3>
+                    <ul>
+                        <li>Búsquedas indexadas</li>
+                        <li>Consultas optimizadas</li>
+                        <li>Interfaz asíncrona</li>
+                        <li>Respuesta instantánea</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Esperar a que la base de datos esté lista
+        document.addEventListener('DOMContentLoaded', async function() {
+            await waitForDatabase();
+            await updateStats();
+        });
+
+        // Esperar a que la base de datos esté inicializada
+        async function waitForDatabase() {
+            return new Promise((resolve) => {
+                const checkDB = () => {
+                    if (window.cdsanabriacfDB && window.cdsanabriacfDB.db) {
+                        resolve();
+                    } else {
+                        setTimeout(checkDB, 100);
+                    }
+                };
+                checkDB();
+            });
+        }
+
+        // Actualizar estadísticas
+        async function updateStats() {
+            try {
+                const socios = await window.cdsanabriacfDB.count('socios');
+                const amigos = await window.cdsanabriacfDB.count('amigos');
+                const jugadores = await window.cdsanabriacfDB.count('jugadores');
+                const equipos = await window.cdsanabriacfDB.count('equipos');
+                const eventos = await window.cdsanabriacfDB.count('eventos');
+                const documentos = await window.cdsanabriacfDB.count('documentos');
+
+                document.getElementById('sociosCount').textContent = socios;
+                document.getElementById('amigosCount').textContent = amigos;
+                document.getElementById('jugadoresCount').textContent = jugadores;
+                document.getElementById('equiposCount').textContent = equipos;
+                document.getElementById('eventosCount').textContent = eventos;
+                document.getElementById('documentosCount').textContent = documentos;
+            } catch (error) {
+                console.error('Error actualizando estadísticas:', error);
+            }
+        }
+
+        // Funciones de demostración
+        async function demoAddSocio() {
+            try {
+                const socio = {
+                    nombre: 'Demo',
+                    apellidos: 'Usuario',
+                    dni: 'DEMO' + Date.now(),
+                    direccion: 'Calle Demo 123',
+                    telefono: '123456789',
+                    email: 'demo@cdsanabriacf.com',
+                    fechaRegistro: new Date().toISOString(),
+                    estado: 'activo',
+                    numeroSocio: await window.cdsanabriacfDB.generarNumeroSocio()
+                };
+
+                await window.cdsanabriacfDB.add('socios', socio);
+                await updateStats();
+                showSuccess('Socio demo añadido correctamente');
+            } catch (error) {
+                showError('Error añadiendo socio demo: ' + error.message);
+            }
+        }
+
+        async function demoAddAmigo() {
+            try {
+                const amigo = {
+                    nombre: 'Demo',
+                    apellidos: 'Amigo',
+                    dni: 'AMIGO' + Date.now(),
+                    telefono: '987654321',
+                    email: 'amigo@cdsanabriacf.com',
+                    fechaRegistro: new Date().toISOString()
+                };
+
+                await window.cdsanabriacfDB.add('amigos', amigo);
+                await updateStats();
+                showSuccess('Amigo demo añadido correctamente');
+            } catch (error) {
+                showError('Error añadiendo amigo demo: ' + error.message);
+            }
+        }
+
+        async function demoAddJugador() {
+            try {
+                const jugador = {
+                    nombre: 'Demo',
+                    apellidos: 'Jugador',
+                    dni: 'JUG' + Date.now(),
+                    telefono: '555666777',
+                    direccion: 'Calle Jugador 456',
+                    fechaNacimiento: '2010-01-01',
+                    edad: 14,
+                    categoria: 'infantil',
+                    dorsal: Math.floor(Math.random() * 99) + 1,
+                    estado: 'activo',
+                    fechaRegistro: new Date().toISOString(),
+                    consentimientoFotos: true
+                };
+
+                await window.cdsanabriacfDB.add('jugadores', jugador);
+                await updateStats();
+                showSuccess('Jugador demo añadido correctamente');
+            } catch (error) {
+                showError('Error añadiendo jugador demo: ' + error.message);
+            }
+        }
+
+        async function demoViewSocios() {
+            try {
+                const socios = await window.cdsanabriacfDB.getSocios();
+                const preview = document.getElementById('sociosPreview');
+                preview.innerHTML = `<pre>${JSON.stringify(socios.slice(0, 3), null, 2)}</pre>`;
+                preview.style.display = 'block';
+            } catch (error) {
+                showError('Error mostrando socios: ' + error.message);
+            }
+        }
+
+        async function demoViewAmigos() {
+            try {
+                const amigos = await window.cdsanabriacfDB.getAmigos();
+                const preview = document.getElementById('amigosPreview');
+                preview.innerHTML = `<pre>${JSON.stringify(amigos.slice(0, 3), null, 2)}</pre>`;
+                preview.style.display = 'block';
+            } catch (error) {
+                showError('Error mostrando amigos: ' + error.message);
+            }
+        }
+
+        async function demoViewJugadores() {
+            try {
+                const jugadores = await window.cdsanabriacfDB.getJugadores();
+                const preview = document.getElementById('jugadoresPreview');
+                preview.innerHTML = `<pre>${JSON.stringify(jugadores.slice(0, 3), null, 2)}</pre>`;
+                preview.style.display = 'block';
+            } catch (error) {
+                showError('Error mostrando jugadores: ' + error.message);
+            }
+        }
+
+        async function demoExportSocios() {
+            try {
+                const success = await exportarDatosEspecificos('socios');
+                if (success) {
+                    showSuccess('Socios exportados correctamente');
+                }
+            } catch (error) {
+                showError('Error exportando socios: ' + error.message);
+            }
+        }
+
+        async function demoExportAll() {
+            try {
+                const success = await exportarDatosEspecificos('todo');
+                if (success) {
+                    showSuccess('Todos los datos exportados correctamente');
+                }
+            } catch (error) {
+                showError('Error exportando datos: ' + error.message);
+            }
+        }
+
+        async function demoBackup() {
+            try {
+                const respaldo = await window.cdsanabriacfDB.crearRespaldo();
+                const status = document.getElementById('backupStatus');
+                status.innerHTML = `<div class="success">✅ Respaldo creado: ${respaldo.metadata.totalRegistros} registros</div>`;
+            } catch (error) {
+                showError('Error creando respaldo: ' + error.message);
+            }
+        }
+
+        async function demoRestore() {
+            try {
+                if (confirm('¿Estás seguro de que quieres restaurar los datos de demo?')) {
+                    // Aquí se implementaría la restauración
+                    showSuccess('Restauración completada (demo)');
+                }
+            } catch (error) {
+                showError('Error en restauración: ' + error.message);
+            }
+        }
+
+        async function demoSearch() {
+            try {
+                const socios = await window.cdsanabriacfDB.getSocios();
+                const resultados = socios.filter(s => s.nombre.includes('Demo'));
+                const results = document.getElementById('searchResults');
+                results.innerHTML = `<pre>${JSON.stringify(resultados, null, 2)}</pre>`;
+                results.style.display = 'block';
+            } catch (error) {
+                showError('Error en búsqueda: ' + error.message);
+            }
+        }
+
+        async function demoFilterJugadores() {
+            try {
+                const jugadores = await window.cdsanabriacfDB.getJugadores();
+                const infantiles = jugadores.filter(j => j.categoria === 'infantil');
+                const results = document.getElementById('searchResults');
+                results.innerHTML = `<pre>Jugadores Infantiles: ${JSON.stringify(infantiles, null, 2)}</pre>`;
+                results.style.display = 'block';
+            } catch (error) {
+                showError('Error filtrando jugadores: ' + error.message);
+            }
+        }
+
+        function showSuccess(message) {
+            const status = document.getElementById('exportStatus');
+            status.innerHTML = `<div class="success">${message}</div>`;
+            setTimeout(() => status.innerHTML = '', 3000);
+        }
+
+        function showError(message) {
+            const status = document.getElementById('exportStatus');
+            status.innerHTML = `<div class="error">${message}</div>`;
+            setTimeout(() => status.innerHTML = '', 5000);
+        }
+
+        console.log('🚀 Demo de Base de Datos CDSANABRIACF cargado');
+    </script>
+</body>
+</html>
+
+
+

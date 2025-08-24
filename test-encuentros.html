@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Encuentros - CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .encuentro-card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 5px solid #1e3a8a;
+        }
+        .encuentro-teams {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .encuentro-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Test de Encuentros - CDSANABRIACF</h1>
+        
+        <h2>Panel de Administración</h2>
+        <button class="btn" onclick="window.open('admin-panel.html', '_blank')">🔧 Abrir Panel Admin</button>
+        
+        <h2>Página Principal</h2>
+        <button class="btn" onclick="window.open('index.html', '_blank')">🏠 Abrir Página Principal</button>
+        
+        <h2>Encuentros Actuales</h2>
+        <div id="encuentrosActuales">
+            <p>Cargando encuentros...</p>
+        </div>
+        
+        <h2>Agregar Encuentro de Prueba</h2>
+        <button class="btn" onclick="agregarEncuentroPrueba()">➕ Agregar Encuentro de Prueba</button>
+        
+        <h2>Limpiar Encuentros</h2>
+        <button class="btn" onclick="limpiarEncuentros()" style="background: #dc2626;">🗑️ Limpiar Todos los Encuentros</button>
+    </div>
+
+    <script>
+        // Cargar encuentros al iniciar
+        cargarEncuentros();
+        
+        function cargarEncuentros() {
+            const encuentros = JSON.parse(localStorage.getItem('encuentros') || '[]');
+            const container = document.getElementById('encuentrosActuales');
+            
+            if (encuentros.length === 0) {
+                container.innerHTML = '<p>No hay encuentros programados</p>';
+                return;
+            }
+            
+            container.innerHTML = encuentros.map(encuentro => `
+                <div class="encuentro-card">
+                    <div class="encuentro-teams">${encuentro.equipoLocal} vs ${encuentro.equipoVisitante}</div>
+                    <div class="encuentro-info">
+                        <div><strong>Fecha:</strong> ${encuentro.fecha}</div>
+                        <div><strong>Hora:</strong> ${encuentro.hora}</div>
+                        <div><strong>Campo:</strong> ${encuentro.campo}</div>
+                        <div><strong>Categoría:</strong> ${encuentro.categoria}</div>
+                    </div>
+                    ${encuentro.descripcion ? `<div><strong>Descripción:</strong> ${encuentro.descripcion}</div>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function agregarEncuentroPrueba() {
+            const encuentros = JSON.parse(localStorage.getItem('encuentros') || '[]');
+            
+            const nuevoEncuentro = {
+                id: Date.now(),
+                equipoLocal: 'CDSANABRIACF',
+                equipoVisitante: 'Real Madrid',
+                fecha: '2024-12-25',
+                hora: '16:00',
+                campo: 'Estadio Municipal de Sanabria',
+                categoria: 'Alevín',
+                descripcion: 'Partido de prueba para verificar la funcionalidad',
+                fechaCreacion: new Date().toISOString()
+            };
+            
+            encuentros.push(nuevoEncuentro);
+            localStorage.setItem('encuentros', JSON.stringify(encuentros));
+            
+            alert('✅ Encuentro de prueba agregado correctamente');
+            cargarEncuentros();
+        }
+        
+        function limpiarEncuentros() {
+            if (confirm('¿Estás seguro de que quieres eliminar todos los encuentros?')) {
+                localStorage.removeItem('encuentros');
+                alert('✅ Todos los encuentros han sido eliminados');
+                cargarEncuentros();
+            }
+        }
+    </script>
+</body>
+</html>

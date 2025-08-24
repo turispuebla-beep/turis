@@ -1,38 +1,49 @@
-// ... (mantener el código existente y actualizar la sección de contactInfo)
+import mongoose, { Document, Schema } from 'mongoose';
 
-    contactInfo: {
-        email: {
-            type: String,
-            required: [true, 'El email de contacto es obligatorio'],
-            match: [
-                /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
-                'Por favor proporcione un email válido'
-            ]
-        },
-        phone: {
-            type: String,
-            required: [true, 'El teléfono de contacto es obligatorio'],
-            match: [
-                /^\d{9}$/,
-                'Por favor proporcione un número de teléfono válido (9 dígitos)'
-            ]
-        },
-        bizumPhone: {
-            type: String,
-            match: [
-                /^\d{9}$/,
-                'El número de teléfono para Bizum debe tener 9 dígitos'
-            ]
-        },
-        bankAccount: {
-            type: String,
-            match: [
-                /^ES\d{22}$/,
-                'Por favor proporcione un IBAN español válido'
-            ]
-        },
-        address: String,
-        schedule: String
-    },
+export interface ITeam extends Document {
+  nombre: string;
+  categoria: 'Prebenjamín' | 'Benjamín' | 'Alevín' | 'Infantil' | 'Aficionado';
+  descripcion?: string;
+  colorPrincipal?: string;
+  colorSecundario?: string;
+  logo?: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-// ... (resto del código del modelo sin cambios)
+const teamSchema = new Schema<ITeam>({
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  categoria: {
+    type: String,
+    enum: ['Prebenjamín', 'Benjamín', 'Alevín', 'Infantil', 'Aficionado'],
+    required: true
+  },
+  descripcion: {
+    type: String,
+    trim: true
+  },
+  colorPrincipal: {
+    type: String,
+    default: '#1e40af'
+  },
+  colorSecundario: {
+    type: String,
+    default: '#ffffff'
+  },
+  logo: {
+    type: String
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, {
+  timestamps: true
+});
+
+export const Team = mongoose.model<ITeam>('Team', teamSchema);

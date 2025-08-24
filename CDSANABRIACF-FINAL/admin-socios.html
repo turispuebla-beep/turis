@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Socios - CDSANABRIACF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .socios-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .socios-table th,
+        .socios-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .socios-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .socios-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-activo {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-inactivo {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #374151;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .close:hover {
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .required {
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 Administración de Socios</h1>
+            <p>Gestión completa de socios del Club Deportivo Sanabriacf</p>
+        </div>
+
+        <div class="content">
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSocios">-</div>
+                    <div class="stat-label">Total Socios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="sociosActivos">-</div>
+                    <div class="stat-label">Socios Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="sociosPendientes">-</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="sociosInactivos">-</div>
+                    <div class="stat-label">Inactivos</div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions">
+                <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Socio</button>
+                <button class="btn btn-success" onclick="refreshSocios()">🔄 Refrescar</button>
+                <button class="btn btn-warning" onclick="exportSocios()">📊 Exportar Socios</button>
+                <button class="btn btn-danger" onclick="confirmLimpiarSocios()">🗑️ Limpiar Todos</button>
+                <button class="btn btn-secondary" onclick="diagnosticarDatos()">🔍 Diagnosticar</button>
+            </div>
+
+            <!-- Alertas -->
+            <div id="alerts"></div>
+
+            <!-- Tabla de Socios -->
+            <div id="sociosContainer">
+                <div class="loading">Cargando socios...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para añadir/editar socio -->
+    <div id="socioModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSocioModal()">&times;</span>
+            <h2 id="modalTitle">➕ Añadir Nuevo Socio</h2>
+            
+            <form id="socioForm">
+                <input type="hidden" id="socioId">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre <span class="required">*</span></label>
+                    <input type="text" id="nombre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellidos">Apellidos <span class="required">*</span></label>
+                    <input type="text" id="apellidos" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dni">DNI</label>
+                    <input type="text" id="dni" maxlength="9">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono">Teléfono <span class="required">*</span></label>
+                    <input type="tel" id="telefono" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <textarea id="direccion" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" id="fechaNacimiento">
+                </div>
+                
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSocioModal()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ Confirmar Acción</h3>
+            <p id="confirmMessage"></p>
+            <div class="actions">
+                <button id="confirmYes" class="btn btn-danger">✅ Sí, confirmar</button>
+                <button onclick="closeConfirmModal()" class="btn btn-secondary">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sociosData = [];
+        let editingSocioId = null;
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSocios();
+        });
+
+        // Cargar socios desde localStorage
+        function loadSocios() {
+            try {
+                console.log('🔄 Iniciando carga de socios...');
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                
+                console.log('🔍 Datos originales de socios:', socios);
+                console.log('🔍 Número de socios encontrados:', socios.length);
+                
+                // Normalizar datos existentes
+                const sociosNormalizados = socios.map(socio => {
+                    return {
+                        ...socio,
+                        numeroSocio: socio.numeroSocio || socio.numero_socio || generarNumeroSocio(),
+                        fechaRegistro: socio.fechaRegistro || socio.fecha_registro || new Date().toISOString(),
+                        fechaNacimiento: socio.fechaNacimiento || socio.fecha_nacimiento || '',
+                        estado: socio.estado || 'pendiente',
+                        cuota: socio.cuota || 20,
+                        pagado: socio.pagado || (socio.estado === 'activo')
+                    };
+                });
+                
+                sociosData = sociosNormalizados;
+                
+                console.log('🔍 Datos normalizados de socios:', sociosNormalizados);
+                console.log('🔍 sociosData actualizado:', sociosData);
+                
+                // Guardar datos normalizados
+                localStorage.setItem('clubMembers', JSON.stringify(sociosNormalizados));
+                
+                updateStats();
+                displaySocios();
+                
+                console.log(`📊 Cargados ${sociosNormalizados.length} socios`);
+            } catch (error) {
+                console.error('❌ Error al cargar socios:', error);
+                showAlert('Error al cargar socios: ' + error.message, 'error');
+            }
+        }
+
+        // Mostrar estadísticas
+        function updateStats() {
+            const total = sociosData.length;
+            const activos = sociosData.filter(s => s.estado === 'activo').length;
+            const pendientes = sociosData.filter(s => s.estado === 'pendiente').length;
+            const inactivos = sociosData.filter(s => s.estado === 'inactivo').length;
+
+            document.getElementById('totalSocios').textContent = total;
+            document.getElementById('sociosActivos').textContent = activos;
+            document.getElementById('sociosPendientes').textContent = pendientes;
+            document.getElementById('sociosInactivos').textContent = inactivos;
+        }
+
+        // Mostrar socios en tabla
+        function displaySocios() {
+            console.log('🔄 Iniciando displaySocios...');
+            console.log('🔍 sociosData en displaySocios:', sociosData);
+            console.log('🔍 Número de socios:', sociosData.length);
+            
+            const container = document.getElementById('sociosContainer');
+            console.log('🔍 Container encontrado:', container);
+            
+            if (sociosData.length === 0) {
+                console.log('📭 No hay socios, mostrando estado vacío');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No hay socios registrados</h3>
+                        <p>Comienza añadiendo el primer socio del club</p>
+                        <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Primer Socio</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="socios-table">
+                    <thead>
+                        <tr>
+                            <th>Nº Socio</th>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sociosData.forEach((socio, index) => {
+                const numeroSocio = socio.numeroSocio || socio.numero_socio || `SOC-${(index + 1).toString().padStart(4, '0')}`;
+                const nombre = socio.nombre || '';
+                const apellidos = socio.apellidos || '';
+                const dni = socio.dni || '-';
+                const telefono = socio.telefono || '';
+                const email = socio.email || '-';
+                const estado = socio.estado || 'pendiente';
+                
+                // Fecha de registro con compatibilidad
+                let fechaRegistro = 'N/A';
+                if (socio.fechaRegistro) {
+                    fechaRegistro = new Date(socio.fechaRegistro).toLocaleDateString('es-ES');
+                } else if (socio.fecha_registro) {
+                    fechaRegistro = new Date(socio.fecha_registro).toLocaleDateString('es-ES');
+                }
+                
+                const statusClass = `status-${estado}`;
+                
+                html += `
+                    <tr>
+                        <td>${numeroSocio}</td>
+                        <td>${nombre} ${apellidos}</td>
+                        <td>${dni}</td>
+                        <td>${telefono}</td>
+                        <td>${email}</td>
+                        <td><span class="status-badge ${statusClass}">${estado}</span></td>
+                        <td>${fechaRegistro}</td>
+                        <td>
+                            <button class="btn btn-success" onclick="cambiarEstadoSocio(${index}, 'activo')" style="padding: 4px 8px; font-size: 0.7rem;" title="Activar">✅</button>
+                            <button class="btn btn-warning" onclick="cambiarEstadoSocio(${index}, 'pendiente')" style="padding: 4px 8px; font-size: 0.7rem;" title="Pendiente">⏳</button>
+                            <button class="btn btn-primary" onclick="editSocio(${index})" style="padding: 4px 8px; font-size: 0.7rem;" title="Editar">✏️</button>
+                            <button class="btn btn-danger" onclick="confirmDeleteSocio(${index})" style="padding: 4px 8px; font-size: 0.7rem;" title="Eliminar">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+            console.log('✅ Tabla de socios actualizada');
+        }
+
+        // Cambiar estado de socio
+        function cambiarEstadoSocio(index, nuevoEstado) {
+            console.log('🔧 Intentando cambiar estado:', { index, nuevoEstado, sociosData });
+            
+            const socio = sociosData[index];
+            if (!socio) {
+                console.error('❌ Socio no encontrado en el índice:', index);
+                showAlert('Error: Socio no encontrado', 'error');
+                return;
+            }
+            
+            console.log('🔧 Socio encontrado:', socio);
+            
+            const estadosValidos = ['activo', 'pendiente', 'inactivo'];
+            if (!estadosValidos.includes(nuevoEstado)) {
+                console.error('❌ Estado no válido:', nuevoEstado);
+                showAlert('Estado no válido', 'error');
+                return;
+            }
+            
+            const estadoAnterior = socio.estado;
+            socio.estado = nuevoEstado;
+            
+            console.log('🔧 Estado cambiado:', { estadoAnterior, nuevoEstado, socio });
+            
+            // Guardar cambios
+            localStorage.setItem('clubMembers', JSON.stringify(sociosData));
+            console.log('💾 Datos guardados en localStorage');
+            
+            // Actualizar vista
+            updateStats();
+            displaySocios();
+            
+            showAlert(`Estado de ${socio.nombre} ${socio.apellidos} cambiado de ${estadoAnterior} a: ${nuevoEstado}`, 'success');
+        }
+
+        // Mostrar modal para añadir socio
+        function showAddSocioModal() {
+            editingSocioId = null;
+            document.getElementById('modalTitle').textContent = '➕ Añadir Nuevo Socio';
+            document.getElementById('socioForm').reset();
+            document.getElementById('socioId').value = '';
+            document.getElementById('socioModal').style.display = 'block';
+        }
+
+        // Editar socio
+        function editSocio(index) {
+            const socio = sociosData[index];
+            if (!socio) return;
+
+            editingSocioId = index;
+            document.getElementById('modalTitle').textContent = '✏️ Editar Socio';
+            document.getElementById('socioId').value = index;
+            document.getElementById('nombre').value = socio.nombre || '';
+            document.getElementById('apellidos').value = socio.apellidos || '';
+            document.getElementById('dni').value = socio.dni || '';
+            document.getElementById('telefono').value = socio.telefono || '';
+            document.getElementById('email').value = socio.email || '';
+            document.getElementById('direccion').value = socio.direccion || '';
+            document.getElementById('fechaNacimiento').value = socio.fechaNacimiento || socio.fecha_nacimiento || '';
+            document.getElementById('estado').value = socio.estado || 'pendiente';
+
+            document.getElementById('socioModal').style.display = 'block';
+        }
+
+        // Cerrar modal
+        function closeSocioModal() {
+            document.getElementById('socioModal').style.display = 'none';
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('socioForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellidos = document.getElementById('apellidos').value.trim();
+            const dni = document.getElementById('dni').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const direccion = document.getElementById('direccion').value.trim();
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const estado = document.getElementById('estado').value;
+            
+            if (!nombre || !apellidos || !telefono) {
+                showAlert('❌ Por favor, completa los campos obligatorios', 'error');
+                return;
+            }
+
+            try {
+                if (editingSocioId !== null) {
+                    // Actualizar socio existente
+                    const socioExistente = sociosData[editingSocioId];
+                    sociosData[editingSocioId] = {
+                        ...socioExistente,
+                        nombre,
+                        apellidos,
+                        dni,
+                        telefono,
+                        email,
+                        direccion,
+                        fechaNacimiento: fechaNacimiento,
+                        fecha_nacimiento: fechaNacimiento,
+                        estado,
+                        cuota: socioExistente.cuota || 20,
+                        pagado: estado === 'activo'
+                    };
+                    showAlert('✅ Socio actualizado correctamente', 'success');
+                } else {
+                    // Añadir nuevo socio
+                    const nuevoSocio = {
+                        id: Date.now().toString(),
+                        nombre,
+                        apellidos,
+                        dni,
+                        telefono,
+                        email,
+                        direccion,
+                        fechaNacimiento: fechaNacimiento,
+                        fecha_nacimiento: fechaNacimiento,
+                        estado,
+                        cuota: 20,
+                        fechaRegistro: new Date().toISOString(),
+                        fecha_registro: new Date().toISOString(),
+                        pagado: estado === 'activo',
+                        numeroSocio: generarNumeroSocio()
+                    };
+                    sociosData.push(nuevoSocio);
+                    showAlert('✅ Socio añadido correctamente', 'success');
+                }
+
+                // Guardar en localStorage
+                localStorage.setItem('clubMembers', JSON.stringify(sociosData));
+                
+                closeSocioModal();
+                loadSocios();
+            } catch (error) {
+                showAlert('❌ Error: ' + error.message, 'error');
+            }
+        });
+
+        // Confirmar eliminación de socio
+        function confirmDeleteSocio(index) {
+            const socio = sociosData[index];
+            if (!socio) return;
+
+            document.getElementById('confirmMessage').textContent = 
+                `¿Estás seguro de que quieres eliminar al socio "${socio.nombre} ${socio.apellidos}"? Esta acción no se puede deshacer.`;
+            
+            document.getElementById('confirmYes').onclick = () => deleteSocio(index);
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        // Eliminar socio
+        function deleteSocio(index) {
+            try {
+                sociosData.splice(index, 1);
+                localStorage.setItem('clubMembers', JSON.stringify(sociosData));
+                
+                showAlert('✅ Socio eliminado correctamente', 'success');
+                closeConfirmModal();
+                loadSocios();
+            } catch (error) {
+                showAlert('❌ Error al eliminar socio: ' + error.message, 'error');
+            }
+        }
+
+        // Confirmar limpiar todos los socios
+        function confirmLimpiarSocios() {
+            document.getElementById('confirmMessage').textContent = 
+                '⚠️ ¿Estás SEGURO de que quieres eliminar TODOS los socios? Esta acción es irreversible.';
+            
+            document.getElementById('confirmYes').onclick = limpiarTodosSocios;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        // Limpiar todos los socios
+        function limpiarTodosSocios() {
+            try {
+                sociosData = [];
+                localStorage.setItem('clubMembers', JSON.stringify(sociosData));
+                
+                showAlert('✅ Todos los socios han sido eliminados', 'success');
+                closeConfirmModal();
+                loadSocios();
+            } catch (error) {
+                showAlert('❌ Error al limpiar socios: ' + error.message, 'error');
+            }
+        }
+
+        // Refrescar socios
+        function refreshSocios() {
+            showAlert('🔄 Refrescando datos...', 'info');
+            loadSocios();
+        }
+
+        // Generar número de socio
+        function generarNumeroSocio() {
+            let ultimoNumero = 0;
+            
+            if (sociosData.length > 0) {
+                sociosData.forEach(socio => {
+                    const numeroSocio = socio.numeroSocio || socio.numero_socio;
+                    if (numeroSocio) {
+                        const numero = parseInt(numeroSocio.replace('SOC-', ''));
+                        if (!isNaN(numero) && numero > ultimoNumero) {
+                            ultimoNumero = numero;
+                        }
+                    }
+                });
+            }
+            
+            return `SOC-${(ultimoNumero + 1).toString().padStart(4, '0')}`;
+        }
+
+        // Exportar socios
+        function exportSocios() {
+            try {
+                if (sociosData.length === 0) {
+                    showAlert('No hay socios para exportar', 'warning');
+                    return;
+                }
+
+                // Crear CSV
+                const headers = ['Nº Socio', 'Nombre', 'Apellidos', 'DNI', 'Teléfono', 'Email', 'Dirección', 'Fecha Nacimiento', 'Estado', 'Fecha Registro'];
+                const csvContent = [
+                    headers.join(','),
+                    ...sociosData.map(socio => [
+                        socio.numeroSocio || socio.numero_socio || '',
+                        socio.nombre || '',
+                        socio.apellidos || '',
+                        socio.dni || '',
+                        socio.telefono || '',
+                        socio.email || '',
+                        socio.direccion || '',
+                        socio.fechaNacimiento || socio.fecha_nacimiento || '',
+                        socio.estado || '',
+                        socio.fechaRegistro || socio.fecha_registro || ''
+                    ].join(','))
+                ].join('\n');
+
+                // Descargar archivo
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `socios_cdsanabriacf_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showAlert('✅ Socios exportados correctamente', 'success');
+            } catch (error) {
+                showAlert('❌ Error al exportar socios: ' + error.message, 'error');
+            }
+        }
+
+        // Función de diagnóstico
+        function diagnosticarDatos() {
+            console.log('🔍 === DIAGNÓSTICO DE DATOS ===');
+            
+            // Datos de socios
+            const sociosRaw = localStorage.getItem('clubMembers');
+            console.log('📊 Socios en localStorage (raw):', sociosRaw);
+            
+            const socios = JSON.parse(sociosRaw || '[]');
+            console.log('📊 Socios parseados:', socios);
+            console.log('📊 Socios en memoria (sociosData):', sociosData);
+            
+            // Mostrar información en alerta
+            let mensaje = '🔍 DIAGNÓSTICO DE DATOS:\n\n';
+            mensaje += `📊 Socios en localStorage: ${socios.length}\n`;
+            mensaje += `📊 Socios en memoria: ${sociosData.length}\n\n`;
+            
+            if (socios.length > 0) {
+                mensaje += '📋 PRIMER SOCIO:\n';
+                const primerSocio = socios[0];
+                mensaje += `- Nombre: ${primerSocio.nombre} ${primerSocio.apellidos}\n`;
+                mensaje += `- Estado: ${primerSocio.estado}\n`;
+                mensaje += `- Email: ${primerSocio.email}\n`;
+                mensaje += `- Teléfono: ${primerSocio.telefono}\n`;
+            }
+            
+            alert(mensaje);
+        }
+
+        // Cerrar modal de confirmación
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertsContainer = document.getElementById('alerts');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertsContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Cerrar modales al hacer clic fuera
+        window.onclick = function(event) {
+            const socioModal = document.getElementById('socioModal');
+            const confirmModal = document.getElementById('confirmModal');
+            
+            if (event.target === socioModal) {
+                closeSocioModal();
+            }
+            if (event.target === confirmModal) {
+                closeConfirmModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+

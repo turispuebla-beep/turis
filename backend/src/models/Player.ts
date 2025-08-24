@@ -1,115 +1,145 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IPlayer extends Document {
-    name: string;
-    surname: string;
+  nombre: string;
+  apellidos: string;
+  dni: string;
+  telefono: string;
+  direccion: string;
+  edad: number;
+  fechaNacimiento: Date;
+  dorsal: number;
+  equipoId: mongoose.Types.ObjectId;
+  tutorInfo?: {
+    nombre: string;
     dni: string;
-    phone: string;
-    address?: string;
-    birthDate: Date;
-    jerseyNumber: number;
-    gender: 'masculino' | 'femenino' | 'otro';
-    teamId: mongoose.Types.ObjectId;
-    guardianInfo?: {
-        name: string;
-        dni: string;
-        phone: string;
-        address: string;
-        email: string;
-        relation: string; // padre/madre/tutor/tutora
-    }[];
-    photoConsent: boolean;
-    teamConsent: boolean;
+    telefono: string;
+    direccion: string;
+    email: string;
+    relacion: 'padre' | 'madre' | 'tutor' | 'tutora';
+  }[];
+  consentimientoFotos: boolean;
+  consentimientoEquipo: boolean;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const playerSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
-        trim: true
-    },
-    surname: {
-        type: String,
-        required: [true, 'Los apellidos son obligatorios'],
-        trim: true
+const playerSchema = new Schema<IPlayer>({
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  apellidos: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  dni: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  telefono: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  direccion: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  edad: {
+    type: Number,
+    required: true
+  },
+  fechaNacimiento: {
+    type: Date,
+    required: true
+  },
+  dorsal: {
+    type: Number,
+    required: true
+  },
+  equipoId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Team',
+    required: true
+  },
+  tutorInfo: [{
+    nombre: {
+      type: String,
+      required: true,
+      trim: true
     },
     dni: {
-        type: String,
-        required: [true, 'El DNI es obligatorio'],
-        unique: true
+      type: String,
+      required: true,
+      trim: true
     },
-    phone: {
-        type: String,
-        required: [true, 'El teléfono es obligatorio']
+    telefono: {
+      type: String,
+      required: true,
+      trim: true
     },
-    address: String,
-    birthDate: {
-        type: Date,
-        required: [true, 'La fecha de nacimiento es obligatoria']
+    direccion: {
+      type: String,
+      required: true,
+      trim: true
     },
-    jerseyNumber: {
-        type: Number,
-        required: [true, 'El número de camiseta es obligatorio']
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true
     },
-    gender: {
-        type: String,
-        enum: ['masculino', 'femenino', 'otro'],
-        required: [true, 'El género es obligatorio']
-    },
-    teamId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team',
-        required: [true, 'El equipo es obligatorio']
-    },
-    guardianInfo: [{
-        name: {
-            type: String,
-            required: [true, 'El nombre del padre/madre/tutor/tutora es obligatorio']
-        },
-        dni: {
-            type: String,
-            required: [true, 'El DNI del padre/madre/tutor/tutora es obligatorio']
-        },
-        phone: {
-            type: String,
-            required: [true, 'El teléfono del padre/madre/tutor/tutora es obligatorio']
-        },
-        address: {
-            type: String,
-            required: [true, 'La dirección del padre/madre/tutor/tutora es obligatoria']
-        },
-        email: {
-            type: String,
-            required: [true, 'El email del padre/madre/tutor/tutora es obligatorio']
-        },
-        relation: {
-            type: String,
-            required: [true, 'La relación con el/la jugador/a es obligatoria'],
-            enum: ['padre', 'madre', 'tutor', 'tutora']
-        }
-    }],
-    photoConsent: {
-        type: Boolean,
-        default: false
-    },
-    teamConsent: {
-        type: Boolean,
-        default: false
+    relacion: {
+      type: String,
+      enum: ['padre', 'madre', 'tutor', 'tutora'],
+      required: true
     }
+  }],
+  consentimientoFotos: {
+    type: Boolean,
+    default: false
+  },
+  consentimientoEquipo: {
+    type: Boolean,
+    default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, {
-    timestamps: true
+  timestamps: true
 });
 
-// Middleware para validar la edad y los datos del tutor
+// Calculate age automatically from birth date
 playerSchema.pre('save', function(next) {
-    const age = new Date().getFullYear() - this.birthDate.getFullYear();
+  if (this.fechaNacimiento) {
+    const today = new Date();
+    const birthDate = new Date(this.fechaNacimiento);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
     
-    if (age < 18 && (!this.guardianInfo || this.guardianInfo.length === 0)) {
-        const error = new Error('Los/as jugadores/as menores de edad deben tener información del padre/madre/tutor/tutora');
-        return next(error);
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
+    
+    this.edad = age;
+  }
+  
+  // Validate guardian info for minors
+  if (this.edad < 18 && (!this.tutorInfo || this.tutorInfo.length === 0)) {
+    const error = new Error('Los jugadores menores de edad deben tener información del padre/madre/tutor/tutora');
+    return next(error);
+  }
 
-    next();
+  next();
 });
 
-export default mongoose.model<IPlayer>('Player', playerSchema);
+export const Player = mongoose.model<IPlayer>('Player', playerSchema);

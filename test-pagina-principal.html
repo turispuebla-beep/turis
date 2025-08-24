@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Base de Datos - Página Principal CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-danger {
+            background: #dc2626;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        .data-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .data-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Test Base de Datos - Página Principal CDSANABRIACF</h1>
+        
+        <!-- Estado de la Base de Datos -->
+        <div class="section">
+            <h2>📊 Estado de la Base de Datos</h2>
+            <div id="dbStatus">Verificando...</div>
+            <div id="stats" class="stats"></div>
+        </div>
+
+        <!-- Enlaces a Páginas -->
+        <div class="section">
+            <h2>🔗 Enlaces a Páginas</h2>
+            <button class="btn" onclick="window.open('CDSANABRIACF/index.html', '_blank')">🏠 Página Principal</button>
+            <button class="btn" onclick="window.open('CDSANABRIACF/admin-panel.html', '_blank')">🔧 Panel Admin</button>
+            <button class="btn" onclick="window.open('test-database.html', '_blank')">🗄️ Test Base de Datos</button>
+        </div>
+
+        <!-- Datos Actuales -->
+        <div class="section">
+            <h2>📋 Datos Actuales en la Base de Datos</h2>
+            <div id="datosActuales">
+                <p>Cargando datos...</p>
+            </div>
+        </div>
+
+        <!-- Utilidades -->
+        <div class="section">
+            <h2>🔧 Utilidades</h2>
+            <button onclick="exportarDatos()" class="btn">📤 Exportar Datos</button>
+            <button onclick="crearBackup()" class="btn">💾 Crear Backup</button>
+            <button onclick="migrarDatosExistentes()" class="btn btn-success">🔄 Migrar Datos Existentes</button>
+            <button onclick="limpiarTodo()" class="btn btn-danger">💥 Limpiar Todo</button>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="data-manager.js"></script>
+    <script>
+        // Esperar a que la base de datos esté lista
+        async function init() {
+            while (!window.dataManager || !window.dataManager.db.isInitialized) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            console.log('✅ Base de datos lista');
+            actualizarEstado();
+            cargarDatos();
+        }
+
+        async function actualizarEstado() {
+            const statusDiv = document.getElementById('dbStatus');
+            const statsDiv = document.getElementById('stats');
+            
+            try {
+                const stats = await window.dataManager.obtenerEstadisticas();
+                
+                statusDiv.innerHTML = '<span style="color: green;">✅ Base de datos funcionando correctamente</span>';
+                
+                statsDiv.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalSocios}</div>
+                        <div>Socios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalAmigos}</div>
+                        <div>Amigos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalJugadores}</div>
+                        <div>Jugadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalEncuentros}</div>
+                        <div>Encuentros</div>
+                    </div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function cargarDatos() {
+            try {
+                const socios = await window.dataManager.obtenerSocios();
+                const amigos = await window.dataManager.obtenerAmigos();
+                const encuentros = await window.dataManager.obtenerEncuentros();
+                
+                const container = document.getElementById('datosActuales');
+                
+                let html = '<h3>Socios (' + socios.length + ')</h3>';
+                if (socios.length > 0) {
+                    html += socios.slice(0, 3).map(socio => `
+                        <div class="data-item">
+                            <strong>${socio.nombre} ${socio.apellidos}</strong><br>
+                            Tel: ${socio.telefono} | Estado: ${socio.estado} | Cuota: ${socio.cuota}€
+                        </div>
+                    `).join('');
+                    if (socios.length > 3) {
+                        html += `<p>... y ${socios.length - 3} socios más</p>`;
+                    }
+                } else {
+                    html += '<p>No hay socios registrados</p>';
+                }
+                
+                html += '<h3>Amigos (' + amigos.length + ')</h3>';
+                if (amigos.length > 0) {
+                    html += amigos.slice(0, 3).map(amigo => `
+                        <div class="data-item">
+                            <strong>${amigo.nombre} ${amigo.apellidos}</strong><br>
+                            Tel: ${amigo.telefono} | Email: ${amigo.email}
+                        </div>
+                    `).join('');
+                    if (amigos.length > 3) {
+                        html += `<p>... y ${amigos.length - 3} amigos más</p>`;
+                    }
+                } else {
+                    html += '<p>No hay amigos registrados</p>';
+                }
+                
+                html += '<h3>Encuentros (' + encuentros.length + ')</h3>';
+                if (encuentros.length > 0) {
+                    html += encuentros.slice(0, 3).map(encuentro => `
+                        <div class="data-item">
+                            <strong>${encuentro.equipo_local} vs ${encuentro.equipo_visitante}</strong><br>
+                            ${encuentro.fecha} ${encuentro.hora} | ${encuentro.campo}
+                        </div>
+                    `).join('');
+                    if (encuentros.length > 3) {
+                        html += `<p>... y ${encuentros.length - 3} encuentros más</p>`;
+                    }
+                } else {
+                    html += '<p>No hay encuentros programados</p>';
+                }
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                document.getElementById('datosActuales').innerHTML = '<p>Error al cargar los datos</p>';
+            }
+        }
+
+        async function exportarDatos() {
+            try {
+                const datos = await window.dataManager.exportarDatos();
+                const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cdsanabria_datos_completos.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('✅ Datos exportados correctamente');
+            } catch (error) {
+                alert('❌ Error exportando datos: ' + error.message);
+            }
+        }
+
+        async function crearBackup() {
+            try {
+                await window.dataManager.crearBackup();
+                alert('✅ Backup creado correctamente');
+            } catch (error) {
+                alert('❌ Error creando backup: ' + error.message);
+            }
+        }
+
+        async function migrarDatosExistentes() {
+            try {
+                // Verificar si hay datos en localStorage antiguo
+                const sociosAntiguos = localStorage.getItem('clubMembers');
+                const amigosAntiguos = localStorage.getItem('clubFriends');
+                const encuentrosAntiguos = localStorage.getItem('encuentros');
+                
+                let migrados = 0;
+                
+                if (sociosAntiguos) {
+                    const socios = JSON.parse(sociosAntiguos);
+                    for (const socio of socios) {
+                        try {
+                            await window.dataManager.registrarSocio({
+                                nombre: socio.nombre,
+                                apellidos: socio.apellidos,
+                                dni: socio.dni,
+                                direccion: socio.direccion,
+                                telefono: socio.telefono,
+                                email: socio.email,
+                                fecha_nacimiento: socio.fechaNacimiento,
+                                cuota: socio.cuota,
+                                estado: socio.estado
+                            });
+                            migrados++;
+                        } catch (error) {
+                            console.log('Socio ya existe:', socio.nombre);
+                        }
+                    }
+                }
+                
+                if (amigosAntiguos) {
+                    const amigos = JSON.parse(amigosAntiguos);
+                    for (const amigo of amigos) {
+                        try {
+                            await window.dataManager.registrarAmigo({
+                                nombre: amigo.nombre,
+                                apellidos: amigo.apellidos,
+                                dni: amigo.dni,
+                                telefono: amigo.telefono,
+                                email: amigo.email
+                            });
+                            migrados++;
+                        } catch (error) {
+                            console.log('Amigo ya existe:', amigo.nombre);
+                        }
+                    }
+                }
+                
+                if (encuentrosAntiguos) {
+                    const encuentros = JSON.parse(encuentrosAntiguos);
+                    for (const encuentro of encuentros) {
+                        try {
+                            await window.dataManager.agregarEncuentro({
+                                equipo_local: encuentro.equipoLocal,
+                                equipo_visitante: encuentro.equipoVisitante,
+                                fecha: encuentro.fecha,
+                                hora: encuentro.hora,
+                                campo: encuentro.campo,
+                                categoria: encuentro.categoria,
+                                descripcion: encuentro.descripcion
+                            });
+                            migrados++;
+                        } catch (error) {
+                            console.log('Encuentro ya existe');
+                        }
+                    }
+                }
+                
+                alert(`✅ Migración completada. ${migrados} registros migrados a la base de datos estable.`);
+                await cargarDatos();
+                await actualizarEstado();
+            } catch (error) {
+                alert('❌ Error en la migración: ' + error.message);
+            }
+        }
+
+        async function limpiarTodo() {
+            if (confirm('¿Estás SEGURO de que quieres eliminar TODOS los datos? Esta acción no se puede deshacer.')) {
+                try {
+                    localStorage.clear();
+                    alert('✅ Todos los datos han sido eliminados');
+                    location.reload();
+                } catch (error) {
+                    alert('❌ Error limpiando datos: ' + error.message);
+                }
+            }
+        }
+
+        // Inicializar
+        init();
+    </script>
+</body>
+</html>

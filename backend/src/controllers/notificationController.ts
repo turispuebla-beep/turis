@@ -21,7 +21,7 @@ export const sendNotification = asyncHandler(async (req: Request, res: Response)
     }
 
     // Validar permisos según el target
-    if (req.user.role === 'teamAdmin') {
+    if (req.user?.role === 'team_admin') {
         // Los admin de equipo solo pueden enviar a su equipo
         if (!['team_members', 'team_all'].includes(target)) {
             throw new ErrorResponse('No autorizado para enviar a estos destinatarios', 403);

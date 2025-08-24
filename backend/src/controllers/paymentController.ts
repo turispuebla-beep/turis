@@ -1,5 +1,12 @@
 // ... (código anterior sin cambios hasta completePayment)
 
+import { Request, Response } from 'express';
+import { asyncHandler } from '../middleware/async';
+import ErrorResponse from '../utils/errorResponse';
+import { NotificationService } from '../services/notificationService';
+import { uploadFile } from '../services/storageService';
+import Payment from '../models/Payment';
+
 // @desc    Marcar pago como completado
 // @route   PUT /api/teams/:teamId/payments/:id/complete
 // @access  Private (Admin y TeamAdmin)
@@ -11,7 +18,7 @@ export const completePayment = asyncHandler(async (req: Request, res: Response) 
     }
 
     // Verificar permisos
-    if (req.user.role === 'teamAdmin' && payment.teamId.toString() !== req.user.teamId) {
+    if (req.user?.role === 'team_admin' && payment.teamId.toString() !== req.user.teamId) {
         throw new ErrorResponse('No autorizado para modificar este pago', 403);
     }
 
@@ -88,7 +95,7 @@ export const getPaymentInstructions = asyncHandler(async (req: Request, res: Res
     }
 
     // Verificar permisos
-    if (req.user.role === 'teamAdmin' && payment.teamId.toString() !== req.user.teamId) {
+    if (req.user?.role === 'team_admin' && payment.teamId.toString() !== req.user.teamId) {
         throw new ErrorResponse('No autorizado para ver este pago', 403);
     }
 
