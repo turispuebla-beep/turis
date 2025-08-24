@@ -1,0 +1,29 @@
+CDSANABRIACF - Club Deportivo Sanabriacf
+
+Versión 1.0.0 - Lanzamiento Inicial
+
+NUEVAS FUNCIONALIDADES:
+✅ Sistema completo de gestión del club deportivo
+✅ Registro y gestión de socios con validación automática
+✅ Login seguro para entrenadores con contraseñas
+✅ Panel de administración con sincronización automática
+✅ Gestión de equipos, eventos y documentos
+✅ Sistema de amigos del club con acceso limitado
+✅ Calendario de partidos y entrenamientos
+✅ Galería de fotos y videos
+✅ Sistema de publicidad del club
+
+MEJORAS TÉCNICAS:
+✅ Interfaz web optimizada para móviles
+✅ Sincronización automática de datos
+✅ Actualizaciones automáticas desde Google Play Store
+✅ Navegación intuitiva y responsive
+✅ Carga rápida y eficiente
+
+INFORMACIÓN DEL CLUB:
+🏆 Club Deportivo Sanabriacf
+📍 Puebla de Sanabria, Zamora
+📧 cdsanabriafc@gmail.com
+🌐 www.cdsanabriacf.com
+
+Esta aplicación permite a socios, amigos del club y entrenadores acceder a toda la información del club deportivo de forma fácil y rápida.

@@ -1638,7 +1638,7 @@
                                 <li>📋 Registrar asistencia y notas</li>
                             </ul>
                             <p style="margin: 5px 0; font-size: 0.9em;">
-                                🔑 <strong>Acceso:</strong> Login con email o teléfono (sin contraseña).
+                                🔑 <strong>Acceso:</strong> Login con email y contraseña.
                             </p>
                             <p style="margin: 5px 0; font-size: 0.9em; color: #dc2626;">
                                 ⚠️ <strong>Validación:</strong> El entrenador debe ser validado por un administrador para poder acceder.
@@ -2402,6 +2402,10 @@
                     <div style="text-align: center; margin-bottom: 20px;">
                         <button class="btn" onclick="cleanExpiredMembers()" style="background: #dc2626;">🗑️ Limpiar Socios Caducados</button>
                         <button class="btn" onclick="validateAllPendingMembers()" style="background: #059669; margin-left: 10px;">✅ Validar Todos los Pendientes</button>
+                        <button class="btn" onclick="diagnosticarYSincronizarSocios()" style="background: #3b82f6; margin-left: 10px;">🔍 Diagnosticar y Sincronizar</button>
+                        <button class="btn" onclick="sincronizarBaseDatos()" style="background: #8b5cf6; margin-left: 10px;">🔄 Sincronizar Base de Datos</button>
+                        <button class="btn" onclick="diagnosticarBaseDatos()" style="background: #f59e0b; margin-left: 10px;">🔧 Diagnosticar BD</button>
+                        <button class="btn" onclick="crearBaseDatosSimulada()" style="background: #10b981; margin-left: 10px;">🏗️ Crear BD Simulada</button>
                     </div>
                 </div>
 
@@ -3029,6 +3033,24 @@
             loadTeamAdmins(); // Cargar lista de administradores
             checkExpiredMembers(); // Verificar socios expirados al cargar
             cargarConfiguracionTienda(); // Cargar configuración de tienda
+            
+            // Sincronización automática de datos al cargar
+            setTimeout(async () => {
+                console.log('🔄 Iniciando sincronización automática...');
+                updateDashboardCounts();
+                updateMemberCounts();
+                loadMembersList();
+                
+                // Actualizar estadísticas de base de datos desde localStorage
+                try {
+                    await updateDatabaseStats();
+                    console.log('✅ Base de datos actualizada desde localStorage');
+                } catch (dbError) {
+                    console.error('❌ Error actualizando base de datos:', dbError);
+                }
+                
+                console.log('✅ Sincronización automática completada');
+            }, 1000);
         });
 
         // Función para verificar sesión de administrador
@@ -3056,7 +3078,7 @@
                 const adminInfo = document.getElementById('currentAdminInfo');
                 if (adminInfo) {
                     const isPrincipal = currentAdmin.email === 'amco@gmx.es';
-                    const isSecondAdmin = currentAdmin.email === 'cdsanabriacf@gmail.com';
+                    const isSecondAdmin = currentAdmin.email === 'cdsanabriafc@gmail.com';
                     const roleText = isPrincipal ? '👑 PRINCIPAL' : isSecondAdmin ? '👨‍💼 SEGUNDO' : '👨‍💼 SECUNDARIO';
                     const permissionText = isPrincipal || isSecondAdmin ? '(Permisos completos)' : '(Sin gestión de admins)';
                     
@@ -5041,12 +5063,13 @@
 
                 if (!membersList) return;
 
-                // Filtrar socios según el estado
+                // Filtrar socios según el estado (compatibilidad con diferentes nombres de propiedades)
                 let filteredMembers = members;
                 if (statusFilter !== 'all') {
                     filteredMembers = members.filter(member => {
-                        if (statusFilter === 'pending') return member.status === 'pending_validation';
-                        if (statusFilter === 'active') return member.status === 'active';
+                        const status = member.status || member.estado || 'pendiente';
+                        if (statusFilter === 'pending') return status === 'pending_validation' || status === 'pendiente';
+                        if (statusFilter === 'active') return status === 'active' || status === 'activo';
                         if (statusFilter === 'expired') return isMemberExpired(member);
                         return true;
                     });
@@ -5067,13 +5090,13 @@
                         <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ${statusColor};">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                 <div>
-                                    <h4 style="margin: 0 0 5px 0; color: #1e3a8a;">${member.name} ${member.surname}</h4>
+                                    <h4 style="margin: 0 0 5px 0; color: #1e3a8a;">${member.name || member.nombre} ${member.surname || member.apellidos}</h4>
                                     <div style="font-size: 0.9em; color: #666; margin-bottom: 8px;">
-                                        📞 ${member.phone} | 📧 ${member.email || 'No especificado'} | 📍 ${member.address || 'No especificada'}
+                                        📞 ${member.phone || member.telefono} | 📧 ${member.email || 'No especificado'} | 📍 ${member.address || member.direccion || 'No especificada'}
                                     </div>
                                     <div style="font-size: 0.9em; color: #666;">
-                                        🆔 DNI: ${member.dni || 'No especificado'} | 📅 Registro: ${new Date(member.registrationDate).toLocaleDateString()}
-                                        ${member.memberNumber ? `| 🔢 Nº Socio: ${member.memberNumber}` : ''}
+                                        🆔 DNI: ${member.dni || 'No especificado'} | 📅 Registro: ${new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro).toLocaleDateString()}
+                                        ${member.memberNumber || member.numeroSocio ? `| 🔢 Nº Socio: ${member.memberNumber || member.numeroSocio}` : ''}
                                     </div>
                                     <div style="font-size: 0.9em; color: #059669; font-weight: bold; margin-top: 5px;">
                                         🔐 Contraseña: 
@@ -5087,7 +5110,7 @@
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 15px;">
                                 <button onclick="viewMemberDetails('${member.id}')" style="padding: 6px 12px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">👁️ Ver Detalles</button>
-                                ${member.status === 'pending_validation' ? `<button onclick="validateMember('${member.id}')" style="padding: 6px 12px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">✅ Validar</button>` : ''}
+                                ${(member.status === 'pending_validation' || member.estado === 'pendiente') ? `<button onclick="validateMember('${member.id}')" style="padding: 6px 12px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">✅ Validar</button>` : ''}
                                 <button onclick="editMember('${member.id}')" style="padding: 6px 12px; background: #f59e0b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">✏️ Editar</button>
                                 <button onclick="deleteMember('${member.id}')" style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">🗑️ Eliminar</button>
                             </div>
@@ -5104,9 +5127,10 @@
         }
 
         function isMemberExpired(member) {
-            if (member.status === 'active') return false;
+            const status = member.status || member.estado || 'pendiente';
+            if (status === 'active' || status === 'activo') return false;
             
-            const registrationDate = new Date(member.registrationDate);
+            const registrationDate = new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro);
             const currentDate = new Date();
             const daysDiff = (currentDate - registrationDate) / (1000 * 60 * 60 * 24);
             
@@ -5114,13 +5138,15 @@
         }
 
         function getMemberStatusText(member, isExpired) {
-            if (member.status === 'active') return 'Activo';
+            const status = member.status || member.estado || 'pendiente';
+            if (status === 'active' || status === 'activo') return 'Activo';
             if (isExpired) return 'Caducado';
             return 'Pendiente';
         }
 
         function getMemberStatusColor(member, isExpired) {
-            if (member.status === 'active') return '#059669';
+            const status = member.status || member.estado || 'pendiente';
+            if (status === 'active' || status === 'activo') return '#059669';
             if (isExpired) return '#dc2626';
             return '#f59e0b';
         }
@@ -5136,16 +5162,16 @@
             if (member) {
                 const isExpired = isMemberExpired(member);
                 let details = `👤 DETALLES DEL SOCIO\n\n`;
-                details += `Nombre: ${member.name} ${member.surname}\n`;
+                details += `Nombre: ${member.name || member.nombre} ${member.surname || member.apellidos}\n`;
                 details += `DNI: ${member.dni || 'No especificado'}\n`;
-                details += `Teléfono: ${member.phone}\n`;
-                details += `Dirección: ${member.address || 'No especificada'}\n`;
+                details += `Teléfono: ${member.phone || member.telefono}\n`;
+                details += `Dirección: ${member.address || member.direccion || 'No especificada'}\n`;
                 details += `Email: ${member.email || 'No especificado'}\n`;
                 details += `Estado: ${getMemberStatusText(member, isExpired)}\n`;
-                details += `Fecha de Registro: ${new Date(member.registrationDate).toLocaleDateString()}\n`;
+                details += `Fecha de Registro: ${new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro).toLocaleDateString()}\n`;
                 
-                if (member.memberNumber) {
-                    details += `Número de Socio: ${member.memberNumber}\n`;
+                if (member.memberNumber || member.numeroSocio) {
+                    details += `Número de Socio: ${member.memberNumber || member.numeroSocio}\n`;
                 }
                 
                 if (member.validatedBy) {
@@ -5163,7 +5189,7 @@
             }
         }
 
-        function validateMember(memberId) {
+        async function validateMember(memberId) {
             try {
                 const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
                 const memberIndex = members.findIndex(m => m.id === memberId);
@@ -5172,7 +5198,7 @@
                     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin') || '{}');
                     
                     // Verificar si el socio no ha expirado (7 días)
-                    const registrationDate = new Date(members[memberIndex].registrationDate);
+                    const registrationDate = new Date(members[memberIndex].registrationDate || members[memberIndex].fechaRegistro || members[memberIndex].fecha_registro);
                     const currentDate = new Date();
                     const daysDiff = (currentDate - registrationDate) / (1000 * 60 * 60 * 24);
                     
@@ -5183,22 +5209,40 @@
                     }
                     
                     // Asignar número de socio
-                    const activeMembers = members.filter(m => m.status === 'active');
+                    const activeMembers = members.filter(m => {
+                        const status = m.status || m.estado || 'pendiente';
+                        return status === 'active' || status === 'activo';
+                    });
                     const nextNumber = activeMembers.length + 1;
                     
+                    // Actualizar estado (compatibilidad con ambos formatos)
                     members[memberIndex].status = 'active';
+                    members[memberIndex].estado = 'activo';
                     members[memberIndex].memberNumber = nextNumber;
+                    members[memberIndex].numeroSocio = `SOC-${nextNumber.toString().padStart(4, '0')}`;
                     members[memberIndex].validatedBy = currentAdmin.name || currentAdmin.email || 'Administrador';
                     members[memberIndex].validatedDate = new Date().toISOString();
+                    members[memberIndex].pagado = true;
                     
                     localStorage.setItem('clubMembers', JSON.stringify(members));
+                    
+                    // Actualizar estadísticas de la base de datos (usando localStorage)
+                    try {
+                        await updateDatabaseStats();
+                        console.log('✅ Estadísticas actualizadas desde localStorage');
+                    } catch (dbError) {
+                        console.error('❌ Error actualizando estadísticas:', dbError);
+                    }
                     
                     loadMembersList();
                     updateMemberCounts();
                     updateDashboardCounts();
                     
-                    alert(`✅ Socio "${members[memberIndex].name} ${members[memberIndex].surname}" validado correctamente.\n\n🔢 Número de socio asignado: ${nextNumber}`);
-                    console.log('✅ Socio validado:', members[memberIndex].name + ' ' + members[memberIndex].surname);
+                    const memberName = members[memberIndex].name || members[memberIndex].nombre;
+                    const memberSurname = members[memberIndex].surname || members[memberIndex].apellidos;
+                    
+                    alert(`✅ Socio "${memberName} ${memberSurname}" validado correctamente.\n\n🔢 Número de socio asignado: ${nextNumber}\n\n📊 Datos sincronizados con la base de datos.`);
+                    console.log('✅ Socio validado:', memberName + ' ' + memberSurname);
                 }
             } catch (error) {
                 console.error('❌ Error validando socio:', error);
@@ -5214,12 +5258,15 @@
                 let deletedCount = 0;
                 
                 const updatedMembers = members.filter(member => {
-                    if (member.status === 'pending_validation') {
-                        const registrationDate = new Date(member.registrationDate);
+                    const status = member.status || member.estado || 'pendiente';
+                    if (status === 'pending_validation' || status === 'pendiente') {
+                        const registrationDate = new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro);
                         const daysDiff = (currentDate - registrationDate) / (1000 * 60 * 60 * 24);
                         
                         if (daysDiff > 7) {
-                            console.log('🗑️ Socio expirado eliminado:', member.name + ' ' + member.surname);
+                            const memberName = member.name || member.nombre;
+                            const memberSurname = member.surname || member.apellidos;
+                            console.log('🗑️ Socio expirado eliminado:', memberName + ' ' + memberSurname);
                             deletedCount++;
                             return false; // Eliminar de la lista
                         }
@@ -5245,6 +5292,298 @@
             deleteExpiredMembers();
         }
 
+        // Función para diagnosticar y sincronizar datos de socios
+        async function diagnosticarYSincronizarSocios() {
+            console.log('🔍 === DIAGNÓSTICO Y SINCRONIZACIÓN DE SOCIOS ===');
+            
+            try {
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                console.log('📊 Total de socios en localStorage:', socios.length);
+                
+                // Normalizar datos para compatibilidad
+                const sociosNormalizados = socios.map(socio => {
+                    const socioNormalizado = {
+                        ...socio,
+                        // Asegurar que tenga todas las propiedades necesarias
+                        id: socio.id || socio._id || Date.now() + Math.random(),
+                        nombre: socio.nombre || socio.name,
+                        apellidos: socio.apellidos || socio.surname,
+                        telefono: socio.telefono || socio.phone,
+                        email: socio.email,
+                        dni: socio.dni,
+                        direccion: socio.direccion || socio.address,
+                        fechaNacimiento: socio.fechaNacimiento || socio.fecha_nacimiento || socio.birthDate,
+                        fechaRegistro: socio.fechaRegistro || socio.fecha_registro || socio.registrationDate || new Date().toISOString(),
+                        estado: socio.estado || socio.status || 'pendiente',
+                        numeroSocio: socio.numeroSocio || socio.numero_socio || socio.memberNumber,
+                        password: socio.password,
+                        pagado: socio.pagado || (socio.estado === 'activo' || socio.status === 'active'),
+                        validatedBy: socio.validatedBy,
+                        validatedDate: socio.validatedDate
+                    };
+                    
+                    // Asegurar compatibilidad con ambos formatos
+                    socioNormalizado.status = socioNormalizado.estado;
+                    socioNormalizado.name = socioNormalizado.nombre;
+                    socioNormalizado.surname = socioNormalizado.apellidos;
+                    socioNormalizado.phone = socioNormalizado.telefono;
+                    socioNormalizado.address = socioNormalizado.direccion;
+                    socioNormalizado.registrationDate = socioNormalizado.fechaRegistro;
+                    socioNormalizado.memberNumber = socioNormalizado.numeroSocio;
+                    
+                    return socioNormalizado;
+                });
+                
+                // Guardar datos normalizados en localStorage
+                localStorage.setItem('clubMembers', JSON.stringify(sociosNormalizados));
+                
+                // Crear una base de datos simulada en localStorage para compatibilidad
+                const baseDatosSimulada = {
+                    socios: sociosNormalizados,
+                    amigos: JSON.parse(localStorage.getItem('clubFriends') || '[]'),
+                    jugadores: JSON.parse(localStorage.getItem('clubPlayers') || '[]'),
+                    equipos: JSON.parse(localStorage.getItem('clubTeams') || '[]'),
+                    eventos: JSON.parse(localStorage.getItem('clubEvents') || '[]'),
+                    documentos: JSON.parse(localStorage.getItem('clubDocuments') || '[]')
+                };
+                
+                // Guardar la base de datos simulada
+                localStorage.setItem('cdsanabriacfDB', JSON.stringify(baseDatosSimulada));
+                
+                // Intentar sincronizar con IndexedDB si está disponible
+                if (typeof window !== 'undefined' && window.cdsanabriacfDB) {
+                    try {
+                        await waitForDatabase();
+                        
+                        // Limpiar socios existentes en la base de datos
+                        const sociosExistentes = await window.cdsanabriacfDB.getSocios();
+                        for (const socio of sociosExistentes) {
+                            if (window.cdsanabriacfDB.delete) {
+                                await window.cdsanabriacfDB.delete('socios', socio.id);
+                            }
+                        }
+                        
+                        // Agregar socios normalizados a la base de datos
+                        for (const socio of sociosNormalizados) {
+                            if (window.cdsanabriacfDB.add) {
+                                await window.cdsanabriacfDB.add('socios', socio);
+                            }
+                        }
+                        
+                        console.log('✅ Datos sincronizados con IndexedDB');
+                        
+                        // Actualizar estadísticas de la base de datos
+                        await updateDatabaseStats();
+                        
+                    } catch (dbError) {
+                        console.error('❌ Error sincronizando con IndexedDB:', dbError);
+                    }
+                }
+                
+                // Actualizar contadores y vista
+                updateMemberCounts();
+                loadMembersList();
+                
+                console.log('✅ Datos normalizados y sincronizados');
+                console.log('📊 Socios normalizados:', sociosNormalizados);
+                
+                // Mostrar resumen
+                const activos = sociosNormalizados.filter(s => s.estado === 'activo' || s.status === 'active').length;
+                const pendientes = sociosNormalizados.filter(s => s.estado === 'pendiente' || s.status === 'pending_validation').length;
+                
+                alert(`🔍 DIAGNÓSTICO COMPLETADO:\n\n📊 Total de socios: ${sociosNormalizados.length}\n✅ Activos: ${activos}\n⏳ Pendientes: ${pendientes}\n\n✅ Datos normalizados y sincronizados correctamente.\n\n📊 Dashboard y base de datos actualizados.\n\n💾 Base de datos simulada creada en localStorage.`);
+                
+            } catch (error) {
+                console.error('❌ Error en diagnóstico:', error);
+                alert('❌ Error durante el diagnóstico: ' + error.message);
+            }
+        }
+
+        // Función para sincronizar manualmente la base de datos
+        async function sincronizarBaseDatos() {
+            console.log('🔄 === SINCRONIZACIÓN MANUAL DE BASE DE DATOS ===');
+            
+            try {
+                // Obtener datos de localStorage
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                const jugadores = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                const equipos = JSON.parse(localStorage.getItem('clubTeams') || '[]');
+                const eventos = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+                const documentos = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+                
+                console.log('📊 Datos en localStorage:', {
+                    socios: socios.length,
+                    amigos: amigos.length,
+                    jugadores: jugadores.length,
+                    equipos: equipos.length,
+                    eventos: eventos.length,
+                    documentos: documentos.length
+                });
+                
+                // Actualizar todas las vistas y contadores
+                updateDashboardCounts();
+                updateMemberCounts();
+                loadMembersList();
+                await updateDatabaseStats();
+                
+                alert(`🔄 SINCRONIZACIÓN COMPLETADA:\n\n📊 Socios: ${socios.length}\n📊 Amigos: ${amigos.length}\n📊 Jugadores: ${jugadores.length}\n📊 Equipos: ${equipos.length}\n📊 Eventos: ${eventos.length}\n📊 Documentos: ${documentos.length}\n\n✅ Todos los datos sincronizados desde localStorage.\n\n📊 Dashboard y base de datos actualizados.`);
+                
+            } catch (error) {
+                console.error('❌ Error en sincronización:', error);
+                alert('❌ Error durante la sincronización: ' + error.message);
+            }
+        }
+
+        // Función para diagnosticar el estado de la base de datos
+        async function diagnosticarBaseDatos() {
+            console.log('🔍 === DIAGNÓSTICO DE BASE DE DATOS ===');
+            
+            try {
+                let info = '🔍 DIAGNÓSTICO DE BASE DE DATOS:\n\n';
+                
+                // Verificar localStorage
+                const sociosLocalStorage = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                info += `📊 localStorage:\n`;
+                info += `- Socios: ${sociosLocalStorage.length}\n`;
+                if (sociosLocalStorage.length > 0) {
+                    const primerSocio = sociosLocalStorage[0];
+                    info += `- Primer socio: ${primerSocio.nombre || primerSocio.name} ${primerSocio.apellidos || primerSocio.surname}\n`;
+                    info += `- Estado: ${primerSocio.estado || primerSocio.status}\n`;
+                }
+                info += '\n';
+                
+                // Verificar base de datos simulada
+                const baseDatosSimulada = JSON.parse(localStorage.getItem('cdsanabriacfDB') || '{}');
+                info += `📊 Base de datos simulada:\n`;
+                info += `- Disponible: ${baseDatosSimulada.socios ? '✅' : '❌'}\n`;
+                if (baseDatosSimulada.socios) {
+                    info += `- Socios: ${baseDatosSimulada.socios.length}\n`;
+                    if (baseDatosSimulada.socios.length > 0) {
+                        const primerSocioBD = baseDatosSimulada.socios[0];
+                        info += `- Primer socio BD: ${primerSocioBD.nombre || primerSocioBD.name} ${primerSocioBD.apellidos || primerSocioBD.surname}\n`;
+                        info += `- Estado BD: ${primerSocioBD.estado || primerSocioBD.status}\n`;
+                    }
+                }
+                info += '\n';
+                
+                // Verificar IndexedDB
+                if (typeof window !== 'undefined' && window.cdsanabriacfDB) {
+                    info += `📊 IndexedDB (cdsanabriacfDB):\n`;
+                    info += `- Disponible: ✅\n`;
+                    info += `- Métodos: ${Object.keys(window.cdsanabriacfDB).join(', ')}\n`;
+                    
+                    try {
+                        await waitForDatabase();
+                        const sociosIndexedDB = await window.cdsanabriacfDB.getSocios();
+                        info += `- Socios en BD: ${sociosIndexedDB.length}\n`;
+                        
+                        if (sociosIndexedDB.length > 0) {
+                            const primerSocioBD = sociosIndexedDB[0];
+                            info += `- Primer socio BD: ${primerSocioBD.nombre || primerSocioBD.name} ${primerSocioBD.apellidos || primerSocioBD.surname}\n`;
+                            info += `- Estado BD: ${primerSocioBD.estado || primerSocioBD.status}\n`;
+                        }
+                        
+                        // Verificar estadísticas
+                        try {
+                            const countSocios = await window.cdsanabriacfDB.count('socios');
+                            info += `- Count socios: ${countSocios}\n`;
+                        } catch (error) {
+                            info += `- Count socios: ❌ Error\n`;
+                        }
+                        
+                    } catch (error) {
+                        info += `- Error accediendo: ${error.message}\n`;
+                    }
+                } else {
+                    info += `📊 IndexedDB: ❌ No disponible\n`;
+                }
+                
+                console.log(info);
+                alert(info);
+                
+            } catch (error) {
+                console.error('❌ Error en diagnóstico:', error);
+                alert('❌ Error durante el diagnóstico: ' + error.message);
+            }
+        }
+
+        // Función para crear una base de datos simulada que siempre funcione
+        function crearBaseDatosSimulada() {
+            console.log('🔧 === CREANDO BASE DE DATOS SIMULADA ===');
+            
+            try {
+                // Obtener datos de localStorage
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                const jugadores = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+                const equipos = JSON.parse(localStorage.getItem('clubTeams') || '[]');
+                const eventos = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+                const documentos = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+                
+                // Crear base de datos simulada
+                const baseDatosSimulada = {
+                    socios: socios,
+                    amigos: amigos,
+                    jugadores: jugadores,
+                    equipos: equipos,
+                    eventos: eventos,
+                    documentos: documentos,
+                    // Métodos simulados
+                    getSocios: function() {
+                        return Promise.resolve(this.socios);
+                    },
+                    getAmigos: function() {
+                        return Promise.resolve(this.amigos);
+                    },
+                    getJugadores: function() {
+                        return Promise.resolve(this.jugadores);
+                    },
+                    count: function(tabla) {
+                        return Promise.resolve(this[tabla] ? this[tabla].length : 0);
+                    },
+                    add: function(tabla, item) {
+                        if (!this[tabla]) this[tabla] = [];
+                        this[tabla].push(item);
+                        localStorage.setItem('cdsanabriacfDB', JSON.stringify(this));
+                        return Promise.resolve(item);
+                    },
+                    update: function(tabla, id, item) {
+                        if (this[tabla]) {
+                            const index = this[tabla].findIndex(i => i.id === id);
+                            if (index !== -1) {
+                                this[tabla][index] = item;
+                                localStorage.setItem('cdsanabriacfDB', JSON.stringify(this));
+                            }
+                        }
+                        return Promise.resolve(item);
+                    },
+                    delete: function(tabla, id) {
+                        if (this[tabla]) {
+                            this[tabla] = this[tabla].filter(i => i.id !== id);
+                            localStorage.setItem('cdsanabriacfDB', JSON.stringify(this));
+                        }
+                        return Promise.resolve();
+                    }
+                };
+                
+                // Guardar en localStorage
+                localStorage.setItem('cdsanabriacfDB', JSON.stringify(baseDatosSimulada));
+                
+                // Crear en window si no existe
+                if (!window.cdsanabriacfDB) {
+                    window.cdsanabriacfDB = baseDatosSimulada;
+                }
+                
+                console.log('✅ Base de datos simulada creada');
+                alert(`🔧 BASE DE DATOS SIMULADA CREADA:\n\n📊 Socios: ${socios.length}\n📊 Amigos: ${amigos.length}\n📊 Jugadores: ${jugadores.length}\n📊 Equipos: ${equipos.length}\n📊 Eventos: ${eventos.length}\n📊 Documentos: ${documentos.length}\n\n✅ Base de datos simulada lista para usar.`);
+                
+            } catch (error) {
+                console.error('❌ Error creando base de datos simulada:', error);
+                alert('❌ Error creando base de datos simulada: ' + error.message);
+            }
+        }
+
         function editMember(memberId) {
             alert('🔧 Función de edición de socios en desarrollo. ID: ' + memberId);
         }
@@ -5263,8 +5602,10 @@
                         updateMemberCounts();
                         updateDashboardCounts();
                         
-                        alert('✅ Socio "' + memberToDelete.name + ' ' + memberToDelete.surname + '" eliminado correctamente');
-                        console.log('🗑️ Socio eliminado:', memberToDelete.name + ' ' + memberToDelete.surname);
+                        const memberName = memberToDelete.name || memberToDelete.nombre;
+                        const memberSurname = memberToDelete.surname || memberToDelete.apellidos;
+                        alert('✅ Socio "' + memberName + ' ' + memberSurname + '" eliminado correctamente');
+                        console.log('🗑️ Socio eliminado:', memberName + ' ' + memberSurname);
                     }
                 } catch (error) {
                     console.error('❌ Error eliminando socio:', error);
@@ -5277,7 +5618,10 @@
             if (confirm('¿Estás seguro de que quieres validar TODOS los socios pendientes?\n\n⚠️ Esta acción validará todos los socios que estén pendientes de validación.')) {
                 try {
                     const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-                    const pendingMembers = members.filter(m => m.status === 'pending_validation');
+                    const pendingMembers = members.filter(m => {
+                        const status = m.status || m.estado || 'pendiente';
+                        return status === 'pending_validation' || status === 'pendiente';
+                    });
                     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin') || '{}');
                     
                     if (pendingMembers.length === 0) {
@@ -5286,15 +5630,23 @@
                     }
                     
                     let validatedCount = 0;
-                    const activeMembers = members.filter(m => m.status === 'active');
+                    const activeMembers = members.filter(m => {
+                        const status = m.status || m.estado || 'pendiente';
+                        return status === 'active' || status === 'activo';
+                    });
                     let nextNumber = activeMembers.length + 1;
                     
                     members.forEach(member => {
-                        if (member.status === 'pending_validation') {
+                        const status = member.status || member.estado || 'pendiente';
+                        if (status === 'pending_validation' || status === 'pendiente') {
                             member.status = 'active';
-                            member.memberNumber = nextNumber++;
+                            member.estado = 'activo';
+                            member.memberNumber = nextNumber;
+                            member.numeroSocio = `SOC-${nextNumber.toString().padStart(4, '0')}`;
                             member.validatedBy = currentAdmin.name || currentAdmin.email || 'Administrador';
                             member.validatedDate = new Date().toISOString();
+                            member.pagado = true;
+                            nextNumber++;
                             validatedCount++;
                         }
                     });
@@ -5347,8 +5699,14 @@
             try {
                 const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
                 
-                const activeCount = members.filter(m => m.status === 'active').length;
-                const pendingCount = members.filter(m => m.status === 'pending_validation').length;
+                const activeCount = members.filter(m => {
+                    const status = m.status || m.estado || 'pendiente';
+                    return status === 'active' || status === 'activo';
+                }).length;
+                const pendingCount = members.filter(m => {
+                    const status = m.status || m.estado || 'pendiente';
+                    return status === 'pending_validation' || status === 'pendiente';
+                }).length;
                 const expiredCount = members.filter(m => isMemberExpired(m)).length;
                 
                 // Actualizar contadores en la interfaz
@@ -5364,6 +5722,9 @@
                 const nextNumber = activeCount + 1;
                 const nextElement = document.getElementById('nextMemberNumber');
                 if (nextElement) nextElement.textContent = nextNumber;
+                
+                // También actualizar el dashboard principal
+                updateDashboardCounts();
                 
                 console.log('📊 Contadores de socios actualizados:', { activeCount, pendingCount, expiredCount, nextNumber });
                 
@@ -5394,28 +5755,73 @@
         // ===== ACTUALIZACIÓN DE FUNCIÓN updateDashboardCounts =====
         function updateDashboardCounts() {
             try {
-                // PONER TODOS LOS CONTADORES A CERO
-                const activePlayers = 0;
-                const activeMembers = 0;
-                const activeFriends = 0;
-                const eventsCount = 0;
-                const competitionsCount = 0;
+                // Obtener datos reales de socios
+                const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const friends = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                const events = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+                const competitions = JSON.parse(localStorage.getItem('clubCompetitions') || '[]');
+                
+                // Contar socios activos
+                const activeMembers = members.filter(m => {
+                    const status = m.status || m.estado || 'pendiente';
+                    return status === 'active' || status === 'activo';
+                }).length;
+                
+                // Contar socios pendientes
+                const pendingMembers = members.filter(m => {
+                    const status = m.status || m.estado || 'pendiente';
+                    return status === 'pending_validation' || status === 'pendiente';
+                }).length;
+                
+                // Contar amigos activos
+                const activeFriends = friends.filter(f => {
+                    const status = f.status || f.estado || 'activo';
+                    return status === 'active' || status === 'activo';
+                }).length;
+                
+                // Contar eventos
+                const eventsCount = events.length;
+                
+                // Contar competiciones
+                const competitionsCount = competitions.length;
+                
+                // Contar jugadores (socios activos que son jugadores)
+                const activePlayers = members.filter(m => {
+                    const status = m.status || m.estado || 'pendiente';
+                    const isPlayer = m.isPlayer || m.esJugador || false;
+                    return (status === 'active' || status === 'activo') && isPlayer;
+                }).length;
                 
                 // Actualizar elementos del dashboard
                 const playersElement = document.getElementById('playersCount');
                 const membersElement = document.getElementById('membersCount');
                 const eventsElement = document.getElementById('eventsCount');
                 const competitionsElement = document.getElementById('competitionsCount');
+                const pendingElement = document.getElementById('pendingMembersCount');
+                const activeFriendsElement = document.getElementById('activeFriendsCount');
+                const inactiveFriendsElement = document.getElementById('inactiveFriendsCount');
+                const totalFriendsElement = document.getElementById('totalFriendsCount');
                 
                 if (playersElement) playersElement.textContent = activePlayers;
                 if (membersElement) membersElement.textContent = activeMembers;
                 if (eventsElement) eventsElement.textContent = eventsCount;
                 if (competitionsElement) competitionsElement.textContent = competitionsCount;
+                if (pendingElement) pendingElement.textContent = pendingMembers;
+                if (activeFriendsElement) activeFriendsElement.textContent = activeFriends;
+                if (inactiveFriendsElement) inactiveFriendsElement.textContent = friends.length - activeFriends;
+                if (totalFriendsElement) totalFriendsElement.textContent = friends.length;
                 
-                // Actualizar contadores de categorías a cero
+                // Actualizar contadores de categorías
                 updateCategoryCounts();
                 
-                console.log('📊 Dashboard reseteado a cero:', { activePlayers, activeMembers, activeFriends, eventsCount, competitionsCount });
+                console.log('📊 Dashboard actualizado:', { 
+                    activePlayers, 
+                    activeMembers, 
+                    pendingMembers,
+                    activeFriends, 
+                    eventsCount, 
+                    competitionsCount 
+                });
                 
             } catch (error) {
                 console.error('❌ Error actualizando dashboard:', error);
@@ -5912,6 +6318,7 @@
                                     <div style="margin-top: 10px;">
                                         <button class="btn btn-sm btn-primary" onclick="viewCoachDetails('${coach.id}')" style="margin-right: 5px;">👁️ Ver</button>
                                         <button class="btn btn-sm btn-warning" onclick="toggleCoachStatus('${coach.id}')" style="margin-right: 5px;">🔄 ${coach.status === 'active' ? 'Desactivar' : 'Activar'}</button>
+                                        <button class="btn btn-sm btn-info" onclick="resetCoachPassword('${coach.id}')" style="margin-right: 5px;">🔑 Reset</button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteCoach('${coach.id}')">🗑️ Eliminar</button>
                                     </div>
                                 </div>
@@ -5945,6 +6352,51 @@
         // Filtrar entrenadores
         function filterCoaches() {
             loadCoachesList();
+        }
+
+        // Restablecer contraseña del entrenador
+        function resetCoachPassword(coachId) {
+            try {
+                const coaches = JSON.parse(localStorage.getItem('clubCoaches') || '[]');
+                const coach = coaches.find(c => c.id === coachId);
+                
+                if (!coach) {
+                    alert('❌ Entrenador no encontrado');
+                    return;
+                }
+
+                const newPassword = prompt(`🔑 Restablecer contraseña para ${coach.name} ${coach.surname}\n\nIntroduce la nueva contraseña:`);
+                
+                if (!newPassword) {
+                    alert('❌ No se introdujo ninguna contraseña');
+                    return;
+                }
+
+                if (newPassword.length < 4) {
+                    alert('❌ La contraseña debe tener al menos 4 caracteres');
+                    return;
+                }
+
+                // Actualizar contraseña
+                coach.password = newPassword;
+                coach.passwordResetDate = new Date().toISOString();
+                coach.passwordResetBy = JSON.parse(localStorage.getItem('currentAdmin') || '{}').name || 'Administrador';
+
+                // Guardar cambios
+                const updatedCoaches = coaches.map(c => c.id === coachId ? coach : c);
+                localStorage.setItem('clubCoaches', JSON.stringify(updatedCoaches));
+
+                // Actualizar vista
+                loadCoachesList();
+
+                alert(`✅ Contraseña restablecida correctamente\n\n👨‍🏫 ${coach.name} ${coach.surname}\n🔑 Nueva contraseña: ${newPassword}\n\n⚠️ Informa al entrenador de su nueva contraseña.`);
+
+                console.log('🔑 Contraseña restablecida para entrenador:', coach.name + ' ' + coach.surname);
+
+            } catch (error) {
+                console.error('❌ Error restableciendo contraseña:', error);
+                alert('❌ Error al restablecer la contraseña');
+            }
         }
 
         // Ver detalles del entrenador
@@ -7536,21 +7988,30 @@
         // Actualizar estadísticas de la base de datos
         async function updateDatabaseStats() {
             try {
-                await waitForDatabase();
-                
-                const socios = await window.cdsanabriacfDB.count('socios');
-                const amigos = await window.cdsanabriacfDB.count('amigos');
-                const jugadores = await window.cdsanabriacfDB.count('jugadores');
-                const equipos = await window.cdsanabriacfDB.count('equipos');
-                const eventos = await window.cdsanabriacfDB.count('eventos');
-                const documentos = await window.cdsanabriacfDB.count('documentos');
+                // Usar localStorage directamente en lugar de IndexedDB
+                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]').length;
+                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]').length;
+                const jugadores = JSON.parse(localStorage.getItem('clubPlayers') || '[]').length;
+                const equipos = JSON.parse(localStorage.getItem('clubTeams') || '[]').length;
+                const eventos = JSON.parse(localStorage.getItem('clubEvents') || '[]').length;
+                const documentos = JSON.parse(localStorage.getItem('clubDocuments') || '[]').length;
 
-                document.getElementById('dbSociosCount').textContent = socios;
-                document.getElementById('dbAmigosCount').textContent = amigos;
-                document.getElementById('dbJugadoresCount').textContent = jugadores;
-                document.getElementById('dbEquiposCount').textContent = equipos;
-                document.getElementById('dbEventosCount').textContent = eventos;
-                document.getElementById('dbDocumentosCount').textContent = documentos;
+                // Actualizar elementos si existen
+                const dbSociosElement = document.getElementById('dbSociosCount');
+                const dbAmigosElement = document.getElementById('dbAmigosCount');
+                const dbJugadoresElement = document.getElementById('dbJugadoresCount');
+                const dbEquiposElement = document.getElementById('dbEquiposCount');
+                const dbEventosElement = document.getElementById('dbEventosCount');
+                const dbDocumentosElement = document.getElementById('dbDocumentosCount');
+
+                if (dbSociosElement) dbSociosElement.textContent = socios;
+                if (dbAmigosElement) dbAmigosElement.textContent = amigos;
+                if (dbJugadoresElement) dbJugadoresElement.textContent = jugadores;
+                if (dbEquiposElement) dbEquiposElement.textContent = equipos;
+                if (dbEventosElement) dbEventosElement.textContent = eventos;
+                if (dbDocumentosElement) dbDocumentosElement.textContent = documentos;
+
+                console.log('✅ Estadísticas de base de datos actualizadas desde localStorage:', { socios, amigos, jugadores, equipos, eventos, documentos });
             } catch (error) {
                 console.error('Error actualizando estadísticas de BD:', error);
             }

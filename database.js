@@ -174,7 +174,7 @@ class CDSANABRIACFDatabase {
             },
             {
                 nombre: 'Administrador Secundario',
-                email: 'cdsanabriacf@gmail.com',
+                email: 'cdsanabriafc@gmail.com',
                 password: 'admin123',
                 rol: 'admin',
                 estado: 'activo',

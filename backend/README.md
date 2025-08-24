@@ -109,7 +109,7 @@ Después de ejecutar `npm run init-db`:
 - **Acceso**: Completo a toda la aplicación
 
 ### Administrador de Equipo
-- **Email**: cdsanabriacf@gmail.com
+- **Email**: cdsanabriafc@gmail.com
 - **Contraseña**: admin123
 - **Acceso**: Solo a su equipo asignado
 

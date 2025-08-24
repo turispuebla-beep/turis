@@ -113,7 +113,7 @@ const createDefaultAdmins = async (teams: any[]): Promise<void> => {
   
   // Administrador de equipo (usando el primer equipo como ejemplo)
   const teamAdmin = new User({
-    email: 'cdsanabriacf@gmail.com',
+            email: 'cdsanabriafc@gmail.com',
     password: 'admin123',
     nombre: 'Administrador',
     apellidos: 'Equipo',
@@ -126,7 +126,7 @@ const createDefaultAdmins = async (teams: any[]): Promise<void> => {
   
   console.log('✅ Administradores por defecto creados');
   console.log('📧 Super Admin: amco@gmx.es / 533712');
-  console.log('📧 Team Admin: cdsanabriacf@gmail.com / admin123');
+      console.log('📧 Team Admin: cdsanabriafc@gmail.com / admin123');
 };
 
 // Ejecutar si se llama directamente

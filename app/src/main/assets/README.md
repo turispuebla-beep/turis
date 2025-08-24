@@ -71,7 +71,7 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - **Permisos**: Acceso total a todo el sistema
 
 #### Administrador Principal
-- **Email**: `cdsanabriacf@gmail.com`
+- **Email**: `cdsanabriafc@gmail.com`
 - **Contraseña**: `admin123`
 - **Permisos**: Gestión completa del club
 
@@ -367,7 +367,7 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 
 ### Credenciales de Acceso
 - **Super Admin**: `amco@gmx.es` / `533712`
-- **Admin Principal**: `cdsanabriacf@gmail.com` / `admin123`
+- **Admin Principal**: `cdsanabriafc@gmail.com` / `admin123`
 - **Admin Sanabria**: `administradores@sanabria.com` / `admin12`
 
 ## 🆕 Cambios Implementados Hoy (14 de Agosto 2025)
@@ -419,7 +419,7 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 ## 📞 Soporte y Contacto
 
 ### Información del Club
-- **Email**: cdsanabriacf@gmail.com
+- **Email**: cdsanabriafc@gmail.com
 - **Dirección**: Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora
 - **Teléfono**: +34 600 000 000
 - **Web**: www.cdsanabriacf.com

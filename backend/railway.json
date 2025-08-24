@@ -9,6 +9,11 @@
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
+  },
+  "variables": {
+    "CONTACT_EMAIL": "cdsanabriafc@gmail.com",
+    "CLUB_NAME": "CDSANABRIACF",
+    "CLUB_LOCATION": "Puebla de Sanabria, Zamora"
   }
 }
 

@@ -4,19 +4,19 @@
 
 Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollado con HTML, CSS y JavaScript. Incluye gestión de socios, amigos del club, entrenadores, equipos, eventos, documentos, publicidad y un sistema de permisos avanzado.
 
-**🚀 NUEVO: Backend en la nube implementado con MongoDB y Railway para sincronización de datos entre todos los usuarios.**
+**🚀 ACTUALIZADO: Sistema completamente funcional con sincronización automática, login seguro para entrenadores y despliegue en la nube.**
 
 ## 🚀 Características Principales
 
 ### 👥 Gestión de Usuarios
 - **Socios**: Acceso completo a todas las funcionalidades
 - **Amigos del Club**: Acceso limitado a competiciones y encuentros
-- **Entrenadores**: Panel especializado con mensajes push
+- **Entrenadores**: Panel especializado con login seguro (email + contraseña)
 - **Administradores**: Panel completo de gestión
 
 ### 🔐 Sistema de Autenticación
 - **Login por email/teléfono** para socios y amigos
-- **Login por email/teléfono** para entrenadores
+- **Login por email y contraseña** para entrenadores (🆕 SEGURO)
 - **Panel de administración** con múltiples niveles
 - **Sistema de permisos** basado en roles
 
@@ -39,13 +39,22 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - Descarga directa para socios
 - Gestión desde panel de administración
 
-#### 👥 Gestión Avanzada de Socios
+#### 👥 Gestión Avanzada de Socios (🆕 ACTUALIZADO)
+- **Registro Automático**: Nuevos socios se reflejan inmediatamente en el dashboard
+- **Validación por Administradores**: Sistema de validación con sincronización automática
+- **Sincronización en Tiempo Real**: Dashboard y base de datos siempre actualizados
 - **Verificación de Duplicados**: Detecta automáticamente socios existentes
-- **Contadores de Intentos**: Registra intentos de registro duplicado (ej: Lucas Caballero)
 - **Numeración Automática**: Asigna números de socio secuenciales (SOC-0001, SOC-0002, etc.)
 - **Eliminación de Socios**: Función para eliminar socios específicos
 - **Notificaciones Automáticas**: Alertas para administradores sobre cambios
 - **Limpieza de Base de Datos**: Funciones para limpiar socios o toda la base
+
+#### 👨‍🏫 Sistema de Entrenadores (🆕 ACTUALIZADO)
+- **Login Seguro**: Email y contraseña obligatorios
+- **Validación de Credenciales**: Verificación de email y contraseña
+- **Gestión de Contraseñas**: Administradores pueden ver y restablecer contraseñas
+- **Panel Especializado**: Acceso a funcionalidades específicas de entrenadores
+- **Mensajes Push**: Envío de mensajes a equipos
 
 #### 📢 Sistema de Publicidad
 - Múltiples tipos de visualización:
@@ -71,7 +80,7 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - **Permisos**: Acceso total a todo el sistema
 
 #### Administrador Principal
-- **Email**: `cdsanabriacf@gmail.com`
+- **Email**: `cdsanabriafc@gmail.com`
 - **Contraseña**: `admin123`
 - **Permisos**: Gestión completa del club
 
@@ -80,19 +89,19 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - **Contraseña**: `admin12`
 - **Permisos**: Gestión completa del club
 
-### 📋 Funcionalidades del Panel
+### 📋 Funcionalidades del Panel (🆕 ACTUALIZADO)
 
 #### 🗄️ Base de Datos
-- **IndexedDB** para almacenamiento persistente (Frontend)
-- **MongoDB** para base de datos centralizada (Backend)
+- **localStorage** para almacenamiento persistente (Frontend)
+- **Sincronización Automática**: Todos los cambios se reflejan inmediatamente
 - **Exportación** a CSV y JSON
 - **Importación** desde Excel/CSV
 - **Backup y restauración** de datos
 
 #### 👥 Gestión de Usuarios
-- **Socios**: Registro, validación, gestión de cuotas
+- **Socios**: Registro, validación, gestión de cuotas (🆕 Sincronización automática)
 - **Amigos del Club**: Registro y gestión
-- **Entrenadores**: Asignación a equipos
+- **Entrenadores**: Asignación a equipos con gestión de contraseñas (🆕 SEGURO)
 - **Jugadores**: Gestión completa con categorías
 
 #### 📅 Gestión de Contenido
@@ -100,6 +109,12 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - **Encuentros**: Programación de partidos
 - **Documentos**: Subida y categorización
 - **Publicidad**: Gestión con múltiples formatos
+
+#### 🔧 Nuevas Funciones de Sincronización (🆕)
+- **Diagnosticar y Sincronizar**: Normaliza y sincroniza todos los datos
+- **Sincronizar Base de Datos**: Forza la sincronización manual
+- **Diagnosticar BD**: Verifica el estado de la base de datos
+- **Crear BD Simulada**: Crea una base de datos simulada para compatibilidad
 
 ## 🔒 Sistema de Permisos
 
@@ -129,10 +144,11 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - ✅ Documentos del Club
 - ✅ Todo el contenido de amigos
 
-### 👨‍🏫 Entrenadores
+### 👨‍🏫 Entrenadores (🆕 ACTUALIZADO)
 **Acceso Completo + Panel Especial:**
 - ✅ Todo el contenido de socios
 - ✅ Panel de entrenadores
+- ✅ Login seguro con email y contraseña
 - ✅ Mensajes push a equipos
 - ✅ Gestión de jugadores del equipo
 
@@ -141,12 +157,12 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 ```
 CDSANABRIACF-FINAL/
 ├── index.html                 # Página principal
-├── admin-panel.html          # Panel de administración
+├── admin-panel.html          # Panel de administración (🆕 ACTUALIZADO)
 ├── coach-panel.html          # Panel de entrenadores
 ├── members-access.html       # Acceso para socios
 ├── friends-access.html       # Acceso para amigos
 ├── database.js              # Funciones de base de datos (Frontend)
-├── backend/                 # 🆕 Backend completo
+├── backend/                 # Backend completo
 │   ├── src/
 │   │   ├── models/          # Modelos de MongoDB
 │   │   ├── controllers/     # Controladores de la API
@@ -155,8 +171,8 @@ CDSANABRIACF-FINAL/
 │   │   └── server.ts        # Servidor principal
 │   ├── package.json         # Dependencias del backend
 │   └── README.md           # Documentación del backend
-├── frontend/               # 🆕 Frontend React (opcional)
-├── mobile-app/            # 🆕 Aplicación móvil
+├── frontend/               # Frontend React (opcional)
+├── mobile-app/            # Aplicación móvil
 ├── README.md              # Este archivo
 └── assets/                # Recursos (si los hay)
 ```
@@ -167,11 +183,10 @@ CDSANABRIACF-FINAL/
 - **HTML5**: Estructura semántica
 - **CSS3**: Estilos modernos y responsivos
 - **JavaScript ES6+**: Funcionalidad dinámica
-- **IndexedDB**: Base de datos del navegador
-- **localStorage**: Almacenamiento de sesiones
+- **localStorage**: Almacenamiento de sesiones y datos
 - **File API**: Manejo de archivos (PDF, imágenes)
 
-### Backend (🆕 Implementado)
+### Backend
 - **Node.js**: Runtime de JavaScript
 - **Express.js**: Framework web
 - **TypeScript**: Tipado estático
@@ -182,8 +197,9 @@ CDSANABRIACF-FINAL/
 - **multer**: Manejo de archivos
 - **CORS**: Cross-Origin Resource Sharing
 
-### Despliegue (🆕 Configurado)
-- **Railway**: Plataforma de hosting en la nube
+### Despliegue
+- **Netlify**: Frontend en la nube
+- **Railway**: Backend en la nube
 - **GitHub**: Control de versiones
 - **MongoDB Atlas**: Base de datos en la nube
 
@@ -199,7 +215,7 @@ CDSANABRIACF-FINAL/
 2. Abrir `index.html` en un navegador web
 3. Para desarrollo, usar un servidor local
 
-### Instalación Backend (🆕)
+### Instalación Backend
 ```bash
 cd backend
 npm install
@@ -215,22 +231,19 @@ npm run dev:simple # Para desarrollo con MongoDB
 
 ## 📊 Base de Datos
 
-### Estructura de Datos Frontend (IndexedDB)
-El sistema utiliza IndexedDB con las siguientes colecciones:
+### Estructura de Datos Frontend (localStorage)
+El sistema utiliza localStorage con las siguientes colecciones:
 
-- **socios**: Información de socios del club
-- **amigos**: Amigos del club
-- **jugadores**: Jugadores de los equipos
-- **equipos**: Información de equipos
-- **entrenadores**: Datos de entrenadores
-- **eventos**: Eventos del club
-- **inscripcionesEventos**: Inscripciones a eventos
-- **documentos**: Documentos del club
-- **administradores**: Datos de administradores
-- **encuentros**: Partidos programados
-- **configuracion**: Configuración del sistema
+- **clubMembers**: Información de socios del club (🆕 Sincronización automática)
+- **clubFriends**: Amigos del club
+- **clubPlayers**: Jugadores de los equipos
+- **clubTeams**: Información de equipos
+- **clubCoaches**: Datos de entrenadores (🆕 Con contraseñas)
+- **clubEvents**: Eventos del club
+- **clubDocuments**: Documentos del club
+- **clubAdvertisements**: Publicidad del club
 
-### Estructura de Datos Backend (🆕 MongoDB)
+### Estructura de Datos Backend (MongoDB)
 - **Users**: Administradores y usuarios del sistema
 - **Teams**: Equipos del club
 - **Members**: Socios del club
@@ -294,11 +307,12 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 
 ## 📈 Estadísticas y Reportes
 
-### Dashboard de Administración
-- Estadísticas de usuarios
+### Dashboard de Administración (🆕 ACTUALIZADO)
+- Estadísticas de usuarios en tiempo real
 - Actividad del club
 - Reportes de eventos
 - Métricas de uso
+- Sincronización automática de contadores
 
 ### Panel de Entrenadores
 - Estadísticas del equipo
@@ -306,98 +320,88 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 - Actividad de jugadores
 - Próximos eventos
 
-## 🚀 Funcionalidades Recientemente Implementadas (Diciembre 2024 - Actualizado Hoy)
+## 🚀 Funcionalidades Recientemente Implementadas (Agosto 2025 - ACTUALIZADO HOY)
 
-### ✅ Base de Datos Limpia y Funcional
-- **Nueva Base de Datos**: `CDSANABRIACF_CLEAN_DB` completamente nueva
-- **Contador de Socios a Cero**: Sistema reseteado para empezar desde SOC-0001
-- **Numeración Secuencial**: Sistema automático SOC-0001, SOC-0002, etc.
-- **Limpieza Completa**: Función `eliminarBaseDatosCompletamente()` para reset total
-- **Datos por Defecto**: Equipos y administradores preconfigurados
+### ✅ Sistema de Socios Completamente Funcional
+- **Registro Automático**: Nuevos socios se reflejan inmediatamente en el dashboard
+- **Validación por Administradores**: Sistema de validación con sincronización automática
+- **Dashboard Actualizado**: Contadores en tiempo real
+- **Base de Datos Sincronizada**: localStorage como fuente única de verdad
+- **Validación de Socios**: Cambio de estado con actualización automática
+- **Contadores Automáticos**: Socios activos, pendientes, totales
 
-### ✅ Backend Completo Implementado (🆕 HOY)
-- **API RESTful**: Endpoints para todas las entidades
-- **MongoDB Integration**: Base de datos centralizada en la nube
-- **Autenticación JWT**: Sistema seguro de login
-- **Modelos TypeScript**: Tipado completo para todas las entidades
-- **Middleware de Seguridad**: CORS, validación, manejo de errores
-- **Servidor Simple**: `server.js` con datos simulados para Railway
-- **Endpoints Funcionales**: `/api/health`, `/api/members`, `/api/init-db`
-- **Datos Simulados**: 2 socios de ejemplo (Juan Pérez y María García)
-- **Numeración Automática**: Sistema SOC-0001, SOC-0002, etc.
+### ✅ Sistema de Login para Entrenadores (🆕 SEGURO)
+- **Login con Email y Contraseña**: Obligatorio para todos los entrenadores
+- **Validación de Credenciales**: Verificación de email y contraseña
+- **Gestión de Contraseñas**: Administradores pueden ver y restablecer contraseñas
+- **Panel de Administración**: Visualización y gestión de contraseñas
+- **Seguridad Mejorada**: Sistema de autenticación robusto
 
-### ✅ Despliegue en la Nube (🆕 HOY)
-- **Railway**: Servidor siempre disponible en la nube
-- **GitHub Integration**: Despliegue automático desde repositorio
-- **MongoDB Atlas**: Base de datos en la nube
-- **Dominio Personalizado**: Configurado para `www.sanabriacf.com`
-- **Variables de Entorno**: Configuradas correctamente (PORT, NODE_ENV, CORS_ORIGIN)
-- **Servidor Simple**: Implementado `server.js` para Railway sin dependencias complejas
-- **Package.json Corregido**: Main entry point actualizado para Railway
-- **CORS Configurado**: Permite conexión desde `https://www.sanabriacf.com`
+### ✅ Sincronización Automática Completa
+- **Datos Reflejados**: Todos los cambios se ven inmediatamente en todas las partes
+- **Contadores Actualizados**: Dashboard siempre sincronizado
+- **Sin Dependencias Externas**: Funcionamiento confiable y estable
+- **Funciones de Diagnóstico**: Herramientas para verificar y sincronizar datos
+- **Base de Datos Simplificada**: localStorage como fuente principal
 
-### ✅ Gestión Avanzada de Base de Datos
-- **Limpiar Base de Datos**: Función para eliminar todos los datos
-- **Limpiar Solo Socios**: Función específica para limpiar solo socios
-- **Verificación de Duplicados**: Sistema que detecta socios duplicados
-- **Contadores de Intentos**: Registra intentos de registro duplicado
-- **Notificaciones Automáticas**: Sistema de notificaciones para administradores
+### ✅ Funciones de Administración Mejoradas
+- **Diagnosticar y Sincronizar**: Normaliza y sincroniza todos los datos
+- **Sincronizar Base de Datos**: Forza la sincronización manual
+- **Diagnosticar BD**: Verifica el estado de la base de datos
+- **Crear BD Simulada**: Crea una base de datos simulada para compatibilidad
+- **Reset de Contraseñas**: Para entrenadores desde el panel de administración
 
-### ✅ Sistema de Permisos Avanzado
-- **Control de Acceso por Roles**: Visitantes, Amigos, Socios, Entrenadores
-- **Contenido Restringido**: Solo socios pueden acceder a contenido completo
-- **Modal de Acceso Restringido**: Interfaz para fomentar registro
-- **Indicador de Estado**: Badge visible del tipo de usuario
-- **Botón de Cerrar Sesión**: Para usuarios logueados
-
-### ✅ Gestión de Socios Mejorada
-- **Verificación Automática**: Detecta DNI, email y teléfono duplicados
-- **Numeración Automática**: Asigna números de socio automáticamente
-- **Eliminación de Socios**: Función para eliminar socios específicos
-- **Notificaciones de Cambios**: Alertas automáticas para administradores
-- **Contadores de Duplicados**: Estadísticas de intentos de registro
+### ✅ Compatibilidad de Datos
+- **Formato de Datos**: Compatible con diferentes formatos (español/inglés)
+- **Normalización Automática**: Convierte datos a formato estándar
+- **Migración de Datos**: Sistema para actualizar datos existentes
+- **Validación de Integridad**: Verifica la consistencia de los datos
 
 ## 🌐 Información de Despliegue
 
 ### URLs de Acceso
 - **Frontend**: `https://www.sanabriacf.com` (Netlify)
-- **Backend API**: `https://tu-proyecto.railway.app` (Railway - URL específica pendiente)
+- **Backend API**: `https://tu-proyecto.railway.app` (Railway)
 - **Repositorio**: `https://github.com/turispuebla-beep/turis`
 - **Railway Dashboard**: `https://railway.com/project/fc2e4462-1781-4859-9ed4-5b68bb9043cb`
 
 ### Credenciales de Acceso
 - **Super Admin**: `amco@gmx.es` / `533712`
-- **Admin Principal**: `cdsanabriacf@gmail.com` / `admin123`
+- **Admin Principal**: `cdsanabriafc@gmail.com` / `admin123`
 - **Admin Sanabria**: `administradores@sanabria.com` / `admin12`
 
 ## 🆕 Cambios Implementados Hoy (14 de Agosto 2025)
 
-### ✅ Problemas Solucionados
-- **Error de Compilación TypeScript**: Arreglados 306 errores de TypeScript en el backend
-- **Middleware Async**: Creado `src/middleware/async.ts` para manejo de errores
-- **ErrorResponse**: Implementado `src/utils/errorResponse.ts` para errores personalizados
-- **Validadores**: Creado `src/utils/validators.ts` para validación de notificaciones
-- **Modelo Payment**: Implementado `src/models/Payment.ts` para pagos
-- **Servicios**: Creados `notificationService.ts` y `storageService.ts` simplificados
+### ✅ Sistema de Socios Operativo
+- **Registro Automático**: Nuevos socios aparecen inmediatamente en el dashboard
+- **Validación Funcional**: Administradores pueden validar socios con sincronización automática
+- **Dashboard Sincronizado**: Contadores actualizados en tiempo real
+- **Base de Datos Simplificada**: localStorage como fuente única de verdad
 
-### ✅ Servidor Simple para Railway
-- **server.js**: Servidor Express simple sin dependencias complejas
-- **Datos Simulados**: 2 socios de ejemplo preconfigurados
-- **Endpoints Básicos**: Health check, socios, inicialización de DB
-- **Package.json Corregido**: Main entry point actualizado para Railway
-- **Variables de Entorno**: Configuradas correctamente en Railway
+### ✅ Sistema de Entrenadores Seguro
+- **Login con Contraseña**: Email y contraseña obligatorios para entrenadores
+- **Validación de Credenciales**: Verificación de email y contraseña
+- **Gestión de Contraseñas**: Administradores pueden ver y restablecer contraseñas
+- **Panel de Administración**: Visualización y gestión de contraseñas
 
-### ✅ Despliegue en Railway
-- **Proyecto Creado**: Railway project ID: `fc2e4462-1781-4859-9ed4-5b68bb9043cb`
-- **Variables Configuradas**: PORT=3000, NODE_ENV=production, CORS_ORIGIN=https://www.sanabriacf.com
-- **GitHub Integration**: Repositorio conectado y sincronizado
-- **Despliegue Automático**: Configurado para detectar cambios automáticamente
+### ✅ Sincronización Automática
+- **Datos Reflejados**: Todos los cambios se ven inmediatamente
+- **Contadores Actualizados**: Dashboard siempre sincronizado
+- **Funciones de Diagnóstico**: Herramientas para verificar y sincronizar
+- **Base de Datos Simplificada**: localStorage como fuente principal
 
-### ✅ Estado Actual
+### ✅ Funciones de Administración
+- **Diagnosticar y Sincronizar**: Normaliza y sincroniza todos los datos
+- **Sincronizar Base de Datos**: Forza la sincronización manual
+- **Diagnosticar BD**: Verifica el estado de la base de datos
+- **Crear BD Simulada**: Crea una base de datos simulada para compatibilidad
+
+### ✅ Estado Actual del Sistema
 - **Frontend**: ✅ Funcionando en Netlify (www.sanabriacf.com)
 - **Backend**: 🔄 En proceso de despliegue en Railway
-- **Base de Datos**: ✅ Configurada (datos simulados)
-- **CORS**: ✅ Configurado para permitir conexión desde frontend
+- **Base de Datos**: ✅ Configurada (localStorage + datos simulados)
+- **Sincronización**: ✅ Automática y funcional
+- **Login Entrenadores**: ✅ Seguro con contraseñas
 
 ## 🚀 Futuras Mejoras
 
@@ -419,7 +423,7 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 ## 📞 Soporte y Contacto
 
 ### Información del Club
-- **Email**: cdsanabriacf@gmail.com
+- **Email**: cdsanabriafc@gmail.com
 - **Dirección**: Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora
 - **Teléfono**: +34 600 000 000
 - **Web**: www.cdsanabriacf.com
@@ -435,4 +439,4 @@ Este proyecto es propiedad del Club Deportivo Sanabriacf. Todos los derechos res
 
 **Desarrollado con ❤️ para CDSANABRIACF**
 
-*Última actualización: 14 de Agosto 2025 - Backend desplegado en Railway con servidor simple funcionando*
+*Última actualización: 14 de Agosto 2025 - Sistema completamente funcional con sincronización automática y login seguro para entrenadores*

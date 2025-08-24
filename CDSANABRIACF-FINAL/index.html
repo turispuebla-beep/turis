@@ -1216,7 +1216,7 @@
             <div id="contactInfo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: center;">
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">📧 Email</h4>
-                    <p id="contactEmail" style="color: var(--text-light-color);">cdsanabriacf@gmail.com</p>
+                    <p id="contactEmail" style="color: var(--text-light-color);">cdsanabriafc@gmail.com</p>
                 </div>
                 <div>
                     <h4 style="color: var(--text-color); margin-bottom: 10px;">📱 Teléfono</h4>
@@ -1256,7 +1256,7 @@
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Responsable del Tratamiento</h4>
                 <p>Club Deportivo Sanabriacf (CDSANABRIACF)<br>
                 Dirección: [Dirección del club]<br>
-                Email: cdsanabriacf@gmail.com<br>
+                Email: cdsanabriafc@gmail.com<br>
                 Teléfono: +34 600 000 000</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Finalidad del Tratamiento</h4>
@@ -1283,7 +1283,7 @@
                 <p>Sus datos no serán cedidos a terceros salvo obligación legal o cuando sea necesario para la prestación de los servicios solicitados.</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Derechos</h4>
-                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición contactando con nosotros en cdsanabriacf@gmail.com</p>
+                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición contactando con nosotros en cdsanabriafc@gmail.com</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Autoridad de Control</h4>
                 <p>Puede presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) si considera que el tratamiento no se ajusta a la normativa vigente.</p>
@@ -1310,7 +1310,7 @@
         let teamSettings = {
             teamName: 'CDSANABRIACF',
             teamSubtitle: 'Club Deportivo Sanabriacf - Pasión por el Fútbol',
-            contactEmail: 'cdsanabriacf@gmail.com',
+            contactEmail: 'cdsanabriafc@gmail.com',
             phoneNumber: '+34 123 456 789',
             address: 'Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora',
             primaryColor: '#dc2626', // Rojo por defecto
@@ -1680,7 +1680,7 @@
             }
 
             // Verificar si es el segundo administrador (cdsanabriacf)
-            if (email.toLowerCase() === 'cdsanabriacf@gmail.com' && password === 'admin123') {
+            if (email.toLowerCase() === 'cdsanabriafc@gmail.com' && password === 'admin123') {
                 console.log('✅ Autenticación exitosa como segundo administrador');
                 
                 // Guardar sesión del segundo administrador
@@ -2762,7 +2762,7 @@
                     const whatsappElement = document.getElementById('contactWhatsApp');
                     const hoursElement = document.getElementById('contactHours');
                     
-                    if (emailElement) emailElement.textContent = contactInfo.email || 'cdsanabriacf@gmail.com';
+                    if (emailElement) emailElement.textContent = contactInfo.email || 'cdsanabriafc@gmail.com';
                     if (phoneElement) phoneElement.textContent = contactInfo.phone || '+34 600 000 000';
                     if (addressElement) addressElement.textContent = contactInfo.address || 'Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora';
                     if (websiteElement) websiteElement.textContent = contactInfo.website || 'www.cdsanabriacf.com';
@@ -3590,7 +3590,7 @@
                 }, 1500);
             } 
             // Verificar credenciales del administrador principal
-            else if (email === 'cdsanabriacf@gmail.com' && password === 'admin123') {
+            else if (email === 'cdsanabriafc@gmail.com' && password === 'admin123') {
                 messageDiv.style.display = 'block';
                 messageDiv.style.backgroundColor = '#d4edda';
                 messageDiv.style.color = '#155724';

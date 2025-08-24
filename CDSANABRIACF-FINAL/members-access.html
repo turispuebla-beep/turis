@@ -12,13 +12,13 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .header {
             background: white;
             border-radius: 15px;
@@ -27,7 +27,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
         }
-        
+
         .header h1 {
             color: #1e3a8a;
             margin: 0 0 10px 0;
@@ -107,7 +107,7 @@
             line-height: 1.6;
             margin-bottom: 20px;
         }
-        
+
         .btn {
             background: #3b82f6;
             color: white;
@@ -121,12 +121,12 @@
             display: inline-block;
             transition: all 0.3s ease;
         }
-        
+
         .btn:hover {
             background: #2563eb;
             transform: translateY(-2px);
         }
-        
+
         .btn-secondary {
             background: #6b7280;
         }
@@ -156,7 +156,7 @@
             background: #fee2e2;
             color: #991b1b;
         }
-        
+
         .logout-btn {
             position: fixed;
             top: 20px;
@@ -169,7 +169,7 @@
             cursor: pointer;
             font-weight: bold;
         }
-        
+
         .logout-btn:hover {
             background: #b91c1c;
         }
@@ -179,70 +179,70 @@
     <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
     
     <div class="container">
-        <div class="header">
-            <h1>👨‍👩‍👧‍👦 Área de Socios</h1>
+            <div class="header">
+                <h1>👨‍👩‍👧‍👦 Área de Socios</h1>
             <p>Bienvenido al área exclusiva para socios del Club Deportivo Sanabriacf</p>
-        </div>
-        
-        <div class="user-info">
+            </div>
+            
+                <div class="user-info">
             <h3>📋 Información de tu Cuenta</h3>
             <div class="user-details" id="userDetails">
                 <!-- Se llenará dinámicamente -->
-            </div>
-        </div>
-        
+                </div>
+                </div>
+
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">⚽</div>
                 <div class="feature-title">Nuestro Equipo</div>
                 <div class="feature-description">
                     Conoce a todos los jugadores, entrenadores y personal del club. Información detallada de cada equipo.
-                </div>
+                    </div>
                 <button class="btn" onclick="showTeamsInfo()">Ver Equipos</button>
-            </div>
-            
+                </div>
+
             <div class="feature-card">
                 <div class="feature-icon">📅</div>
                 <div class="feature-title">Partidos y Calendario</div>
                 <div class="feature-description">
                     Calendario completo de partidos, entrenamientos y eventos del club. No te pierdas nada.
-                </div>
+                    </div>
                 <button class="btn" onclick="showCalendarInfo()">Ver Calendario</button>
-            </div>
-            
+                </div>
+
             <div class="feature-card">
                 <div class="feature-icon">🏆</div>
                 <div class="feature-title">Resultados</div>
                 <div class="feature-description">
                     Resultados de todos los partidos disputados. Estadísticas y análisis de rendimiento.
-                </div>
+                    </div>
                 <button class="btn" onclick="showResultsInfo()">Ver Resultados</button>
-            </div>
-            
+                </div>
+
             <div class="feature-card">
                 <div class="feature-icon">🎉</div>
                 <div class="feature-title">Eventos del Club</div>
                 <div class="feature-description">
                     Eventos especiales, celebraciones y actividades organizadas por el club.
-                </div>
+                    </div>
                 <button class="btn" onclick="showEventsInfo()">Ver Eventos</button>
-            </div>
-            
+                </div>
+
             <div class="feature-card">
                 <div class="feature-icon">📸</div>
                 <div class="feature-title">Fotos y Videos</div>
                 <div class="feature-description">
                     Galería multimedia con fotos y videos de partidos, eventos y momentos especiales.
-                </div>
+                    </div>
                 <button class="btn" onclick="showMultimediaInfo()">Ver Multimedia</button>
-            </div>
-            
+                </div>
+
             <div class="feature-card">
                 <div class="feature-icon">📄</div>
                 <div class="feature-title">Documentos</div>
                 <div class="feature-description">
                     Documentos oficiales del club, reglamentos, formularios y información importante.
-                </div>
+                    </div>
                 <button class="btn" onclick="showDocumentsInfo()">Ver Documentos</button>
             </div>
         </div>
@@ -259,9 +259,9 @@
             if (!socioData) {
                 alert('❌ No hay sesión activa. Redirigiendo a la página principal...');
                 window.location.href = 'index.html';
-                return;
-            }
-
+                    return;
+                }
+                
             const socio = JSON.parse(socioData);
             const userDetails = document.getElementById('userDetails');
             
@@ -273,15 +273,15 @@
                 <div class="detail-item">
                     <div class="detail-label">Nombre Completo</div>
                     <div class="detail-value">${socio.nombre} ${socio.apellidos}</div>
-                </div>
+                        </div>
                 <div class="detail-item">
                     <div class="detail-label">Estado</div>
                     <div class="detail-value">
                         <span class="status-badge status-${socio.estado || 'pendiente'}">
                             ${socio.estado || 'pendiente'}
                         </span>
-                    </div>
-                </div>
+                                </div>
+                            </div>
                 <div class="detail-item">
                     <div class="detail-label">Email</div>
                     <div class="detail-value">${socio.email || 'N/A'}</div>
@@ -289,12 +289,12 @@
                 <div class="detail-item">
                     <div class="detail-label">Teléfono</div>
                     <div class="detail-value">${socio.telefono || 'N/A'}</div>
-                </div>
+                                </div>
                 <div class="detail-item">
                     <div class="detail-label">Fecha de Registro</div>
                     <div class="detail-value">${socio.fechaRegistro ? new Date(socio.fechaRegistro).toLocaleDateString('es-ES') : 'N/A'}</div>
-                </div>
-            `;
+                            </div>
+                        `;
         }
 
         function logout() {
