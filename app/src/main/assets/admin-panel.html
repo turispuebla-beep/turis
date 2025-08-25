@@ -5161,31 +5161,52 @@
             
             if (member) {
                 const isExpired = isMemberExpired(member);
-                let details = `👤 DETALLES DEL SOCIO\n\n`;
-                details += `Nombre: ${member.name || member.nombre} ${member.surname || member.apellidos}\n`;
-                details += `DNI: ${member.dni || 'No especificado'}\n`;
-                details += `Teléfono: ${member.phone || member.telefono}\n`;
-                details += `Dirección: ${member.address || member.direccion || 'No especificada'}\n`;
-                details += `Email: ${member.email || 'No especificado'}\n`;
-                details += `Estado: ${getMemberStatusText(member, isExpired)}\n`;
-                details += `Fecha de Registro: ${new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro).toLocaleDateString()}\n`;
+                let details = `👤 DETALLES COMPLETOS DEL SOCIO\n\n`;
+                details += `📋 INFORMACIÓN PERSONAL:\n`;
+                details += `• Nombre: ${member.name || member.nombre} ${member.surname || member.apellidos}\n`;
+                details += `• DNI: ${member.dni || 'No especificado'}\n`;
+                details += `• Teléfono: ${member.phone || member.telefono}\n`;
+                details += `• Dirección: ${member.address || member.direccion || 'No especificada'}\n`;
+                details += `• Email: ${member.email || 'No especificado'}\n`;
+                details += `• Fecha de Nacimiento: ${member.birthDate || member.fechaNacimiento ? new Date(member.birthDate || member.fechaNacimiento).toLocaleDateString() : 'No especificada'}\n\n`;
+                
+                details += `📊 INFORMACIÓN DEL CLUB:\n`;
+                details += `• Estado: ${getMemberStatusText(member, isExpired)}\n`;
+                details += `• Fecha de Registro: ${new Date(member.registrationDate || member.fechaRegistro || member.fecha_registro).toLocaleDateString()}\n`;
                 
                 if (member.memberNumber || member.numeroSocio) {
-                    details += `Número de Socio: ${member.memberNumber || member.numeroSocio}\n`;
+                    details += `• Número de Socio: ${member.memberNumber || member.numeroSocio}\n`;
                 }
                 
                 if (member.validatedBy) {
-                    details += `Validado por: ${member.validatedBy}\n`;
-                    details += `Fecha de Validación: ${new Date(member.validatedDate).toLocaleDateString()}\n`;
+                    details += `• Validado por: ${member.validatedBy}\n`;
+                    details += `• Fecha de Validación: ${new Date(member.validatedDate).toLocaleDateString()}\n`;
                 }
                 
-                details += `Contraseña: ${member.password ? '•••••••• (Haz clic en 👁️ para ver)' : 'No establecida'}\n`;
+                if (member.lastModified) {
+                    details += `• Última modificación: ${new Date(member.lastModified).toLocaleDateString()}\n`;
+                    details += `• Modificado por: ${member.modifiedBy || 'No especificado'}\n`;
+                }
+                
+                details += `\n🔐 ACCESO:\n`;
+                details += `• Contraseña: ${member.password ? member.password : 'No establecida'}\n`;
                 
                 if (isExpired) {
-                    details += `\n⚠️ Este socio ha superado el plazo de 7 días sin validación.`;
+                    details += `\n⚠️ ADVERTENCIA: Este socio ha superado el plazo de 7 días sin validación.`;
                 }
                 
                 alert(details);
+            }
+        }
+        
+        function togglePassword(elementId, password) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                if (element.textContent === '••••••••') {
+                    element.textContent = password;
+                } else {
+                    element.textContent = '••••••••';
+                }
             }
         }
 
@@ -5585,7 +5606,189 @@
         }
 
         function editMember(memberId) {
-            alert('🔧 Función de edición de socios en desarrollo. ID: ' + memberId);
+            const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            const member = members.find(m => m.id === memberId);
+            
+            if (!member) {
+                alert('❌ Socio no encontrado');
+                return;
+            }
+            
+            // Crear modal de edición
+            const modalHTML = `
+                <div id="editMemberModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="color: #1e3a8a; margin: 0;">✏️ Editar Socio</h2>
+                            <button onclick="closeEditMemberModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666;">&times;</button>
+                        </div>
+                        
+                        <form id="editMemberForm" onsubmit="saveMemberEdit(event, '${memberId}')">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Nombre *</label>
+                                    <input type="text" id="editMemberName" value="${member.name}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Apellidos *</label>
+                                    <input type="text" id="editMemberSurname" value="${member.surname}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">DNI *</label>
+                                    <input type="text" id="editMemberDNI" value="${member.dni || ''}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Teléfono *</label>
+                                    <input type="tel" id="editMemberPhone" value="${member.phone}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Dirección *</label>
+                                <input type="text" id="editMemberAddress" value="${member.address || ''}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Email *</label>
+                                <input type="email" id="editMemberEmail" value="${member.email || ''}" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Fecha de Nacimiento</label>
+                                    <input type="date" id="editMemberBirthDate" value="${member.birthDate || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Estado</label>
+                                    <select id="editMemberStatus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="pending_validation" ${member.status === 'pending_validation' ? 'selected' : ''}>Pendiente de Validación</option>
+                                        <option value="active" ${member.status === 'active' ? 'selected' : ''}>Activo</option>
+                                        <option value="expired" ${member.status === 'expired' ? 'selected' : ''}>Caducado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Nueva Contraseña (dejar vacío para mantener la actual)</label>
+                                <input type="password" id="editMemberPassword" placeholder="Nueva contraseña (opcional)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <small style="color: #666; font-size: 0.8rem;">Mínimo 6 caracteres</small>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" onclick="closeEditMemberModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">❌ Cancelar</button>
+                                <button type="submit" style="padding: 10px 20px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer;">💾 Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        function closeEditMemberModal() {
+            const modal = document.getElementById('editMemberModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function saveMemberEdit(event, memberId) {
+            event.preventDefault();
+            
+            try {
+                const members = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const memberIndex = members.findIndex(m => m.id === memberId);
+                
+                if (memberIndex === -1) {
+                    alert('❌ Socio no encontrado');
+                    return;
+                }
+                
+                const member = members[memberIndex];
+                const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin') || '{}');
+                
+                // Obtener valores del formulario
+                const name = document.getElementById('editMemberName').value.trim();
+                const surname = document.getElementById('editMemberSurname').value.trim();
+                const dni = document.getElementById('editMemberDNI').value.trim();
+                const phone = document.getElementById('editMemberPhone').value.trim();
+                const address = document.getElementById('editMemberAddress').value.trim();
+                const email = document.getElementById('editMemberEmail').value.trim();
+                const birthDate = document.getElementById('editMemberBirthDate').value;
+                const status = document.getElementById('editMemberStatus').value;
+                const newPassword = document.getElementById('editMemberPassword').value.trim();
+                
+                // Validaciones
+                if (!name || !surname || !dni || !phone || !address || !email) {
+                    alert('❌ Por favor, completa todos los campos obligatorios');
+                    return;
+                }
+                
+                // Verificar si el DNI o email ya existe en otro socio
+                const existingMember = members.find(m => 
+                    m.id !== memberId && 
+                    ((m.dni && m.dni.toLowerCase() === dni.toLowerCase()) || 
+                     (m.email && m.email.toLowerCase() === email.toLowerCase()))
+                );
+                
+                if (existingMember) {
+                    alert('❌ Ya existe otro socio con ese DNI o email');
+                    return;
+                }
+                
+                // Validar contraseña si se proporciona una nueva
+                if (newPassword && newPassword.length < 6) {
+                    alert('❌ La contraseña debe tener al menos 6 caracteres');
+                    return;
+                }
+                
+                // Actualizar datos del socio
+                member.name = name;
+                member.surname = surname;
+                member.dni = dni;
+                member.phone = phone;
+                member.address = address;
+                member.email = email;
+                member.birthDate = birthDate;
+                member.status = status;
+                member.lastModified = new Date().toISOString();
+                member.modifiedBy = currentAdmin.name || currentAdmin.email || 'Administrador';
+                
+                // Actualizar contraseña si se proporciona una nueva
+                if (newPassword) {
+                    member.password = newPassword;
+                }
+                
+                // Si el estado cambió a activo y no tenía número de socio, asignar uno
+                if (status === 'active' && !member.memberNumber) {
+                    const activeMembers = members.filter(m => m.status === 'active' && m.memberNumber);
+                    member.memberNumber = activeMembers.length + 1;
+                    member.validatedBy = currentAdmin.name || currentAdmin.email || 'Administrador';
+                    member.validatedDate = new Date().toISOString();
+                }
+                
+                // Guardar cambios
+                localStorage.setItem('clubMembers', JSON.stringify(members));
+                
+                // Cerrar modal
+                closeEditMemberModal();
+                
+                // Recargar lista y contadores
+                loadMembersList();
+                updateMemberCounts();
+                updateDashboardCounts();
+                
+                alert('✅ Socio actualizado correctamente');
+                console.log('✏️ Socio editado:', member.name + ' ' + member.surname);
+                
+            } catch (error) {
+                console.error('❌ Error editando socio:', error);
+                alert('❌ Error al editar el socio');
+            }
         }
 
         function deleteMember(memberId) {

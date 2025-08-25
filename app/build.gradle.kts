@@ -26,6 +26,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../cdsanabriacf-release-key.keystore")
+            storePassword = "cdsanabriacf2024"
+            keyAlias = "cdsanabriacf"
+            keyPassword = "cdsanabriacf2024"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -34,7 +43,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug") // Cambiar a release cuando tengas keystore
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false

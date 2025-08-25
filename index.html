@@ -1089,13 +1089,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="socioDNI">DNI</label>
-                        <input type="text" id="socioDNI">
+                        <label for="socioDNI">DNI *</label>
+                        <input type="text" id="socioDNI" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="socioDireccion">Dirección</label>
-                        <input type="text" id="socioDireccion">
+                        <label for="socioDireccion">Dirección *</label>
+                        <input type="text" id="socioDireccion" required>
                     </div>
                     
                     <div class="form-group">
@@ -1104,8 +1104,19 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="socioEmail">Correo Electrónico</label>
-                        <input type="email" id="socioEmail">
+                        <label for="socioEmail">Correo Electrónico *</label>
+                        <input type="email" id="socioEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="socioPassword">Contraseña *</label>
+                        <input type="password" id="socioPassword" required minlength="6">
+                        <small style="display:block; color:#6b7280; margin-top:6px;">Mínimo 6 caracteres</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="socioPasswordConfirm">Confirmar Contraseña *</label>
+                        <input type="password" id="socioPasswordConfirm" required minlength="6">
                     </div>
                     
                     <div class="form-group">
@@ -1158,8 +1169,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="amigoDNI">DNI</label>
-                        <input type="text" id="amigoDNI">
+                        <label for="amigoDNI">DNI *</label>
+                        <input type="text" id="amigoDNI" required>
                     </div>
                     
                     <div class="form-group">
@@ -1170,6 +1181,17 @@
                     <div class="form-group">
                         <label for="amigoEmail">Correo Electrónico *</label>
                         <input type="email" id="amigoEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amigoPassword">Contraseña *</label>
+                        <input type="password" id="amigoPassword" required minlength="6">
+                        <small style="display:block; color:#6b7280; margin-top:6px;">Mínimo 6 caracteres</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amigoPasswordConfirm">Confirmar Contraseña *</label>
+                        <input type="password" id="amigoPasswordConfirm" required minlength="6">
                     </div>
                     
                     <div class="form-group">
@@ -1723,8 +1745,12 @@
                             <input type="email" id="amigoEmail" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="amigoPhone">Teléfono:</label>
-                            <input type="tel" id="amigoPhone" name="phone" required>
+                            <label for="amigoPassword">Contraseña:</label>
+                            <input type="password" id="amigoPassword" name="password" required>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                            <input type="checkbox" id="amigoRememberSession" style="width: auto; margin: 0;">
+                            <label for="amigoRememberSession" style="margin: 0; font-size: 0.9rem; color: #666;">🔐 Recordar sesión</label>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -1781,8 +1807,12 @@
                             <input type="email" id="socioEmail" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="socioPhone">Teléfono:</label>
-                            <input type="tel" id="socioPhone" name="phone" required>
+                            <label for="socioPassword">Contraseña:</label>
+                            <input type="password" id="socioPassword" name="password" required>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                            <input type="checkbox" id="socioRememberSession" style="width: auto; margin: 0;">
+                            <label for="socioRememberSession" style="margin: 0; font-size: 0.9rem; color: #666;">🔐 Recordar sesión</label>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -2816,11 +2846,23 @@
             const direccion = document.getElementById('socioDireccion').value.trim();
             const telefono = document.getElementById('socioTelefono').value.trim();
             const email = document.getElementById('socioEmail').value.trim();
+            const password = document.getElementById('socioPassword').value.trim();
+            const passwordConfirm = document.getElementById('socioPasswordConfirm').value.trim();
             const cuota = parseFloat(document.getElementById('socioCuota').value) || 20;
             const consentimiento = document.getElementById('socioConsentimiento').checked;
             
-            if (!nombre || !apellidos || !telefono || !fechaNacimiento) {
-                alert('Por favor, completa los campos obligatorios: Nombre, Apellidos, Teléfono y Fecha de Nacimiento');
+            if (!nombre || !apellidos || !dni || !direccion || !telefono || !email || !fechaNacimiento || !password) {
+                alert('Por favor, completa todos los campos obligatorios: Nombre, Apellidos, DNI, Dirección, Teléfono, Email, Fecha de Nacimiento y Contraseña');
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
                 return;
             }
             
@@ -2832,19 +2874,20 @@
             // Crear nuevo socio
             const nuevoSocio = {
                 id: Date.now().toString(),
-                nombre: nombre,
-                apellidos: apellidos,
+                name: nombre,
+                surname: apellidos,
                 dni: dni,
-                direccion: direccion,
-                telefono: telefono,
+                address: direccion,
+                phone: telefono,
                 email: email,
+                password: password,
                 cuota: cuota,
-                fechaNacimiento: fechaNacimiento,
-                fechaRegistro: new Date().toISOString(),
+                birthDate: fechaNacimiento,
+                registrationDate: new Date().toISOString(),
                 fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 días
-                estado: 'pendiente', // pendiente, confirmado, expirado
+                status: 'pending_validation', // pending_validation, active, expired
                 pagado: false,
-                numeroSocio: generarNumeroSocio()
+                memberNumber: generarNumeroSocio()
             };
             
             // Guardar en localStorage
@@ -2852,9 +2895,12 @@
             socios.push(nuevoSocio);
             localStorage.setItem('clubMembers', JSON.stringify(socios));
             
+            // Sincronizar con la app
+            syncDataWithApp();
+            
             // Cerrar modal y mostrar confirmación
             closeSociosModal();
-            alert(`✅ Socio registrado exitosamente\n\nNúmero de Socio: ${nuevoSocio.numeroSocio}\nCuota: ${cuota}€\n\n⚠️ IMPORTANTE: Tienes 7 días para completar el pago. Un administrador validará tu registro.`);
+            alert(`✅ Socio registrado exitosamente\n\nNúmero de Socio: ${nuevoSocio.memberNumber}\nCuota: ${cuota}€\n\n⚠️ IMPORTANTE: Tienes 7 días para completar el pago. Un administrador validará tu registro.\n\n🔄 Datos sincronizados con la app.`);
             
             console.log('👨‍👩‍👧‍👦 Nuevo socio registrado:', nuevoSocio);
         }
@@ -2876,10 +2922,22 @@
             const dni = document.getElementById('amigoDNI').value.trim();
             const telefono = document.getElementById('amigoTelefono').value.trim();
             const email = document.getElementById('amigoEmail').value.trim();
+            const password = document.getElementById('amigoPassword').value.trim();
+            const passwordConfirm = document.getElementById('amigoPasswordConfirm').value.trim();
             const consentimiento = document.getElementById('amigoConsentimiento').checked;
             
-            if (!nombre || !apellidos || !telefono || !email) {
-                alert('Por favor, completa todos los campos obligatorios');
+            if (!nombre || !apellidos || !dni || !telefono || !email || !password) {
+                alert('Por favor, completa todos los campos obligatorios: Nombre, Apellidos, DNI, Teléfono, Email y Contraseña');
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
                 return;
             }
             
@@ -2902,26 +2960,26 @@
             // Crear nuevo amigo
             const nuevoAmigo = {
                 id: Date.now().toString(),
-                nombre: nombre,
-                apellidos: apellidos,
+                name: nombre,
+                surname: apellidos,
                 dni: dni,
-                telefono: telefono,
+                phone: telefono,
                 email: email,
-                fechaRegistro: new Date().toISOString(),
-                estado: 'activo',
-                acceso: {
-                    email: email,
-                    telefono: telefono
-                }
+                password: password,
+                registrationDate: new Date().toISOString(),
+                status: 'active'
             };
             
             // Guardar en localStorage
             amigos.push(nuevoAmigo);
             localStorage.setItem('clubFriends', JSON.stringify(amigos));
             
+            // Sincronizar con la app
+            syncDataWithApp();
+            
             // Cerrar modal y mostrar confirmación
             closeAmigosModal();
-            alert(`✅ Amigo del club registrado exitosamente\n\n📧 Email: ${email}\n📱 Teléfono: ${telefono}\n\nPara acceder, usa tu email o teléfono sin contraseña.`);
+            alert(`✅ Amigo del club registrado exitosamente\n\n📧 Email: ${email}\n📱 Teléfono: ${telefono}\n\nPara acceder, usa tu email y contraseña.\n\n🔄 Datos sincronizados con la app.`);
             
             console.log('🤝 Nuevo amigo registrado:', nuevoAmigo);
         }
@@ -2949,38 +3007,52 @@
             event.preventDefault();
             
             const email = document.getElementById('socioEmail').value.trim();
-            const phone = document.getElementById('socioPhone').value.trim();
+            const password = document.getElementById('socioPassword').value.trim();
+            const rememberSession = document.getElementById('socioRememberSession') ? document.getElementById('socioRememberSession').checked : false;
             
-            if (!email || !phone) {
-                alert('❌ Por favor, completa todos los campos');
+            if (!email || !password) {
+                alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
             // Buscar socio en localStorage
             const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-            const socio = socios.find(s => 
-                (s.email === email && s.telefono === phone) ||
-                (s.email === phone && s.telefono === email)
-            );
+            const socio = socios.find(s => s.email === email);
             
             if (!socio) {
-                alert('❌ No se encontró ningún socio con esos datos. Verifica tu correo y teléfono.');
+                alert('❌ No se encontró ningún socio con ese email.');
                 return;
+            }
 
+            // Verificar contraseña
+            if (socio.password !== password) {
+                alert('❌ Contraseña incorrecta.');
+                return;
             }
             
-            if (socio.estado === 'expirado') {
+            if (socio.status === 'expired') {
                 alert('❌ Tu cuenta ha expirado. Contacta con el administrador para renovar tu cuota.');
                 return;
             }
             
-            if (socio.estado === 'pendiente' && !socio.pagado) {
-                alert('⚠️ Tu cuenta está pendiente de validación. Tienes 7 días para completar el pago.');
-                return;
+            if (socio.status === 'pending_validation') {
+                alert('⚠️ Tu cuenta está pendiente de validación. Puedes acceder pero con limitaciones.\n\nEl administrador te validará en los próximos días.');
             }
             
             // Login exitoso
-            localStorage.setItem('currentSocio', JSON.stringify(socio));
+            const sessionData = {
+                ...socio,
+                loginTime: new Date().toISOString(),
+                rememberSession: rememberSession
+            };
+            
+            localStorage.setItem('currentSocio', JSON.stringify(sessionData));
+            
+            // Si recordar sesión está activado, guardar en sessionStorage también
+            if (rememberSession) {
+                sessionStorage.setItem('rememberedSocio', JSON.stringify(sessionData));
+            }
+            
             closeLoginModal();
             alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
             
@@ -2996,32 +3068,47 @@
             event.preventDefault();
             
             const email = document.getElementById('amigoEmail').value.trim();
-            const phone = document.getElementById('amigoPhone').value.trim();
+            const password = document.getElementById('amigoPassword').value.trim();
+            const rememberSession = document.getElementById('amigoRememberSession') ? document.getElementById('amigoRememberSession').checked : false;
             
-            if (!email || !phone) {
-                alert('❌ Por favor, completa todos los campos');
+            if (!email || !password) {
+                alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
             // Buscar amigo en localStorage
             const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
-            const amigo = amigos.find(a => 
-                (a.email === email && a.telefono === phone) ||
-                (a.email === phone && a.telefono === email)
-            );
+            const amigo = amigos.find(a => a.email === email);
             
             if (!amigo) {
-                alert('❌ No se encontró ningún amigo con esos datos. Verifica tu correo y teléfono.');
+                alert('❌ No se encontró ningún amigo con ese email.');
                 return;
             }
             
-            if (amigo.estado !== 'activo') {
-                alert('❌ Tu cuenta no está activa. Contacta con el administrador.');
+            // Verificar contraseña
+            if (amigo.password !== password) {
+                alert('❌ Contraseña incorrecta.');
                 return;
+            }
+            
+            if (amigo.status !== 'active') {
+                alert('⚠️ Tu cuenta no está activa, pero puedes acceder con limitaciones.\n\nContacta con el administrador para activar tu cuenta.');
             }
             
             // Login exitoso
-            localStorage.setItem('currentAmigo', JSON.stringify(amigo));
+            const sessionData = {
+                ...amigo,
+                loginTime: new Date().toISOString(),
+                rememberSession: rememberSession
+            };
+            
+            localStorage.setItem('currentAmigo', JSON.stringify(sessionData));
+            
+            // Si recordar sesión está activado, guardar en sessionStorage también
+            if (rememberSession) {
+                sessionStorage.setItem('rememberedAmigo', JSON.stringify(sessionData));
+            }
+            
             closeLoginModal();
             alert('✅ ¡Bienvenido de vuelta! Acceso concedido como amigo del club.');
             
@@ -3542,6 +3629,10 @@
             localStorage.removeItem('currentAmigo');
             localStorage.removeItem('currentCoach');
             
+            // Limpiar sesiones recordadas
+            sessionStorage.removeItem('rememberedSocio');
+            sessionStorage.removeItem('rememberedAmigo');
+            
             // Actualizar estado de login
             updateLoginStatus();
             
@@ -3624,11 +3715,148 @@
             }
         }
 
-        // Cargar encuentros al iniciar la página
-        document.addEventListener('DOMContentLoaded', function() {
+        // Función para mostrar indicador de sincronización
+        function showSyncIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'syncIndicator';
+            indicator.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(59, 130, 246, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            `;
+            indicator.innerHTML = '🔄 Sincronizado';
+            document.body.appendChild(indicator);
+            
+            // Actualizar cada 5 segundos
+            setInterval(() => {
+                const now = new Date().toLocaleTimeString();
+                indicator.innerHTML = `🔄 Sincronizado ${now}`;
+            }, 5000);
+        }
+
+        // Función para verificar sesión recordada y actualizar datos
+        function checkRememberedSession() {
+            // Verificar si hay una sesión de socio recordada
+            const rememberedSocio = sessionStorage.getItem('rememberedSocio');
+            if (rememberedSocio) {
+                try {
+                    const socioData = JSON.parse(rememberedSocio);
+                    if (socioData.rememberSession) {
+                        // Verificar si los datos del socio han sido actualizados
+                        const currentSocios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                        const updatedSocio = currentSocios.find(s => s.email === socioData.email);
+                        
+                        if (updatedSocio) {
+                            // Actualizar la sesión con los datos más recientes
+                            const updatedSessionData = {
+                                ...updatedSocio,
+                                loginTime: socioData.loginTime,
+                                rememberSession: true
+                            };
+                            
+                            localStorage.setItem('currentSocio', JSON.stringify(updatedSessionData));
+                            sessionStorage.setItem('rememberedSocio', JSON.stringify(updatedSessionData));
+                            console.log('✅ Sesión de socio restaurada y actualizada automáticamente');
+                        } else {
+                            // Si el socio ya no existe, limpiar la sesión
+                            sessionStorage.removeItem('rememberedSocio');
+                            console.log('⚠️ Sesión de socio eliminada - usuario no encontrado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error al restaurar sesión de socio:', error);
+                    sessionStorage.removeItem('rememberedSocio');
+                }
+            }
+            
+            // Verificar si hay una sesión de amigo recordada
+            const rememberedAmigo = sessionStorage.getItem('rememberedAmigo');
+            if (rememberedAmigo) {
+                try {
+                    const amigoData = JSON.parse(rememberedAmigo);
+                    if (amigoData.rememberSession) {
+                        // Verificar si los datos del amigo han sido actualizados
+                        const currentAmigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                        const updatedAmigo = currentAmigos.find(a => a.email === amigoData.email);
+                        
+                        if (updatedAmigo) {
+                            // Actualizar la sesión con los datos más recientes
+                            const updatedSessionData = {
+                                ...updatedAmigo,
+                                loginTime: amigoData.loginTime,
+                                rememberSession: true
+                            };
+                            
+                            localStorage.setItem('currentAmigo', JSON.stringify(updatedSessionData));
+                            sessionStorage.setItem('rememberedAmigo', JSON.stringify(updatedSessionData));
+                            console.log('✅ Sesión de amigo restaurada y actualizada automáticamente');
+                        } else {
+                            // Si el amigo ya no existe, limpiar la sesión
+                            sessionStorage.removeItem('rememberedAmigo');
+                            console.log('⚠️ Sesión de amigo eliminada - usuario no encontrado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error al restaurar sesión de amigo:', error);
+                    sessionStorage.removeItem('rememberedAmigo');
+                }
+            }
+        }
+
+        // Función para sincronizar datos con la app
+        function syncDataWithApp() {
+            try {
+                // Obtener todos los datos del localStorage
+                const syncData = {
+                    timestamp: new Date().toISOString(),
+                    clubMembers: JSON.parse(localStorage.getItem('clubMembers') || '[]'),
+                    clubFriends: JSON.parse(localStorage.getItem('clubFriends') || '[]'),
+                    clubTeams: JSON.parse(localStorage.getItem('clubTeams') || '[]'),
+                    clubPlayers: JSON.parse(localStorage.getItem('clubPlayers') || '[]'),
+                    clubEvents: JSON.parse(localStorage.getItem('clubEvents') || '[]'),
+                    clubDocuments: JSON.parse(localStorage.getItem('clubDocuments') || '[]'),
+                    clubPhotos: JSON.parse(localStorage.getItem('clubPhotos') || '[]'),
+                    clubVideos: JSON.parse(localStorage.getItem('clubVideos') || '[]'),
+                    encuentros: JSON.parse(localStorage.getItem('encuentros') || '[]'),
+                    currentSocio: localStorage.getItem('currentSocio'),
+                    currentAmigo: localStorage.getItem('currentAmigo'),
+                    currentCoach: localStorage.getItem('currentCoach')
+                };
+                
+                // Guardar datos de sincronización
+                localStorage.setItem('syncData', JSON.stringify(syncData));
+                
+                // Enviar evento de sincronización si estamos en la app
+                if (window.Android) {
+                    window.Android.syncData(JSON.stringify(syncData));
+                }
+                
+                console.log('🔄 Datos sincronizados:', syncData.timestamp);
+                
+            } catch (error) {
+                console.error('❌ Error en sincronización:', error);
+            }
+        }
+
+        // Función para actualizar todos los datos de la página
+        function updatePageData() {
+            // Sincronizar datos con la app
+            syncDataWithApp();
+            
+            // Actualizar contadores de encuentros
             const encuentros = JSON.parse(localStorage.getItem('encuentros') || '[]');
             if (encuentros.length > 0) {
-                // Actualizar el contador en la tarjeta de calendario
                 const calendarCard = document.querySelector('.feature-card:nth-child(2)');
                 if (calendarCard) {
                     const title = calendarCard.querySelector('.feature-title');
@@ -3638,8 +3866,70 @@
                 }
             }
             
+            // Actualizar contadores de socios
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            const sociosActivos = socios.filter(s => s.status === 'active').length;
+            const sociosPendientes = socios.filter(s => s.status === 'pending_validation').length;
+            
+            // Actualizar contadores de amigos
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            const amigosActivos = amigos.filter(a => a.status === 'active').length;
+            
+            // Actualizar contadores de equipos
+            const equipos = JSON.parse(localStorage.getItem('clubTeams') || '[]');
+            const jugadores = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+            
+            // Actualizar contadores de eventos
+            const eventos = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+            const eventosActivos = eventos.filter(e => e.status === 'active').length;
+            
+            // Actualizar contadores de documentos
+            const documentos = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+            const documentosActivos = documentos.filter(d => d.status === 'active').length;
+            
+            // Actualizar contadores de multimedia
+            const fotos = JSON.parse(localStorage.getItem('clubPhotos') || '[]');
+            const videos = JSON.parse(localStorage.getItem('clubVideos') || '[]');
+            
+            console.log('✅ Datos de la página actualizados:', {
+                encuentros: encuentros.length,
+                socios: sociosActivos + sociosPendientes,
+                sociosActivos,
+                sociosPendientes,
+                amigos: amigosActivos,
+                equipos: equipos.length,
+                jugadores: jugadores.length,
+                eventos: eventosActivos,
+                documentos: documentosActivos,
+                multimedia: fotos.length + videos.length
+            });
+        }
+
+        // Cargar encuentros al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar sesión recordada al cargar la página
+            checkRememberedSession();
+            
+            // Actualizar todos los datos de la página
+            updatePageData();
+            
             // Actualizar estado de login
             updateLoginStatus();
+            
+            // Configurar actualización automática cada 15 segundos
+            setInterval(function() {
+                updatePageData();
+            }, 15000); // 15 segundos
+            
+            // Configurar sincronización cada 5 segundos
+            setInterval(function() {
+                syncDataWithApp();
+            }, 5000); // 5 segundos
+            
+            console.log('🔄 Sistema de sincronización en tiempo real activado');
+            
+            // Mostrar indicador de sincronización
+            showSyncIndicator();
         });
 
     </script>
