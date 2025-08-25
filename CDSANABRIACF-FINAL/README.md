@@ -322,6 +322,22 @@ El sistema utiliza localStorage con las siguientes colecciones:
 
 ## 🚀 Funcionalidades Recientemente Implementadas (Agosto 2025 - ACTUALIZADO HOY)
 
+### ✅ Sistema de Sincronización en Tiempo Real (🆕 NUEVO)
+- **Sincronización Automática**: Cada 5 segundos entre web y app
+- **Indicador Visual**: Muestra estado de sincronización en tiempo real
+- **Comunicación Bidireccional**: Web ↔ App con datos siempre actualizados
+- **Sincronización Inmediata**: Al registrar socios/amigos se sincroniza automáticamente
+- **Función `syncDataWithApp()`**: Sincroniza datos desde web a app
+- **Función `syncDataWithWeb()`**: Sincroniza datos desde app a web
+- **localStorage Compartido**: Datos persistentes en ambos lados
+
+### ✅ Lenguaje Inclusivo Implementado (🆕 NUEVO)
+- **"Socios"** → **"Socios/as"**
+- **"Amigos"** → **"Amigos/as"**
+- **"Jugadores"** → **"Jugadores/as"**
+- **"Entrenadores"** → **"Entrenadores/as"**
+- **Aplicado en**: Página web principal y aplicación Android
+
 ### ✅ Sistema de Socios Completamente Funcional
 - **Registro Automático**: Nuevos socios se reflejan inmediatamente en el dashboard
 - **Validación por Administradores**: Sistema de validación con sincronización automática
@@ -371,6 +387,28 @@ El sistema utiliza localStorage con las siguientes colecciones:
 - **Admin Sanabria**: `administradores@sanabria.com` / `admin12`
 
 ## 🆕 Cambios Implementados Hoy (14 de Agosto 2025)
+
+### ✅ Sistema de Sincronización en Tiempo Real (🆕 NUEVO)
+- **Sincronización Automática**: Cada 5 segundos entre web y app
+- **Indicador Visual**: Muestra estado de sincronización en tiempo real
+- **Comunicación Bidireccional**: Web ↔ App con datos siempre actualizados
+- **Sincronización Inmediata**: Al registrar socios/amigos se sincroniza automáticamente
+- **Función `syncDataWithApp()`**: Sincroniza datos desde web a app
+- **Función `syncDataWithWeb()`**: Sincroniza datos desde app a web
+- **localStorage Compartido**: Datos persistentes en ambos lados
+
+### ✅ Lenguaje Inclusivo Implementado (🆕 NUEVO)
+- **"Socios"** → **"Socios/as"**
+- **"Amigos"** → **"Amigos/as"**
+- **"Jugadores"** → **"Jugadores/as"**
+- **"Entrenadores"** → **"Entrenadores/as"**
+- **Aplicado en**: Página web principal y aplicación Android
+
+### ✅ APK Actualizada con Sincronización
+- **`CDSANABRIACF-APP-INCLUSIVA.apk`**: Nueva versión con sincronización en tiempo real
+- **Lenguaje Inclusivo**: Implementado en la aplicación Android
+- **Sincronización Automática**: Entre web y app cada 5 segundos
+- **Indicador Visual**: Estado de sincronización en tiempo real
 
 ### ✅ Sistema de Socios Operativo
 - **Registro Automático**: Nuevos socios aparecen inmediatamente en el dashboard
@@ -439,4 +477,4 @@ Este proyecto es propiedad del Club Deportivo Sanabriacf. Todos los derechos res
 
 **Desarrollado con ❤️ para CDSANABRIACF**
 
-*Última actualización: 14 de Agosto 2025 - Sistema completamente funcional con sincronización automática y login seguro para entrenadores*
+*Última actualización: 14 de Agosto 2025 - Sistema completamente funcional con sincronización en tiempo real, lenguaje inclusivo y login seguro para entrenadores*
