@@ -388,6 +388,27 @@ El sistema utiliza localStorage con las siguientes colecciones:
 
 ## 🆕 Cambios Implementados Hoy (14 de Agosto 2025)
 
+### ✅ Sistema de Sincronización en Tiempo Real (🆕 IMPLEMENTADO)
+- **Sincronización Automática**: Cada 5 segundos entre web y app
+- **Indicador Visual**: Muestra estado de sincronización en tiempo real
+- **Comunicación Bidireccional**: Web ↔ App con datos siempre actualizados
+- **Sincronización Inmediata**: Al registrar socios/amigos se sincroniza automáticamente
+- **Función `syncDataWithApp()`**: Sincroniza datos desde web a app
+- **localStorage Compartido**: Datos persistentes en ambos lados
+
+### ✅ Lenguaje Inclusivo Implementado (🆕 IMPLEMENTADO)
+- **"Socios"** → **"Socios/as"**
+- **"Amigos"** → **"Amigos/as"**
+- **"Jugadores"** → **"Jugadores/as"**
+- **"Entrenadores"** → **"Entrenadores/as"**
+- **Aplicado en**: Página web principal y aplicación Android
+
+### ✅ Sistema de Contraseñas Mejorado (🆕 IMPLEMENTADO)
+- **Login con contraseñas** para socios y amigos
+- **Contraseñas visibles** para administradores
+- **Recordar sesión** implementado
+- **Validación de credenciales** mejorada
+
 ### ✅ Sistema de Sincronización en Tiempo Real (🆕 NUEVO)
 - **Sincronización Automática**: Cada 5 segundos entre web y app
 - **Indicador Visual**: Muestra estado de sincronización en tiempo real
@@ -477,4 +498,4 @@ Este proyecto es propiedad del Club Deportivo Sanabriacf. Todos los derechos res
 
 **Desarrollado con ❤️ para CDSANABRIACF**
 
-*Última actualización: 14 de Agosto 2025 - Sistema completamente funcional con sincronización en tiempo real, lenguaje inclusivo y login seguro para entrenadores*
+*Última actualización: 14 de Agosto 2025 - Sistema completamente funcional con sincronización en tiempo real, lenguaje inclusivo, contraseñas y login seguro para entrenadores*
