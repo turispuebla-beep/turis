@@ -894,13 +894,13 @@
             <!-- Botones de acceso en la parte superior -->
             <div class="access-buttons" style="margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                 <button class="access-btn" onclick="showLoginModal(createSocioLoginForm())" style="background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                    👨‍👩‍👧‍👦 Socios
+                    👨‍👩‍👧‍👦 Socios/as
                 </button>
                 <button class="access-btn" onclick="abrirTiendaOnline()" style="background: linear-gradient(135deg, #dc2626, #3b82f6); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                     🏪 TIENDA
                 </button>
                 <button class="access-btn" onclick="showLoginModal(createAmigoLoginForm())" style="background: var(--secondary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                    🤝 Amigos del Club
+                    🤝 Amigos/as del Club
                 </button>
             </div>
         </header>
@@ -941,7 +941,7 @@
                 <div class="feature-icon">⚽</div>
                 <h3 class="feature-title">Nuestro Equipo</h3>
                 <p class="feature-description">
-                    Conoce a nuestros jugadores, entrenadores y personal técnico. 
+                    Conoce a nuestros jugadores, entrenadores/as y personal técnico. 
                     Un equipo unido con un objetivo común: la excelencia deportiva.
                 </p>
                 <button class="feature-btn" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 20px; margin-top: 15px; cursor: pointer;">Ver Equipos</button>
@@ -1033,10 +1033,10 @@
             
             <div class="download-section">
                 <button class="cta-button" onclick="document.getElementById('sociosModal').style.display = 'block'">
-                    👨‍👩‍👧‍👦 Hacerse Socio
+                    👨‍👩‍👧‍👦 Hacerse Socio/a
                 </button>
                 <button class="cta-button" onclick="document.getElementById('amigosModal').style.display = 'block'">
-                    🤝 Ser Amigo del Club
+                    🤝 Ser Amigo/a del Club
                 </button>
             </div>
             
@@ -1068,7 +1068,7 @@
         <div id="sociosModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" onclick="closeSociosModal()">&times;</span>
-                <h2>👨‍👩‍👧‍👦 Registro de Socio</h2>
+                <h2>👨‍👩‍👧‍👦 Registro de Socio/a</h2>
                 <p style="color: #dc2626; font-weight: bold; margin-bottom: 20px;">⚠️ IMPORTANTE: Los socios deben pagar una cuota. Si no se valida el pago en 7 días, serás excluido hasta el pago.</p>
                 
                 <form id="sociosForm" onsubmit="registerSocio(event)">
@@ -1143,7 +1143,7 @@
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="btn-primary">Registrarse como Socio</button>
+                        <button type="submit" class="btn-primary">Registrarse como Socio/a</button>
                         <button type="button" class="btn-secondary" onclick="closeSociosModal()">Cancelar</button>
                     </div>
                 </form>
@@ -1154,7 +1154,7 @@
         <div id="amigosModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" onclick="closeAmigosModal()">&times;</span>
-                <h2>🤝 Registro de Amigo del Club</h2>
+                <h2>🤝 Registro de Amigo/a del Club</h2>
                 <p style="color: #059669; font-weight: bold; margin-bottom: 20px;">✅ GRATUITO: El registro como amigo del club es completamente gratuito.</p>
                 
                 <form id="amigosForm" onsubmit="registerAmigo(event)">
@@ -1202,7 +1202,7 @@
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="btn-primary">Registrarse como Amigo</button>
+                        <button type="submit" class="btn-primary">Registrarse como Amigo/a</button>
                         <button type="button" class="btn-secondary" onclick="closeAmigosModal()">Cancelar</button>
                     </div>
                 </form>
@@ -1275,44 +1275,106 @@
             </h2>
             <div id="privacyContent" style="display: none; color: var(--text-light-color); line-height: 1.6;">
                 <h3 style="color: var(--text-color); margin-bottom: 15px;">Información sobre Protección de Datos</h3>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light-color);">
+                    Esta política cumple con el <strong>Reglamento General de Protección de Datos (RGPD)</strong> y la <strong>Ley Orgánica de Protección de Datos y Garantías de los Derechos Digitales (LOPDGDD)</strong>. 
+                    Para más información, visite: <a href="https://www.aepd.es" target="_blank" style="color: var(--primary-color);">www.aepd.es</a>
+                </p>
                 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Responsable del Tratamiento</h4>
-                <p>Club Deportivo Sanabriacf (CDSANABRIACF)<br>
-                Dirección: [Dirección del club]<br>
+                <p><strong>Club Deportivo Sanabriacf (CDSANABRIACF)</strong><br>
+                Dirección: Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora<br>
                 Email: cdsanabriafc@gmail.com<br>
-                Teléfono: +34 600 000 000</p>
+                Teléfono: +34 600 000 000<br>
+                CIF: [CIF del club]<br>
+                Registro: Federación de Fútbol de Castilla y León</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Finalidad del Tratamiento</h4>
                 <p>Sus datos personales serán tratados para las siguientes finalidades:</p>
                 <ul style="margin-left: 20px; margin-bottom: 15px;">
-                    <li>Gestión de la relación con socios, jugadores y amigos del club</li>
-                    <li>Organización de eventos y actividades deportivas</li>
-                    <li>Comunicaciones relacionadas con el club</li>
-                    <li>Gestión administrativa y contable</li>
+                    <li><strong>Gestión de socios/as:</strong> Registro, validación y gestión de cuotas de socios/as del club</li>
+                    <li><strong>Gestión de jugadores/as:</strong> Fichas deportivas, categorías y equipos</li>
+                    <li><strong>Gestión de amigos/as del club:</strong> Registro y acceso a información básica</li>
+                    <li><strong>Gestión de entrenadores/as:</strong> Asignación a equipos y acceso al panel</li>
+                    <li><strong>Organización de eventos:</strong> Torneos, competiciones y actividades deportivas</li>
+                    <li><strong>Comunicaciones:</strong> Información sobre partidos, eventos y noticias del club</li>
+                    <li><strong>Gestión administrativa:</strong> Contabilidad, facturación y cumplimiento legal</li>
+                    <li><strong>Seguridad:</strong> Control de acceso y protección de datos</li>
                 </ul>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Legitimación</h4>
                 <p>El tratamiento de sus datos se basa en:</p>
                 <ul style="margin-left: 20px; margin-bottom: 15px;">
-                    <li>Consentimiento del interesado</li>
-                    <li>Ejecución de un contrato</li>
-                    <li>Interés legítimo del responsable</li>
+                    <li><strong>Consentimiento del interesado:</strong> Para socios/as, amigos/as del club y suscripciones</li>
+                    <li><strong>Ejecución de un contrato:</strong> Para jugadores/as y entrenadores/as</li>
+                    <li><strong>Interés legítimo del responsable:</strong> Para comunicaciones comerciales y gestión del club</li>
+                    <li><strong>Cumplimiento de obligaciones legales:</strong> Para aspectos fiscales y deportivos</li>
                 </ul>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Conservación de Datos</h4>
-                <p>Los datos se conservarán mientras se mantenga la relación con el club y no se solicite su supresión, y en su caso, durante los años necesarios para cumplir con las obligaciones legales.</p>
+                <p>Los datos se conservarán durante los siguientes períodos:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Socios/as activos/as:</strong> Mientras mantengan su condición de socio/a</li>
+                    <li><strong>Jugadores/as:</strong> Durante su permanencia en el club + 5 años</li>
+                    <li><strong>Entrenadores/as:</strong> Durante su relación laboral + 4 años</li>
+                    <li><strong>Amigos/as del club:</strong> Hasta que soliciten la baja</li>
+                    <li><strong>Datos contables:</strong> 6 años (obligación fiscal)</li>
+                    <li><strong>Datos deportivos:</strong> 10 años (historial deportivo)</li>
+                </ul>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Destinatarios</h4>
-                <p>Sus datos no serán cedidos a terceros salvo obligación legal o cuando sea necesario para la prestación de los servicios solicitados.</p>
+                <p>Sus datos pueden ser comunicados a:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Federación de Fútbol de Castilla y León:</strong> Para licencias deportivas</li>
+                    <li><strong>Administración Pública:</strong> Para cumplimiento de obligaciones legales</li>
+                    <li><strong>Entidades bancarias:</strong> Para gestión de cuotas y pagos</li>
+                    <li><strong>Proveedores de servicios:</strong> Solo para servicios técnicos necesarios</li>
+                    <li><strong>Otros clubes:</strong> Solo para competiciones oficiales</li>
+                </ul>
+                <p><strong>No se cederán datos a terceros con fines comerciales sin su consentimiento expreso.</strong></p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Derechos</h4>
-                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición contactando con nosotros en cdsanabriafc@gmail.com</p>
+                <p>Puede ejercer sus derechos de protección de datos:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Acceso:</strong> Conocer qué datos tenemos sobre usted</li>
+                    <li><strong>Rectificación:</strong> Corregir datos inexactos o incompletos</li>
+                    <li><strong>Supresión:</strong> Solicitar la eliminación de sus datos</li>
+                    <li><strong>Limitación:</strong> Restringir el tratamiento de sus datos</li>
+                    <li><strong>Portabilidad:</strong> Recibir sus datos en formato electrónico</li>
+                    <li><strong>Oposición:</strong> Oponerse al tratamiento de sus datos</li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light-color);">
+                    <strong>Información adicional sobre derechos:</strong> <a href="https://www.aepd.es/derechos-y-deberes" target="_blank" style="color: var(--primary-color);">www.aepd.es/derechos-y-deberes</a>
+                </p>
+                <p><strong>Para ejercer estos derechos, contacte con nosotros:</strong><br>
+                Email: cdsanabriafc@gmail.com<br>
+                Teléfono: +34 600 000 000<br>
+                Dirección: Crta. de El Pinar, s/n, 49300 Puebla de Sanabria, Zamora</p>
 
                 <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Autoridad de Control</h4>
-                <p>Puede presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) si considera que el tratamiento no se ajusta a la normativa vigente.</p>
+                <p>Puede presentar una reclamación ante la <strong>Agencia Española de Protección de Datos (AEPD)</strong> si considera que el tratamiento no se ajusta a la normativa vigente.</p>
+                
+                <p><strong>Información de contacto de la AEPD:</strong><br>
+                Dirección: C/ Jorge Juan, 6, 28001 Madrid<br>
+                Teléfono: 901 100 099<br>
+                Web: <a href="https://www.aepd.es" target="_blank" style="color: var(--primary-color);">www.aepd.es</a></p>
+
+                <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 10px;">Medidas de Seguridad</h4>
+                <p>El CDSANABRIACF implementa las siguientes medidas de seguridad:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Acceso restringido:</strong> Solo personal autorizado</li>
+                    <li><strong>Encriptación:</strong> Datos protegidos con cifrado</li>
+                    <li><strong>Copias de seguridad:</strong> Respaldo regular de datos</li>
+                    <li><strong>Auditorías:</strong> Revisiones periódicas de seguridad</li>
+                    <li><strong>Formación:</strong> Personal formado en protección de datos</li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light-color);">
+                    <strong>Guía de seguridad de la AEPD:</strong> <a href="https://www.aepd.es/medidas-de-seguridad" target="_blank" style="color: var(--primary-color);">www.aepd.es/medidas-de-seguridad</a>
+                </p>
 
                 <p style="margin-top: 20px; font-style: italic; color: var(--text-color);">
-                    Última actualización: Diciembre 2024
+                    <strong>Última actualización:</strong> Diciembre 2024<br>
+                    <strong>Versión:</strong> 1.0 - Política adaptada al RGPD y LOPDGDD<br>
+                    <strong>Autoridad de Control:</strong> <a href="https://www.aepd.es" target="_blank" style="color: var(--primary-color);">Agencia Española de Protección de Datos (AEPD)</a>
                 </p>
             </div>
         </div>
@@ -1320,12 +1382,15 @@
         <footer>
             <p>&copy; 2024 CDSANABRIACF. Todos los derechos reservados.</p>
             <p>Club Deportivo Sanabriacf - Miembro de TURISTEAM</p>
+            <p style="font-size: 0.8rem; margin-top: 10px;">
+                <a href="https://www.aepd.es" target="_blank" style="color: var(--text-light-color); text-decoration: none;">🔒 Protección de Datos - AEPD</a>
+            </p>
         </footer>
     </div>
 
     <div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000;">
         <button class="admin-button" onclick="openAdminPanel()">🔧 Admin</button>
-        <button class="coach-access-button" onclick="openCoachesAccess()" style="background: #059669; color: white; border: none; padding: 10px 15px; border-radius: 25px; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;">👨‍🏫 Entrenadores</button>
+        <button class="coach-access-button" onclick="openCoachesAccess()" style="background: #059669; color: white; border: none; padding: 10px 15px; border-radius: 25px; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;">👨‍🏫 Entrenadores/as</button>
     </div>
 
     <script>
@@ -1963,22 +2028,59 @@
                 'aficionado': 'Aficionado'
             };
 
+            // Verificar si hay un socio logueado
+            const currentSocio = localStorage.getItem('currentSocio');
+            const isSocio = currentSocio !== null;
+
             let html = '<h3>🏆 Equipos del Club CDSANABRIACF</h3>';
+            
+            if (isSocio) {
+                html += '<div style="background: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">';
+                html += '✅ <strong>Socio/a logueado/a:</strong> Puedes ver información pública de los jugadores/as';
+                html += '</div>';
+            } else {
+                html += '<div style="background: #fef3c7; color: #92400e; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">';
+                html += '⚠️ <strong>Acceso público:</strong> Solo información básica disponible';
+                html += '</div>';
+            }
             
             categories.forEach(category => {
                 const categoryPlayers = teams.filter(p => p.category === category && p.status === 'active');
                 html += `
                     <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 10px;">
-                        <h4>${categoryNames[category]} (${categoryPlayers.length} jugadores)</h4>
+                        <h4>${categoryNames[category]} (${categoryPlayers.length} jugadores/as)</h4>
                         ${categoryPlayers.length > 0 ? 
-                            categoryPlayers.map(p => `<p>• ${p.name} ${p.surname} - Dorsal: ${p.number || 'Sin asignar'}</p>`).join('') :
-                            '<p>No hay jugadores registrados en esta categoría</p>'
+                            categoryPlayers.map(p => {
+                                if (isSocio) {
+                                    // Para socios/as: mostrar información pública
+                                    const age = p.birthDate ? calculateAge(p.birthDate) : 'N/A';
+                                    return `<p>• <strong>${p.name} ${p.surname}</strong> - Dorsal: ${p.number || 'Sin asignar'} - Edad: ${age} años</p>`;
+                                } else {
+                                    // Para visitantes: solo nombre y dorsal
+                                    return `<p>• ${p.name} ${p.surname} - Dorsal: ${p.number || 'Sin asignar'}</p>`;
+                                }
+                            }).join('') :
+                            '<p>No hay jugadores/as registrados/as en esta categoría</p>'
                         }
                     </div>
                 `;
             });
 
             showModal('Equipos del Club', html);
+        }
+
+        // Función auxiliar para calcular edad
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
         }
 
         // Mostrar información del calendario
@@ -3715,22 +3817,22 @@
             }
         }
 
-        // Función para mostrar indicador de sincronización
+        // Función para mostrar indicador de sincronización (oculto)
         function showSyncIndicator() {
             const indicator = document.createElement('div');
             indicator.id = 'syncIndicator';
             indicator.style.cssText = `
                 position: fixed;
-                bottom: 20px;
-                right: 20px;
+                bottom: -100px;
+                right: -100px;
                 background: rgba(59, 130, 246, 0.9);
                 color: white;
                 padding: 8px 12px;
                 border-radius: 20px;
                 font-size: 0.8rem;
                 font-weight: bold;
-                z-index: 1000;
-                display: flex;
+                z-index: -1;
+                display: none;
                 align-items: center;
                 gap: 8px;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.2);
@@ -3738,7 +3840,7 @@
             indicator.innerHTML = '🔄 Sincronizado';
             document.body.appendChild(indicator);
             
-            // Actualizar cada 5 segundos
+            // Actualizar cada 5 segundos (oculto)
             setInterval(() => {
                 const now = new Date().toLocaleTimeString();
                 indicator.innerHTML = `🔄 Sincronizado ${now}`;

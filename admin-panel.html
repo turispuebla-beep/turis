@@ -3282,6 +3282,16 @@
                     status: 'active'
                 };
 
+                // Añadir el segundo administrador
+                const secondAdmin = {
+                    id: 'ADMIN_SECONDARY',
+                    name: 'Administrador Secundario',
+                    email: 'cdsanabriafc@gmail.com',
+                    password: 'admin123',
+                    role: 'super_admin',
+                    status: 'active'
+                };
+
                 let html = '<h4>👥 Lista de Administradores</h4>';
                 html += '<div style="background: white; border-radius: 8px; padding: 15px; margin-top: 15px;">';
                 
@@ -3290,10 +3300,26 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; background: #f0f9ff;">
                         <div>
                             <strong>👑 ${principalAdmin.name}</strong><br>
-                            <small>📧 ${principalAdmin.email} | 🎯 Super Administrador</small>
+                            <small>📧 ${principalAdmin.email} | 🎯 Super Administrador</small><br>
+                            <small style="color: #dc2626; font-weight: bold;">🔐 Contraseña: <span style="color: #dc2626;">••••••••</span> <span style="color: #666; font-size: 0.7rem;">(Protegida)</span></small>
                         </div>
                         <div>
                             <span style="background: #059669; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">PRINCIPAL</span>
+                        </div>
+                    </div>
+                `;
+
+                // Mostrar segundo administrador
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; background: #f0f9ff;">
+                        <div>
+                            <strong>👑 ${secondAdmin.name}</strong><br>
+                            <small>📧 ${secondAdmin.email} | 🎯 Super Administrador</small><br>
+                            <small style="color: #059669; font-weight: bold;">🔐 Contraseña: <span id="admin-password-${secondAdmin.id}">••••••••</span>
+                            <button onclick="togglePassword('admin-password-${secondAdmin.id}', '${secondAdmin.password}')" style="background: none; border: none; color: #059669; cursor: pointer; font-size: 0.8rem; margin-left: 5px;">👁️</button></small>
+                        </div>
+                        <div>
+                            <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">SECUNDARIO</span>
                         </div>
                     </div>
                 `;
@@ -3328,7 +3354,7 @@
                 html += '</div>';
                 adminsList.innerHTML = html;
 
-                console.log('👥 Lista de administradores cargada:', admins.length + 1, 'administradores');
+                console.log('👥 Lista de administradores cargada:', admins.length + 2, 'administradores');
             } catch (error) {
                 console.error('❌ Error cargando lista de administradores:', error);
             }
@@ -7317,12 +7343,22 @@
         function loadExistingLogo() {
             try {
                 const logoData = JSON.parse(localStorage.getItem('clubLogo') || 'null');
+                const preview = document.getElementById('logoPreview');
+                
                 if (logoData && logoData.dataUrl) {
-                    const preview = document.getElementById('logoPreview');
+                    // Si hay un logo personalizado guardado, mostrarlo
                     preview.innerHTML = `<img src="${logoData.dataUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                    console.log('✅ Logo personalizado cargado en configuración');
+                } else {
+                    // Si no hay logo personalizado, mostrar el escudo por defecto
+                    preview.innerHTML = `<img src="escudo-sanabria.jpeg" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="Escudo CDSANABRIACF">`;
+                    console.log('✅ Escudo por defecto cargado en configuración');
                 }
             } catch (error) {
                 console.error('❌ Error cargando logo existente:', error);
+                // En caso de error, mostrar el escudo por defecto
+                const preview = document.getElementById('logoPreview');
+                preview.innerHTML = `<img src="escudo-sanabria.jpeg" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="Escudo CDSANABRIACF">`;
             }
         }
 

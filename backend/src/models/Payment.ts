@@ -87,3 +87,4 @@ PaymentSchema.methods.markAsPaid = async function(
 export default mongoose.model<IPayment>('Payment', PaymentSchema);
 
 
+

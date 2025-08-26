@@ -1,39 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Generar QR CDSANABRIACF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Generar QR - CDSANABRIACF</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 15px;
+            background: #f9fafb;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status.loading {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #374151;
+        }
+
+        .url-display {
+            background: #f9fafb;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #1e3a8a;
+            word-break: break-all;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
 </head>
-<body style="text-align: center; font-family: Arial; padding: 20px;">
-    <h1>⚽ CDSANABRIACF</h1>
-    <p>Generando código QR...</p>
-    <div id="qrcode"></div>
+<body>
+    <div class="container">
+        <div class="logo">⚽</div>
+        <h1>CDSANABRIACF</h1>
+        <p class="subtitle">Generador de Código QR</p>
+        
+        <div class="info">
+            <strong>📱</strong> Este QR permitirá acceso directo a la aplicación desde dispositivos móviles
+        </div>
+
+        <div class="url-display" id="urlDisplay">
+            Cargando URL...
+        </div>
+
+        <div class="qr-container">
+            <div id="qrcode">
+                <div class="status loading">
+                    🔄 Generando código QR...
+                </div>
+            </div>
+        </div>
+
+        <div id="buttons" style="display: none;">
+            <button class="btn" onclick="downloadQR()">📥 Descargar QR</button>
+            <button class="btn btn-secondary" onclick="generateNewQR()">🔄 Generar Nuevo</button>
+        </div>
+
+        <div class="info">
+            <strong>💡 Consejo:</strong> El archivo se descargará automáticamente como "CDSANABRIACF-QR.png"
+        </div>
+    </div>
     
     <script>
+        let qrCanvas = null;
+        let currentUrl = '';
+
         // URL de la página principal
-        const url = window.location.href.replace('/create-qr-simple.html', '/index.html');
-        
-        // Generar QR automáticamente
-        QRCode.toCanvas(document.getElementById('qrcode'), url, {
-            width: 300,
-            height: 300,
-            color: {
-                dark: '#1e3a8a',
-                light: '#ffffff'
+        function getMainUrl() {
+            const currentUrl = window.location.href;
+            return currentUrl.replace('/create-qr-simple.html', '/index.html');
+        }
+
+        // Mostrar la URL que se está usando
+        function displayUrl() {
+            currentUrl = getMainUrl();
+            document.getElementById('urlDisplay').textContent = currentUrl;
+        }
+
+        // Generar QR
+        function generateQR() {
+            const url = getMainUrl();
+            const qrContainer = document.getElementById('qrcode');
+            
+            qrContainer.innerHTML = '<div class="status loading">🔄 Generando código QR...</div>';
+            
+            QRCode.toCanvas(url, {
+                width: 300,
+                height: 300,
+                color: {
+                    dark: '#1e3a8a',
+                    light: '#ffffff'
+                },
+                margin: 2
+            }, function (error, canvas) {
+                if (error) {
+                    qrContainer.innerHTML = '<div class="status error">❌ Error generando QR</div>';
+                    console.error('Error generando QR:', error);
+                } else {
+                    qrCanvas = canvas;
+                    qrContainer.innerHTML = '';
+                    qrContainer.appendChild(canvas);
+                    
+                    // Mostrar botones
+                    document.getElementById('buttons').style.display = 'block';
+                    
+                    // Descargar automáticamente
+                    setTimeout(() => {
+                        downloadQR();
+                    }, 1000);
+                }
+            });
+        }
+
+        // Descargar QR
+        function downloadQR() {
+            if (!qrCanvas) {
+                alert('Primero genera el QR');
+                return;
             }
-        }, function (error, canvas) {
-            if (error) {
-                alert('Error generando QR');
-            } else {
-                // Descargar automáticamente
-                const link = document.createElement('a');
-                link.download = 'CDSANABRIACF-QR.png';
-                link.href = canvas.toDataURL();
-                link.click();
-                
-                document.body.innerHTML = '<h1>✅ QR Generado</h1><p>El archivo "CDSANABRIACF-QR.png" se ha descargado en tu carpeta de descargas.</p><p>Puedes cerrar esta ventana.</p>';
-            }
-        });
+            
+            const link = document.createElement('a');
+            link.download = 'CDSANABRIACF-QR.png';
+            link.href = qrCanvas.toDataURL();
+            link.click();
+            
+            // Mostrar mensaje de éxito
+            const qrContainer = document.getElementById('qrcode');
+            const successMsg = document.createElement('div');
+            successMsg.className = 'status success';
+            successMsg.innerHTML = '✅ QR generado y descargado correctamente';
+            qrContainer.appendChild(successMsg);
+        }
+
+        // Generar nuevo QR
+        function generateNewQR() {
+            qrCanvas = null;
+            document.getElementById('buttons').style.display = 'none';
+            generateQR();
+        }
+
+        // Inicializar
+        window.onload = function() {
+            displayUrl();
+            generateQR();
+        };
     </script>
 </body>
 </html>

@@ -105,8 +105,8 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 
 ### 👤 Visitantes (Sin Login)
 **Contenido Accesible:**
-- ✅ Hazte Socio
-- ✅ Ser Amigo del Club
+- ✅ Hazte Socio/a
+- ✅ Ser Amigo/a del Club
 - ✅ Publicidad del Club
 - ✅ Facebook e Instagram
 - ✅ Datos de contacto

@@ -244,20 +244,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>👥 Administración de Socios</h1>
-            <p>Gestión completa de socios del Club Deportivo Sanabriacf</p>
+                    <h1>👥 Administración de Socios/as</h1>
+        <p>Gestión completa de socios/as del Club Deportivo Sanabriacf</p>
         </div>
 
         <div class="content">
             <!-- Estadísticas -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="totalSocios">-</div>
-                    <div class="stat-label">Total Socios</div>
+                                <div class="stat-number" id="totalSocios">-</div>
+            <div class="stat-label">Total Socios/as</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="sociosActivos">-</div>
-                    <div class="stat-label">Socios Activos</div>
+                                <div class="stat-number" id="sociosActivos">-</div>
+            <div class="stat-label">Socios/as Activos/as</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="sociosPendientes">-</div>
@@ -271,8 +271,8 @@
 
             <!-- Acciones -->
             <div class="actions">
-                <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Socio</button>
-                <button class="btn btn-warning" onclick="exportSocios()">📊 Exportar Socios</button>
+                        <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Socio/a</button>
+        <button class="btn btn-warning" onclick="exportSocios()">📊 Exportar Socios/as</button>
                 <button class="btn btn-danger" onclick="confirmLimpiarSocios()">🗑️ Limpiar Todos</button>
                 <button class="btn btn-success" onclick="refreshData()">🔄 Actualizar</button>
             </div>
@@ -291,7 +291,7 @@
     <div id="socioModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeSocioModal()">&times;</span>
-            <h2 id="modalTitle">➕ Añadir Nuevo Socio</h2>
+            <h2 id="modalTitle">➕ Añadir Nuevo/a Socio/a</h2>
             
             <form id="socioForm">
                 <input type="hidden" id="socioId">
@@ -341,7 +341,7 @@
                 </div>
                 
                 <div class="actions">
-                    <button type="submit" class="btn btn-primary">💾 Guardar Socio</button>
+                    <button type="submit" class="btn btn-primary">💾 Guardar Socio/a</button>
                     <button type="button" class="btn btn-warning" onclick="closeSocioModal()">❌ Cancelar</button>
                 </div>
             </form>
@@ -402,9 +402,9 @@
             if (sociosData.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>No hay socios registrados</h3>
-                        <p>Comienza añadiendo el primer socio del club</p>
-                        <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Primer Socio</button>
+                                        <h3>No hay socios/as registrados/as</h3>
+                <p>Comienza añadiendo el primer/a socio/a del club</p>
+                <button class="btn btn-primary" onclick="showAddSocioModal()">➕ Añadir Primer/a Socio/a</button>
                     </div>
                 `;
                 return;
@@ -459,7 +459,7 @@
         // Mostrar modal para añadir socio
         function showAddSocioModal() {
             editingSocioId = null;
-            document.getElementById('modalTitle').textContent = '➕ Añadir Nuevo Socio';
+            document.getElementById('modalTitle').textContent = '➕ Añadir Nuevo/a Socio/a';
             document.getElementById('socioForm').reset();
             document.getElementById('socioId').value = '';
             document.getElementById('socioModal').style.display = 'block';
@@ -471,7 +471,7 @@
             if (!socio) return;
 
             editingSocioId = index;
-            document.getElementById('modalTitle').textContent = '✏️ Editar Socio';
+            document.getElementById('modalTitle').textContent = '✏️ Editar Socio/a';
             document.getElementById('socioId').value = index;
             document.getElementById('nombre').value = socio.nombre;
             document.getElementById('apellidos').value = socio.apellidos;
@@ -664,6 +664,7 @@
     </script>
 </body>
 </html>
+
 
 
 
