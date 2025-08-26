@@ -893,13 +893,13 @@
             <!-- Botones de acceso en la parte superior -->
             <div class="access-buttons" style="margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                 <button class="access-btn" onclick="showLoginModal(createSocioLoginForm())" style="background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                    👨‍👩‍👧‍👦 Socios
+                    👨‍👩‍👧‍👦 Socios/as
                 </button>
                 <button class="access-btn" onclick="abrirTiendaOnline()" style="background: linear-gradient(135deg, #dc2626, #3b82f6); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                     🏪 TIENDA
                 </button>
                 <button class="access-btn" onclick="showLoginModal(createAmigoLoginForm())" style="background: var(--secondary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                    🤝 Amigos del Club
+                    🤝 Amigos/as del Club
                 </button>
             </div>
         </header>
@@ -3712,11 +3712,79 @@
             }
         }
 
-        // Cargar encuentros al iniciar la página
-        document.addEventListener('DOMContentLoaded', function() {
+        // Función para sincronizar datos con la app
+        function syncDataWithApp() {
+            try {
+                // Obtener todos los datos del localStorage
+                const syncData = {
+                    timestamp: new Date().toISOString(),
+                    clubMembers: JSON.parse(localStorage.getItem('clubMembers') || '[]'),
+                    clubFriends: JSON.parse(localStorage.getItem('clubFriends') || '[]'),
+                    clubTeams: JSON.parse(localStorage.getItem('clubTeams') || '[]'),
+                    clubPlayers: JSON.parse(localStorage.getItem('clubPlayers') || '[]'),
+                    clubEvents: JSON.parse(localStorage.getItem('clubEvents') || '[]'),
+                    clubDocuments: JSON.parse(localStorage.getItem('clubDocuments') || '[]'),
+                    clubPhotos: JSON.parse(localStorage.getItem('clubPhotos') || '[]'),
+                    clubVideos: JSON.parse(localStorage.getItem('clubVideos') || '[]'),
+                    encuentros: JSON.parse(localStorage.getItem('encuentros') || '[]'),
+                    currentSocio: localStorage.getItem('currentSocio'),
+                    currentAmigo: localStorage.getItem('currentAmigo'),
+                    currentCoach: localStorage.getItem('currentCoach')
+                };
+                
+                // Guardar datos de sincronización
+                localStorage.setItem('syncData', JSON.stringify(syncData));
+                
+                // Enviar evento de sincronización si estamos en la app
+                if (window.Android) {
+                    window.Android.syncData(JSON.stringify(syncData));
+                }
+                
+                console.log('🔄 Datos sincronizados:', syncData.timestamp);
+                
+            } catch (error) {
+                console.error('❌ Error en sincronización:', error);
+            }
+        }
+
+        // Función para mostrar indicador de sincronización
+        function showSyncIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'syncIndicator';
+            indicator.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(59, 130, 246, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            `;
+            indicator.innerHTML = '🔄 Sincronizado';
+            document.body.appendChild(indicator);
+            
+            // Actualizar cada 5 segundos
+            setInterval(() => {
+                const now = new Date().toLocaleTimeString();
+                indicator.innerHTML = `🔄 Sincronizado ${now}`;
+            }, 5000);
+        }
+
+        // Función para actualizar todos los datos de la página
+        function updatePageData() {
+            // Sincronizar datos con la app
+            syncDataWithApp();
+            
+            // Actualizar contadores de encuentros
             const encuentros = JSON.parse(localStorage.getItem('encuentros') || '[]');
             if (encuentros.length > 0) {
-                // Actualizar el contador en la tarjeta de calendario
                 const calendarCard = document.querySelector('.feature-card:nth-child(2)');
                 if (calendarCard) {
                     const title = calendarCard.querySelector('.feature-title');
@@ -3726,8 +3794,70 @@
                 }
             }
             
+            // Actualizar contadores de socios
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            const sociosActivos = socios.filter(s => s.status === 'active').length;
+            const sociosPendientes = socios.filter(s => s.status === 'pending_validation').length;
+            
+            // Actualizar contadores de amigos
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            const amigosActivos = amigos.filter(a => a.status === 'active').length;
+            
+            // Actualizar contadores de equipos
+            const equipos = JSON.parse(localStorage.getItem('clubTeams') || '[]');
+            const jugadores = JSON.parse(localStorage.getItem('clubPlayers') || '[]');
+            
+            // Actualizar contadores de eventos
+            const eventos = JSON.parse(localStorage.getItem('clubEvents') || '[]');
+            const eventosActivos = eventos.filter(e => e.status === 'active').length;
+            
+            // Actualizar contadores de documentos
+            const documentos = JSON.parse(localStorage.getItem('clubDocuments') || '[]');
+            const documentosActivos = documentos.filter(d => d.status === 'active').length;
+            
+            // Actualizar contadores de multimedia
+            const fotos = JSON.parse(localStorage.getItem('clubPhotos') || '[]');
+            const videos = JSON.parse(localStorage.getItem('clubVideos') || '[]');
+            
+            console.log('✅ Datos de la página actualizados:', {
+                encuentros: encuentros.length,
+                socios: sociosActivos + sociosPendientes,
+                sociosActivos,
+                sociosPendientes,
+                amigos: amigosActivos,
+                equipos: equipos.length,
+                jugadores: jugadores.length,
+                eventos: eventosActivos,
+                documentos: documentosActivos,
+                multimedia: fotos.length + videos.length
+            });
+        }
+
+        // Cargar encuentros al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar sesión recordada al cargar la página
+            checkRememberedSession();
+            
+            // Actualizar todos los datos de la página
+            updatePageData();
+            
             // Actualizar estado de login
             updateLoginStatus();
+            
+            // Configurar actualización automática cada 15 segundos
+            setInterval(function() {
+                updatePageData();
+            }, 15000); // 15 segundos
+            
+            // Configurar sincronización cada 5 segundos
+            setInterval(function() {
+                syncDataWithApp();
+            }, 5000); // 5 segundos
+            
+            console.log('🔄 Sistema de sincronización en tiempo real activado');
+            
+            // Mostrar indicador de sincronización
+            showSyncIndicator();
             
             // Inicializar aplicación y verificar formularios
             inicializarAplicacion();
