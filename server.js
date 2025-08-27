@@ -25,21 +25,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'amco@gmx.es';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '533712';
 
 // Datos simulados en memoria
-let members = [
-  {
-    id: 1,
-    numeroSocio: 'SOC-0001',
-    nombre: 'Lucas',
-    apellidos: 'Caballero Sánchez',
-    dni: '12345678A',
-    telefono: '600000001',
-    email: 'lucas.caballero@example.com',
-    direccion: 'Calle Principal 1, Puebla de Sanabria',
-    estado: 'Activo',
-    password: '123456',
-    fechaRegistro: new Date().toISOString()
-  }
-];
+let members = []; // Base de datos limpia - sin socios
 
 let equipos = [
   { id: 1, nombre: 'Prebenjamín', categoria: 'prebenjamin', descripcion: 'Equipo prebenjamín' },
@@ -340,21 +326,7 @@ app.post('/api/sync', (req, res) => {
 // Inicializar base de datos
 app.post('/api/init-db', (req, res) => {
   // Resetear datos a valores por defecto
-  members = [
-    {
-      id: 1,
-      numeroSocio: 'SOC-0001',
-      nombre: 'Lucas',
-      apellidos: 'Caballero Sánchez',
-      dni: '12345678A',
-      telefono: '600000001',
-      email: 'lucas.caballero@example.com',
-      direccion: 'Calle Principal 1, Puebla de Sanabria',
-      estado: 'Activo',
-      password: '123456',
-      fechaRegistro: new Date().toISOString()
-    }
-  ];
+  members = []; // Base de datos limpia - sin socios
   
   equipos = [
     { id: 1, nombre: 'Prebenjamín', categoria: 'prebenjamin', descripcion: 'Equipo prebenjamín' },
