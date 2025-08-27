@@ -29,25 +29,12 @@ let members = [
   {
     id: 1,
     numeroSocio: 'SOC-0001',
-    nombre: 'Juan',
-    apellidos: 'Pérez',
+    nombre: 'Lucas',
+    apellidos: 'Caballero Sánchez',
     dni: '12345678A',
     telefono: '600000001',
-    email: 'juan.perez@example.com',
+    email: 'lucas.caballero@example.com',
     direccion: 'Calle Principal 1, Puebla de Sanabria',
-    estado: 'Activo',
-    password: '123456',
-    fechaRegistro: new Date().toISOString()
-  },
-  {
-    id: 2,
-    numeroSocio: 'SOC-0002',
-    nombre: 'María',
-    apellidos: 'García',
-    dni: '87654321B',
-    telefono: '600000002',
-    email: 'maria.garcia@example.com',
-    direccion: 'Calle Secundaria 2, Puebla de Sanabria',
     estado: 'Activo',
     password: '123456',
     fechaRegistro: new Date().toISOString()
