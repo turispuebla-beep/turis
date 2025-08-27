@@ -50,6 +50,9 @@ class RealtimeSync {
             this.isConnected = true;
             this.reconnectAttempts = 0;
             this.updateConnectionStatus(true);
+            
+            // Cargar datos iniciales del servidor
+            this.loadInitialData();
         });
 
         this.socket.on('disconnect', () => {
@@ -152,16 +155,34 @@ class RealtimeSync {
 
     // Manejar sincronización de datos
     handleDataSync(data) {
-        if (data.data && Array.isArray(data.data)) {
-            // Actualizar base de datos local
-            this.updateLocalDatabase(data.data);
+        console.log('📡 Datos recibidos del servidor:', data);
+        
+        // Guardar socios en localStorage
+        if (data.members && Array.isArray(data.members)) {
+            localStorage.setItem('clubMembers', JSON.stringify(data.members));
+            console.log('✅ Socios guardados en localStorage:', data.members.length);
         }
+        
+        // Guardar amigos en localStorage
+        if (data.amigos && Array.isArray(data.amigos)) {
+            localStorage.setItem('clubFriends', JSON.stringify(data.amigos));
+            console.log('✅ Amigos guardados en localStorage:', data.amigos.length);
+        }
+        
+        // Guardar equipos en localStorage
+        if (data.equipos && Array.isArray(data.equipos)) {
+            localStorage.setItem('clubTeams', JSON.stringify(data.equipos));
+            console.log('✅ Equipos guardados en localStorage:', data.equipos.length);
+        }
+        
+        // Emitir evento para que la UI se actualice
+        window.dispatchEvent(new CustomEvent('database-updated', {
+            detail: { data }
+        }));
     }
 
     // Actualizar base de datos local
     updateLocalDatabase(serverData) {
-        // Aquí puedes implementar la lógica para actualizar la base de datos local
-        // Por ahora solo mostramos los datos
         console.log('🔄 Actualizando base de datos local con datos del servidor');
         
         // Emitir evento para que la UI se actualice
@@ -283,6 +304,35 @@ class RealtimeSync {
             }
         } catch (error) {
             console.error('❌ Error en envío HTTP:', error);
+        }
+    }
+
+    // Cargar datos iniciales del servidor
+    async loadInitialData() {
+        try {
+            console.log('📥 Cargando datos iniciales del servidor...');
+            
+            const response = await fetch(`${this.backendUrl}/api/members`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data) {
+                    localStorage.setItem('clubMembers', JSON.stringify(data.data));
+                    console.log('✅ Socios cargados del servidor:', data.data.length);
+                }
+            }
+            
+            const amigosResponse = await fetch(`${this.backendUrl}/api/amigos`);
+            if (amigosResponse.ok) {
+                const amigosData = await amigosResponse.json();
+                if (amigosData.success && amigosData.data) {
+                    localStorage.setItem('clubFriends', JSON.stringify(amigosData.data));
+                    console.log('✅ Amigos cargados del servidor:', amigosData.data.length);
+                }
+            }
+            
+            console.log('✅ Datos iniciales cargados correctamente');
+        } catch (error) {
+            console.error('❌ Error cargando datos iniciales:', error);
         }
     }
 }
