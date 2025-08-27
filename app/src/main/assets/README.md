@@ -9,10 +9,10 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 ## 🚀 Características Principales
 
 ### 👥 Gestión de Usuarios
-- **Socios**: Acceso completo a todas las funcionalidades
-- **Amigos del Club**: Acceso limitado a competiciones y encuentros
-- **Entrenadores**: Panel especializado con mensajes push
-- **Administradores**: Panel completo de gestión
+- **Socios/as**: Acceso completo a todas las funcionalidades
+- **Amigos/as del Club**: Acceso limitado a competiciones y encuentros
+- **Entrenadores/as**: Panel especializado con mensajes push
+- **Administradores/as**: Panel completo de gestión
 
 ### 🔐 Sistema de Autenticación
 - **Login por email/teléfono** para socios y amigos
@@ -39,13 +39,13 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - Descarga directa para socios
 - Gestión desde panel de administración
 
-#### 👥 Gestión Avanzada de Socios
-- **Verificación de Duplicados**: Detecta automáticamente socios existentes
+#### 👥 Gestión Avanzada de Socios/as
+- **Verificación de Duplicados**: Detecta automáticamente socios/as existentes
 - **Contadores de Intentos**: Registra intentos de registro duplicado (ej: Lucas Caballero)
-- **Numeración Automática**: Asigna números de socio secuenciales (SOC-0001, SOC-0002, etc.)
-- **Eliminación de Socios**: Función para eliminar socios específicos
-- **Notificaciones Automáticas**: Alertas para administradores sobre cambios
-- **Limpieza de Base de Datos**: Funciones para limpiar socios o toda la base
+- **Numeración Automática**: Asigna números de socio/a secuenciales (SOC-0001, SOC-0002, etc.)
+- **Eliminación de Socios/as**: Función para eliminar socios/as específicos/as
+- **Notificaciones Automáticas**: Alertas para administradores/as sobre cambios
+- **Limpieza de Base de Datos**: Funciones para limpiar socios/as o toda la base
 
 #### 📢 Sistema de Publicidad
 - Múltiples tipos de visualización:
@@ -90,10 +90,10 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - **Backup y restauración** de datos
 
 #### 👥 Gestión de Usuarios
-- **Socios**: Registro, validación, gestión de cuotas
-- **Amigos del Club**: Registro y gestión
-- **Entrenadores**: Asignación a equipos
-- **Jugadores**: Gestión completa con categorías
+- **Socios/as**: Registro, validación, gestión de cuotas
+- **Amigos/as del Club**: Registro y gestión
+- **Entrenadores/as**: Asignación a equipos
+- **Jugadores/as**: Gestión completa con categorías
 
 #### 📅 Gestión de Contenido
 - **Eventos**: Creación y gestión
@@ -112,13 +112,13 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - ✅ Datos de contacto
 - ✅ Política de privacidad
 
-### 🤝 Amigos del Club
+### 🤝 Amigos/as del Club
 **Contenido Adicional:**
 - ✅ Competiciones
 - ✅ Encuentros
 - ✅ Todo el contenido de visitantes
 
-### 👨‍👩‍👧‍👦 Socios
+### 👨‍👩‍👧‍👦 Socios/as
 **Acceso Completo:**
 - ✅ Nuestro Equipo
 - ✅ Partidos y Calendario
@@ -127,14 +127,14 @@ Sistema web completo para la gestión del Club Deportivo Sanabriacf, desarrollad
 - ✅ Galería Multimedia
 - ✅ Encuentros
 - ✅ Documentos del Club
-- ✅ Todo el contenido de amigos
+- ✅ Todo el contenido de amigos/as
 
-### 👨‍🏫 Entrenadores
+### 👨‍🏫 Entrenadores/as
 **Acceso Completo + Panel Especial:**
-- ✅ Todo el contenido de socios
-- ✅ Panel de entrenadores
+- ✅ Todo el contenido de socios/as
+- ✅ Panel de entrenadores/as
 - ✅ Mensajes push a equipos
-- ✅ Gestión de jugadores del equipo
+- ✅ Gestión de jugadores/as del equipo
 
 ## 📁 Estructura del Proyecto
 
@@ -218,24 +218,24 @@ npm run dev:simple # Para desarrollo con MongoDB
 ### Estructura de Datos Frontend (IndexedDB)
 El sistema utiliza IndexedDB con las siguientes colecciones:
 
-- **socios**: Información de socios del club
-- **amigos**: Amigos del club
-- **jugadores**: Jugadores de los equipos
+- **socios**: Información de socios/as del club
+- **amigos**: Amigos/as del club
+- **jugadores**: Jugadores/as de los equipos
 - **equipos**: Información de equipos
-- **entrenadores**: Datos de entrenadores
+- **entrenadores**: Datos de entrenadores/as
 - **eventos**: Eventos del club
 - **inscripcionesEventos**: Inscripciones a eventos
 - **documentos**: Documentos del club
-- **administradores**: Datos de administradores
+- **administradores**: Datos de administradores/as
 - **encuentros**: Partidos programados
 - **configuracion**: Configuración del sistema
 
 ### Estructura de Datos Backend (🆕 MongoDB)
-- **Users**: Administradores y usuarios del sistema
+- **Users**: Administradores/as y usuarios del sistema
 - **Teams**: Equipos del club
-- **Members**: Socios del club
-- **Friends**: Amigos del club
-- **Players**: Jugadores de los equipos
+- **Members**: Socios/as del club
+- **Friends**: Amigos/as del club
+- **Players**: Jugadores/as de los equipos
 - **Events**: Eventos del club
 - **Media**: Fotos y videos
 - **Documents**: Documentos del club
@@ -300,10 +300,10 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 - Reportes de eventos
 - Métricas de uso
 
-### Panel de Entrenadores
+### Panel de Entrenadores/as
 - Estadísticas del equipo
 - Mensajes enviados
-- Actividad de jugadores
+- Actividad de jugadores/as
 - Próximos eventos
 
 ## 🚀 Funcionalidades Recientemente Implementadas (Diciembre 2024 - Actualizado Hoy)
@@ -338,10 +338,10 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 
 ### ✅ Gestión Avanzada de Base de Datos
 - **Limpiar Base de Datos**: Función para eliminar todos los datos
-- **Limpiar Solo Socios**: Función específica para limpiar solo socios
-- **Verificación de Duplicados**: Sistema que detecta socios duplicados
+- **Limpiar Solo Socios/as**: Función específica para limpiar solo socios/as
+- **Verificación de Duplicados**: Sistema que detecta socios/as duplicados/as
 - **Contadores de Intentos**: Registra intentos de registro duplicado
-- **Notificaciones Automáticas**: Sistema de notificaciones para administradores
+- **Notificaciones Automáticas**: Sistema de notificaciones para administradores/as
 
 ### ✅ Sistema de Permisos Avanzado
 - **Control de Acceso por Roles**: Visitantes, Amigos, Socios, Entrenadores
@@ -350,11 +350,11 @@ El sistema utiliza IndexedDB con las siguientes colecciones:
 - **Indicador de Estado**: Badge visible del tipo de usuario
 - **Botón de Cerrar Sesión**: Para usuarios logueados
 
-### ✅ Gestión de Socios Mejorada
+### ✅ Gestión de Socios/as Mejorada
 - **Verificación Automática**: Detecta DNI, email y teléfono duplicados
-- **Numeración Automática**: Asigna números de socio automáticamente
-- **Eliminación de Socios**: Función para eliminar socios específicos
-- **Notificaciones de Cambios**: Alertas automáticas para administradores
+- **Numeración Automática**: Asigna números de socio/a automáticamente
+- **Eliminación de Socios/as**: Función para eliminar socios/as específicos/as
+- **Notificaciones de Cambios**: Alertas automáticas para administradores/as
 - **Contadores de Duplicados**: Estadísticas de intentos de registro
 
 ## 🌐 Información de Despliegue
