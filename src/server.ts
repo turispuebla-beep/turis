@@ -1,52 +1,58 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connectDB } from './config/database';
+import path from 'path';
 
-// Cargar variables de entorno
+// Importar rutas
+import sociosRoutes from './routes/sociosRoutes';
+
+// Configuración de variables de entorno
 dotenv.config();
 
+// Crear aplicación Express
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Conectar a MongoDB
-connectDB();
+// Configuración de archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Rutas básicas
+// Conexión a MongoDB
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/futbol-web');
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+        process.exit(1);
+    }
+};
+
+// Rutas
 app.get('/', (req, res) => {
-  res.json({
-    message: '🚀 API CD Sanabria CF funcionando correctamente',
-    version: '1.0.0',
-    status: 'online'
-  });
+    res.json({ message: 'API de CDSANABRIACF' });
 });
 
-// Ruta de prueba para verificar la conexión a la base de datos
-app.get('/api/health', async (req, res) => {
-  try {
-    res.json({
-      status: 'healthy',
-      database: 'connected',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: 'Error de conexión a la base de datos'
-    });
-  }
-});
+// API Routes
+app.use('/api/socios', sociosRoutes);
+
+// Puerto
+const PORT = process.env.PORT || 5000;
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📊 API disponible en http://localhost:${PORT}/api`);
-  console.log(`🔍 Health check en http://localhost:${PORT}/api/health`);
-});
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Error starting server:', error);
+    }
+};
 
-export default app;
+startServer();

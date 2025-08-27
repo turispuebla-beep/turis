@@ -1,5 +1,10 @@
 # 🚀 Guía de Despliegue - CD Sanabria CF
 
+## 📧 Información de Contacto Actualizada
+- **Email**: cdsanabriafc@gmail.com
+- **Club**: CDSANABRIACF
+- **Ubicación**: Puebla de Sanabria, Zamora
+
 ## 📋 Pasos para desplegar en Railway
 
 ### 1. **Crear cuenta en Railway**
@@ -68,4 +73,6 @@ const API_URL = 'https://tu-proyecto.railway.app';
 ## 🎉 ¡Listo!
 
 Tu aplicación estará disponible 24/7 sin necesidad de tener tu PC encendido.
+
+
 

@@ -109,7 +109,7 @@ Después de ejecutar `npm run init-db`:
 - **Acceso**: Completo a toda la aplicación
 
 ### Administrador de Equipo
-- **Email**: cdsanabriacf@gmail.com
+- **Email**: cdsanabriafc@gmail.com
 - **Contraseña**: admin123
 - **Acceso**: Solo a su equipo asignado
 
@@ -248,4 +248,6 @@ Para problemas o preguntas:
 2. Verificar la conexión a MongoDB
 3. Comprobar las variables de entorno
 4. Ejecutar `npm run init-db` para resetear la base de datos
+
+
 
