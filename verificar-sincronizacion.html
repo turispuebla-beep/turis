@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Verificación de Sincronización - CD Sanabria CF</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .status-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+        .status-card.error {
+            border-left-color: #f44336;
+        }
+        .status-card.warning {
+            border-left-color: #ff9800;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .log-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .log-success { background: rgba(76, 175, 80, 0.3); }
+        .log-error { background: rgba(244, 67, 54, 0.3); }
+        .log-warning { background: rgba(255, 152, 0, 0.3); }
+        .log-info { background: rgba(33, 150, 243, 0.3); }
+        .data-display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .connection-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .connected { background: #4CAF50; }
+        .disconnected { background: #f44336; }
+        .connecting { background: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Verificación de Sincronización</h1>
+            <h2>CD Sanabria CF - Web ↔ Railway ↔ APK</h2>
+        </div>
+
+        <!-- Estado de Conexiones -->
+        <div class="status-grid">
+            <div class="status-card" id="web-status">
+                <h3><span class="connection-indicator connecting" id="web-indicator"></span>Web App</h3>
+                <p id="web-details">Verificando conexión...</p>
+            </div>
+            <div class="status-card" id="railway-status">
+                <h3><span class="connection-indicator connecting" id="railway-indicator"></span>Railway Backend</h3>
+                <p id="railway-details">Verificando conexión...</p>
+            </div>
+            <div class="status-card" id="apk-status">
+                <h3><span class="connection-indicator connecting" id="apk-indicator"></span>APK Mobile</h3>
+                <p id="apk-details">Verificando conexión...</p>
+            </div>
+        </div>
+
+        <!-- Pruebas de Sincronización -->
+        <div class="test-section">
+            <h3>🧪 Pruebas de Sincronización</h3>
+            <div class="test-buttons">
+                <button class="btn btn-primary" onclick="testWebToRailway()">Web → Railway</button>
+                <button class="btn btn-secondary" onclick="testRailwayToWeb()">Railway → Web</button>
+                <button class="btn btn-warning" onclick="testAPKToRailway()">APK → Railway</button>
+                <button class="btn btn-primary" onclick="testRailwayToAPK()">Railway → APK</button>
+                <button class="btn btn-danger" onclick="testFullSync()">Sincronización Completa</button>
+                <button class="btn btn-secondary" onclick="clearLog()">Limpiar Log</button>
+            </div>
+        </div>
+
+        <!-- Datos Actuales -->
+        <div class="test-section">
+            <h3>📊 Datos Actuales</h3>
+            <div class="test-buttons">
+                <button class="btn btn-primary" onclick="showWebData()">Datos Web</button>
+                <button class="btn btn-secondary" onclick="showRailwayData()">Datos Railway</button>
+                <button class="btn btn-warning" onclick="showAPKData()">Datos APK</button>
+            </div>
+            <div id="data-display" class="data-display" style="display: none;">
+                <h4 id="data-title">Datos</h4>
+                <pre id="data-content"></pre>
+            </div>
+        </div>
+
+        <!-- Log de Eventos -->
+        <div class="test-section">
+            <h3>📝 Log de Eventos</h3>
+            <div class="log-container" id="log-container">
+                <div class="log-entry log-info">🚀 Iniciando verificación de sincronización...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="database.js"></script>
+    <script src="realtime-sync.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
+    <script>
+        // Variables globales
+        let webData = [];
+        let railwayData = [];
+        let apkData = [];
+
+        // Función para agregar log
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Función para actualizar estado de conexión
+        function updateConnectionStatus(platform, connected, details) {
+            const indicator = document.getElementById(`${platform}-indicator`);
+            const detailsElement = document.getElementById(`${platform}-details`);
+            const statusCard = document.getElementById(`${platform}-status`);
+
+            if (connected) {
+                indicator.className = 'connection-indicator connected';
+                statusCard.className = 'status-card';
+                addLog(`✅ ${platform.toUpperCase()} conectado`, 'success');
+            } else {
+                indicator.className = 'connection-indicator disconnected';
+                statusCard.className = 'status-card error';
+                addLog(`❌ ${platform.toUpperCase()} desconectado`, 'error');
+            }
+
+            detailsElement.textContent = details;
+        }
+
+        // Verificar conexión Web
+        async function checkWebConnection() {
+            try {
+                if (window.cdsanabriacfDB && window.cdsanabriacfDB.isInitialized) {
+                    const socios = await window.cdsanabriacfDB.getSocios();
+                    webData = socios;
+                    updateConnectionStatus('web', true, `${socios.length} socios en base de datos local`);
+                    addLog(`📊 Web: ${socios.length} socios cargados`, 'success');
+                } else {
+                    updateConnectionStatus('web', false, 'Base de datos no inicializada');
+                    addLog('❌ Web: Base de datos no inicializada', 'error');
+                }
+            } catch (error) {
+                updateConnectionStatus('web', false, `Error: ${error.message}`);
+                addLog(`❌ Web: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar conexión Railway
+        async function checkRailwayConnection() {
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                if (response.ok) {
+                    const health = await response.json();
+                    updateConnectionStatus('railway', true, `Servidor funcionando - ${health.status}`);
+                    addLog('✅ Railway: Servidor funcionando', 'success');
+                    
+                    // Obtener datos de Railway
+                    const membersResponse = await fetch('http://localhost:3000/api/members');
+                    if (membersResponse.ok) {
+                        const data = await membersResponse.json();
+                        railwayData = data.data || [];
+                        addLog(`📊 Railway: ${railwayData.length} socios`, 'success');
+                    }
+                } else {
+                    updateConnectionStatus('railway', false, `Error HTTP: ${response.status}`);
+                    addLog(`❌ Railway: Error HTTP ${response.status}`, 'error');
+                }
+            } catch (error) {
+                updateConnectionStatus('railway', false, `Error de conexión: ${error.message}`);
+                addLog(`❌ Railway: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar conexión APK (simulado)
+        async function checkAPKConnection() {
+            try {
+                // Simular datos de APK
+                apkData = [
+                    { id: 1, nombre: 'APK Test User', numeroSocio: 'SOC-0001', estado: 'activo' }
+                ];
+                updateConnectionStatus('apk', true, `${apkData.length} socios en APK`);
+                addLog('✅ APK: Conexión simulada', 'success');
+            } catch (error) {
+                updateConnectionStatus('apk', false, `Error: ${error.message}`);
+                addLog(`❌ APK: ${error.message}`, 'error');
+            }
+        }
+
+        // Prueba Web → Railway
+        async function testWebToRailway() {
+            addLog('🔄 Iniciando prueba Web → Railway...', 'info');
+            try {
+                const socio = {
+                    nombre: 'Test Web User',
+                    apellidos: 'Web Test',
+                    dni: '12345678W',
+                    telefono: '123456789',
+                    direccion: 'Calle Test Web',
+                    email: 'testweb@test.com'
+                };
+
+                // Añadir a Web
+                const webId = await window.cdsanabriacfDB.addSocio(socio);
+                addLog(`✅ Socio añadido a Web con ID: ${webId}`, 'success');
+
+                // Sincronizar con Railway
+                const response = await fetch('http://localhost:3000/api/members', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(socio)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addLog(`✅ Socio sincronizado a Railway con ID: ${result.id}`, 'success');
+                } else {
+                    addLog(`❌ Error sincronizando a Railway: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Error en prueba Web → Railway: ${error.message}`, 'error');
+            }
+        }
+
+        // Prueba Railway → Web
+        async function testRailwayToWeb() {
+            addLog('🔄 Iniciando prueba Railway → Web...', 'info');
+            try {
+                const socio = {
+                    nombre: 'Test Railway User',
+                    apellidos: 'Railway Test',
+                    dni: '87654321R',
+                    telefono: '987654321',
+                    direccion: 'Calle Test Railway',
+                    email: 'testrailway@test.com'
+                };
+
+                // Añadir a Railway
+                const response = await fetch('http://localhost:3000/api/members', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(socio)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addLog(`✅ Socio añadido a Railway con ID: ${result.id}`, 'success');
+
+                    // Sincronizar con Web
+                    const webId = await window.cdsanabriacfDB.addSocio(socio);
+                    addLog(`✅ Socio sincronizado a Web con ID: ${webId}`, 'success');
+                } else {
+                    addLog(`❌ Error añadiendo a Railway: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Error en prueba Railway → Web: ${error.message}`, 'error');
+            }
+        }
+
+        // Prueba APK → Railway
+        async function testAPKToRailway() {
+            addLog('🔄 Iniciando prueba APK → Railway...', 'info');
+            try {
+                const socio = {
+                    nombre: 'Test APK User',
+                    apellidos: 'APK Test',
+                    dni: '11223344A',
+                    telefono: '555666777',
+                    direccion: 'Calle Test APK',
+                    email: 'testapk@test.com'
+                };
+
+                // Simular envío desde APK
+                apkData.push(socio);
+                addLog(`✅ Socio añadido a APK`, 'success');
+
+                // Sincronizar con Railway
+                const response = await fetch('http://localhost:3000/api/members', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(socio)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addLog(`✅ Socio sincronizado a Railway con ID: ${result.id}`, 'success');
+                } else {
+                    addLog(`❌ Error sincronizando a Railway: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Error en prueba APK → Railway: ${error.message}`, 'error');
+            }
+        }
+
+        // Prueba Railway → APK
+        async function testRailwayToAPK() {
+            addLog('🔄 Iniciando prueba Railway → APK...', 'info');
+            try {
+                const socio = {
+                    nombre: 'Test Railway to APK',
+                    apellidos: 'Railway APK Test',
+                    dni: '99887766B',
+                    telefono: '111222333',
+                    direccion: 'Calle Railway APK',
+                    email: 'railwayapk@test.com'
+                };
+
+                // Añadir a Railway
+                const response = await fetch('http://localhost:3000/api/members', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(socio)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addLog(`✅ Socio añadido a Railway con ID: ${result.id}`, 'success');
+
+                    // Simular sincronización con APK
+                    apkData.push(socio);
+                    addLog(`✅ Socio sincronizado a APK`, 'success');
+                } else {
+                    addLog(`❌ Error añadiendo a Railway: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Error en prueba Railway → APK: ${error.message}`, 'error');
+            }
+        }
+
+        // Prueba de sincronización completa
+        async function testFullSync() {
+            addLog('🔄 Iniciando sincronización completa...', 'info');
+            
+            // Verificar todas las conexiones
+            await checkWebConnection();
+            await checkRailwayConnection();
+            await checkAPKConnection();
+
+            // Comparar datos
+            addLog(`📊 Comparando datos:`, 'info');
+            addLog(`   Web: ${webData.length} socios`, 'info');
+            addLog(`   Railway: ${railwayData.length} socios`, 'info');
+            addLog(`   APK: ${apkData.length} socios`, 'info');
+
+            // Verificar sincronización en tiempo real
+            if (window.realtimeSync) {
+                const status = window.realtimeSync.getConnectionStatus();
+                addLog(`🔌 Estado WebSocket: ${status.connected ? 'Conectado' : 'Desconectado'}`, status.connected ? 'success' : 'error');
+            }
+        }
+
+        // Mostrar datos
+        function showWebData() {
+            document.getElementById('data-title').textContent = 'Datos Web (IndexedDB)';
+            document.getElementById('data-content').textContent = JSON.stringify(webData, null, 2);
+            document.getElementById('data-display').style.display = 'block';
+        }
+
+        function showRailwayData() {
+            document.getElementById('data-title').textContent = 'Datos Railway (Backend)';
+            document.getElementById('data-content').textContent = JSON.stringify(railwayData, null, 2);
+            document.getElementById('data-display').style.display = 'block';
+        }
+
+        function showAPKData() {
+            document.getElementById('data-title').textContent = 'Datos APK (Simulado)';
+            document.getElementById('data-content').textContent = JSON.stringify(apkData, null, 2);
+            document.getElementById('data-display').style.display = 'block';
+        }
+
+        // Limpiar log
+        function clearLog() {
+            document.getElementById('log-container').innerHTML = '<div class="log-entry log-info">🚀 Log limpiado...</div>';
+        }
+
+        // Inicialización
+        window.addEventListener('load', async () => {
+            addLog('🚀 Iniciando verificación de sincronización...', 'info');
+            
+            // Esperar a que la base de datos se inicialice
+            setTimeout(async () => {
+                await checkWebConnection();
+                await checkRailwayConnection();
+                await checkAPKConnection();
+                
+                addLog('✅ Verificación inicial completada', 'success');
+            }, 2000);
+        });
+
+        // Escuchar eventos de sincronización
+        window.addEventListener('database-updated', (event) => {
+            addLog('📡 Base de datos actualizada desde servidor', 'success');
+        });
+
+        window.addEventListener('connection-status-changed', (event) => {
+            addLog(`🔌 Estado de conexión cambiado: ${event.detail.connected ? 'Conectado' : 'Desconectado'}`, event.detail.connected ? 'success' : 'error');
+        });
+    </script>
+</body>
+</html>

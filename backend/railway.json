@@ -13,7 +13,12 @@
   "variables": {
     "CONTACT_EMAIL": "cdsanabriafc@gmail.com",
     "CLUB_NAME": "CDSANABRIACF",
-    "CLUB_LOCATION": "Puebla de Sanabria, Zamora"
+    "CLUB_LOCATION": "Puebla de Sanabria, Zamora",
+    "NODE_ENV": "production",
+    "CORS_ORIGIN": "*",
+    "JWT_SECRET": "cdsanabriacf_jwt_secret_2024",
+    "ADMIN_EMAIL": "amco@gmx.es",
+    "ADMIN_PASSWORD": "533712"
   }
 }
 

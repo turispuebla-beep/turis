@@ -679,8 +679,8 @@ window.limpiarSociosYResetearContador = async function() {
 
 // ===== FUNCIONES DE SINCRONIZACIÓN CON BACKEND =====
 
-// URL del backend (Railway)
-const BACKEND_URL = 'https://tu-proyecto.railway.app';
+// URL del backend (Local para pruebas, cambiar por Railway cuando esté desplegado)
+const BACKEND_URL = 'http://localhost:3000';
 
 // Función para sincronizar socios con el backend
 window.sincronizarSociosConBackend = async function() {

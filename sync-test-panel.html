@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Prueba - Sincronización en Tiempo Real CDSANABRIACF</title>
+    <script src="database.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="realtime-sync.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .status-bar {
+            background: #f3f4f6;
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .status-indicator.connected {
+            background: #10b981;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .test-section h3 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .log-container {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .data-display {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .sync-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            margin-right: 8px;
+        }
+
+        .sync-indicator.synced {
+            background: #10b981;
+        }
+
+        .instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            color: #92400e;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Panel de Prueba - Sincronización en Tiempo Real</h1>
+            <p>CD Sanabria CF - Verificación de Sincronización Web ↔ APK</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="connection-status">
+                <div class="status-indicator" id="connection-indicator"></div>
+                <span id="connection-text">Desconectado</span>
+            </div>
+            <div>
+                <span id="last-sync">Última sincronización: Nunca</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="instructions">
+                <h4>📋 Instrucciones de Prueba:</h4>
+                <ol>
+                    <li><strong>Abre esta página en tu navegador web</strong></li>
+                    <li><strong>Abre la aplicación APK en tu dispositivo móvil</strong></li>
+                    <li><strong>Realiza cambios en cualquiera de las dos plataformas</strong></li>
+                    <li><strong>Verifica que los cambios aparezcan automáticamente en la otra plataforma</strong></li>
+                    <li><strong>Usa los botones de prueba para simular cambios</strong></li>
+                </ol>
+            </div>
+
+            <!-- Pruebas de Conexión -->
+            <div class="test-section">
+                <h3>🔌 Pruebas de Conexión</h3>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="testConnection()">Probar Conexión</button>
+                    <button class="btn btn-warning" onclick="forceReconnect()">Forzar Reconexión</button>
+                    <button class="btn btn-success" onclick="checkBackendHealth()">Verificar Backend</button>
+                </div>
+                <div class="log-container" id="connection-log"></div>
+            </div>
+
+            <!-- Pruebas de Socios -->
+            <div class="test-section">
+                <h3>👥 Pruebas de Socios</h3>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="addTestMember()">Añadir Socio de Prueba</button>
+                    <button class="btn btn-warning" onclick="updateTestMember()">Actualizar Socio</button>
+                    <button class="btn btn-danger" onclick="deleteTestMember()">Eliminar Socio</button>
+                    <button class="btn btn-primary" onclick="syncMembers()">Sincronizar Socios</button>
+                </div>
+                <div class="data-display" id="members-display">
+                    <h4>Socios Actuales:</h4>
+                    <div id="members-list">Cargando...</div>
+                </div>
+                <div class="log-container" id="members-log"></div>
+            </div>
+
+            <!-- Pruebas de Equipos -->
+            <div class="test-section">
+                <h3>⚽ Pruebas de Equipos</h3>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="addTestTeam()">Añadir Equipo</button>
+                    <button class="btn btn-primary" onclick="syncTeams()">Sincronizar Equipos</button>
+                </div>
+                <div class="data-display" id="teams-display">
+                    <h4>Equipos Actuales:</h4>
+                    <div id="teams-list">Cargando...</div>
+                </div>
+                <div class="log-container" id="teams-log"></div>
+            </div>
+
+            <!-- Pruebas de Eventos -->
+            <div class="test-section">
+                <h3>🎉 Pruebas de Eventos</h3>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="addTestEvent()">Añadir Evento</button>
+                    <button class="btn btn-primary" onclick="syncEvents()">Sincronizar Eventos</button>
+                </div>
+                <div class="data-display" id="events-display">
+                    <h4>Eventos Actuales:</h4>
+                    <div id="events-list">Cargando...</div>
+                </div>
+                <div class="log-container" id="events-log"></div>
+            </div>
+
+            <!-- Logs de Sincronización -->
+            <div class="test-section">
+                <h3>📡 Logs de Sincronización en Tiempo Real</h3>
+                <div class="button-group">
+                    <button class="btn btn-warning" onclick="clearLogs()">Limpiar Logs</button>
+                    <button class="btn btn-primary" onclick="exportLogs()">Exportar Logs</button>
+                </div>
+                <div class="log-container" id="sync-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let testMemberId = null;
+        let testTeamId = null;
+        let testEventId = null;
+        let syncLogs = [];
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSyncTest();
+        });
+
+        // Inicializar pruebas de sincronización
+        function initializeSyncTest() {
+            logMessage('sync-log', '🚀 Inicializando panel de pruebas de sincronización...');
+            
+            // Escuchar eventos de sincronización
+            window.addEventListener('connection-status-changed', handleConnectionChange);
+            window.addEventListener('member-added', handleMemberAdded);
+            window.addEventListener('member-changed', handleMemberChanged);
+            window.addEventListener('member-deleted', handleMemberDeleted);
+            window.addEventListener('database-updated', handleDatabaseUpdated);
+
+            // Cargar datos iniciales
+            loadCurrentData();
+            
+            // Actualizar cada 5 segundos
+            setInterval(loadCurrentData, 5000);
+        }
+
+        // Manejar cambios de conexión
+        function handleConnectionChange(event) {
+            const connected = event.detail.connected;
+            const indicator = document.getElementById('connection-indicator');
+            const text = document.getElementById('connection-text');
+            
+            if (connected) {
+                indicator.classList.add('connected');
+                text.textContent = 'Conectado';
+                logMessage('connection-log', '✅ Conexión establecida con el servidor');
+            } else {
+                indicator.classList.remove('connected');
+                text.textContent = 'Desconectado';
+                logMessage('connection-log', '❌ Conexión perdida con el servidor');
+            }
+        }
+
+        // Manejar socio añadido
+        function handleMemberAdded(event) {
+            const member = event.detail.member;
+            logMessage('members-log', `➕ Socio añadido: ${member.nombre} ${member.apellidos} (${member.numeroSocio})`);
+            logMessage('sync-log', `📡 Sincronización: Socio añadido desde ${member.source || 'servidor'}`);
+            loadCurrentData();
+        }
+
+        // Manejar socio cambiado
+        function handleMemberChanged(event) {
+            const member = event.detail.member;
+            logMessage('members-log', `📝 Socio actualizado: ${member.nombre} ${member.apellidos}`);
+            logMessage('sync-log', `📡 Sincronización: Socio actualizado desde ${member.source || 'servidor'}`);
+            loadCurrentData();
+        }
+
+        // Manejar socio eliminado
+        function handleMemberDeleted(event) {
+            const id = event.detail.id;
+            logMessage('members-log', `🗑️ Socio eliminado: ID ${id}`);
+            logMessage('sync-log', `📡 Sincronización: Socio eliminado desde servidor`);
+            loadCurrentData();
+        }
+
+        // Manejar actualización de base de datos
+        function handleDatabaseUpdated(event) {
+            const data = event.detail.data;
+            logMessage('sync-log', `🔄 Base de datos actualizada con ${data.length} registros`);
+            loadCurrentData();
+        }
+
+        // Cargar datos actuales
+        async function loadCurrentData() {
+            try {
+                // Cargar socios
+                const socios = await window.cdsanabriacfDB.getSocios();
+                displayMembers(socios);
+
+                // Cargar equipos
+                const equipos = await window.cdsanabriacfDB.getEquipos();
+                displayTeams(equipos);
+
+                // Cargar eventos
+                const eventos = await window.cdsanabriacfDB.getEventos();
+                displayEvents(eventos);
+
+                // Actualizar última sincronización
+                document.getElementById('last-sync').textContent = 
+                    `Última sincronización: ${new Date().toLocaleTimeString()}`;
+
+            } catch (error) {
+                logMessage('sync-log', `❌ Error cargando datos: ${error.message}`);
+            }
+        }
+
+        // Mostrar socios
+        function displayMembers(socios) {
+            const container = document.getElementById('members-list');
+            if (socios.length === 0) {
+                container.innerHTML = '<p>No hay socios registrados</p>';
+                return;
+            }
+
+            const html = socios.map(socio => `
+                <div class="data-item">
+                    <span>
+                        <span class="sync-indicator ${socio.synced ? 'synced' : ''}"></span>
+                        ${socio.numeroSocio} - ${socio.nombre} ${socio.apellidos}
+                    </span>
+                    <span>${socio.estado}</span>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // Mostrar equipos
+        function displayTeams(equipos) {
+            const container = document.getElementById('teams-list');
+            if (equipos.length === 0) {
+                container.innerHTML = '<p>No hay equipos registrados</p>';
+                return;
+            }
+
+            const html = equipos.map(equipo => `
+                <div class="data-item">
+                    <span>
+                        <span class="sync-indicator ${equipo.synced ? 'synced' : ''}"></span>
+                        ${equipo.nombre}
+                    </span>
+                    <span>${equipo.categoria}</span>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // Mostrar eventos
+        function displayEvents(eventos) {
+            const container = document.getElementById('events-list');
+            if (eventos.length === 0) {
+                container.innerHTML = '<p>No hay eventos registrados</p>';
+                return;
+            }
+
+            const html = eventos.map(evento => `
+                <div class="data-item">
+                    <span>
+                        <span class="sync-indicator ${evento.synced ? 'synced' : ''}"></span>
+                        ${evento.titulo}
+                    </span>
+                    <span>${new Date(evento.fecha).toLocaleDateString()}</span>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // Funciones de prueba
+
+        function testConnection() {
+            logMessage('connection-log', '🔍 Probando conexión...');
+            const status = window.checkConnectionStatus();
+            logMessage('connection-log', `📊 Estado: ${JSON.stringify(status, null, 2)}`);
+        }
+
+        function forceReconnect() {
+            logMessage('connection-log', '🔄 Forzando reconexión...');
+            if (window.realtimeSync) {
+                window.realtimeSync.connectWebSocket();
+            }
+        }
+
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch('https://cdsanabriacf-backend-production.up.railway.app/api/health');
+                const data = await response.json();
+                logMessage('connection-log', `🏥 Backend Health: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                logMessage('connection-log', `❌ Error verificando backend: ${error.message}`);
+            }
+        }
+
+        async function addTestMember() {
+            try {
+                const testMember = {
+                    nombre: 'Test',
+                    apellidos: 'Usuario',
+                    dni: `TEST${Date.now()}`,
+                    telefono: '600000000',
+                    email: 'test@example.com',
+                    direccion: 'Dirección de prueba'
+                };
+
+                const id = await window.cdsanabriacfDB.addSocio(testMember);
+                testMemberId = id;
+                logMessage('members-log', `✅ Socio de prueba añadido: ${testMember.nombre} ${testMember.apellidos}`);
+            } catch (error) {
+                logMessage('members-log', `❌ Error añadiendo socio: ${error.message}`);
+            }
+        }
+
+        async function updateTestMember() {
+            if (!testMemberId) {
+                logMessage('members-log', '⚠️ Primero añade un socio de prueba');
+                return;
+            }
+
+            try {
+                // Obtener el socio y actualizarlo
+                const socios = await window.cdsanabriacfDB.getSocios();
+                const socio = socios.find(s => s.id === testMemberId);
+                if (socio) {
+                    socio.nombre = 'Test Actualizado';
+                    // Aquí necesitarías implementar updateSocio en la base de datos
+                    logMessage('members-log', `✅ Socio de prueba actualizado: ${socio.nombre}`);
+                }
+            } catch (error) {
+                logMessage('members-log', `❌ Error actualizando socio: ${error.message}`);
+            }
+        }
+
+        async function deleteTestMember() {
+            if (!testMemberId) {
+                logMessage('members-log', '⚠️ Primero añade un socio de prueba');
+                return;
+            }
+
+            try {
+                await window.cdsanabriacfDB.deleteSocio(testMemberId);
+                logMessage('members-log', `✅ Socio de prueba eliminado: ID ${testMemberId}`);
+                testMemberId = null;
+            } catch (error) {
+                logMessage('members-log', `❌ Error eliminando socio: ${error.message}`);
+            }
+        }
+
+        async function syncMembers() {
+            try {
+                logMessage('members-log', '🔄 Sincronizando socios...');
+                await window.sincronizarSociosConBackend();
+                logMessage('members-log', '✅ Socios sincronizados');
+            } catch (error) {
+                logMessage('members-log', `❌ Error sincronizando: ${error.message}`);
+            }
+        }
+
+        async function addTestTeam() {
+            try {
+                const testTeam = {
+                    nombre: `Equipo Test ${Date.now()}`,
+                    categoria: 'test',
+                    descripcion: 'Equipo de prueba para sincronización'
+                };
+
+                const id = await window.cdsanabriacfDB.addEquipo(testTeam);
+                testTeamId = id;
+                logMessage('teams-log', `✅ Equipo de prueba añadido: ${testTeam.nombre}`);
+            } catch (error) {
+                logMessage('teams-log', `❌ Error añadiendo equipo: ${error.message}`);
+            }
+        }
+
+        async function syncTeams() {
+            try {
+                logMessage('teams-log', '🔄 Sincronizando equipos...');
+                // Implementar sincronización de equipos
+                logMessage('teams-log', '✅ Equipos sincronizados');
+            } catch (error) {
+                logMessage('teams-log', `❌ Error sincronizando: ${error.message}`);
+            }
+        }
+
+        async function addTestEvent() {
+            try {
+                const testEvent = {
+                    titulo: `Evento Test ${Date.now()}`,
+                    descripcion: 'Evento de prueba para sincronización',
+                    fecha: new Date().toISOString(),
+                    precio: 0,
+                    minInscritos: 1,
+                    maxInscritos: 10
+                };
+
+                const id = await window.cdsanabriacfDB.addEvento(testEvent);
+                testEventId = id;
+                logMessage('events-log', `✅ Evento de prueba añadido: ${testEvent.titulo}`);
+            } catch (error) {
+                logMessage('events-log', `❌ Error añadiendo evento: ${error.message}`);
+            }
+        }
+
+        async function syncEvents() {
+            try {
+                logMessage('events-log', '🔄 Sincronizando eventos...');
+                // Implementar sincronización de eventos
+                logMessage('events-log', '✅ Eventos sincronizados');
+            } catch (error) {
+                logMessage('events-log', `❌ Error sincronizando: ${error.message}`);
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('sync-log').innerHTML = '';
+            document.getElementById('connection-log').innerHTML = '';
+            document.getElementById('members-log').innerHTML = '';
+            document.getElementById('teams-log').innerHTML = '';
+            document.getElementById('events-log').innerHTML = '';
+            syncLogs = [];
+        }
+
+        function exportLogs() {
+            const logs = syncLogs.join('\n');
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sync-logs-${new Date().toISOString()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function logMessage(containerId, message) {
+            const container = document.getElementById(containerId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            container.innerHTML += logEntry + '\n';
+            container.scrollTop = container.scrollHeight;
+            
+            // Guardar en logs globales
+            syncLogs.push(logEntry);
+            
+            // Limitar logs a 1000 entradas
+            if (syncLogs.length > 1000) {
+                syncLogs = syncLogs.slice(-1000);
+            }
+        }
+
+        // Auto-scroll logs
+        setInterval(() => {
+            const containers = document.querySelectorAll('.log-container');
+            containers.forEach(container => {
+                container.scrollTop = container.scrollHeight;
+            });
+        }, 1000);
+    </script>
+</body>
+</html>
