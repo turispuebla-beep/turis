@@ -1569,6 +1569,11 @@
                 console.log('✅ Logo por defecto cargado (logo específico de la app Android)');
             }
         }
+        
+        // Cargar el logo inmediatamente cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDefaultLogo();
+        });
 
         // Función para cargar el mensaje debajo del logo
         function loadLogoMessage() {
@@ -3830,6 +3835,9 @@
 
         // Cargar encuentros al iniciar la página
         document.addEventListener('DOMContentLoaded', function() {
+            // Cargar logo por defecto inmediatamente
+            loadDefaultLogo();
+            
             const encuentros = JSON.parse(localStorage.getItem('encuentros') || '[]');
             if (encuentros.length > 0) {
                 // Actualizar el contador en la tarjeta de calendario
