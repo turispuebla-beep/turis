@@ -36,6 +36,7 @@ let members = [
     email: 'juan.perez@example.com',
     direccion: 'Calle Principal 1, Puebla de Sanabria',
     estado: 'Activo',
+    password: '123456',
     fechaRegistro: new Date().toISOString()
   },
   {
@@ -48,6 +49,7 @@ let members = [
     email: 'maria.garcia@example.com',
     direccion: 'Calle Secundaria 2, Puebla de Sanabria',
     estado: 'Activo',
+    password: '123456',
     fechaRegistro: new Date().toISOString()
   }
 ];
@@ -62,7 +64,30 @@ let equipos = [
 
 let jugadores = [];
 let eventos = [];
-let amigos = [];
+let amigos = [
+  {
+    id: 1,
+    nombre: 'Carlos',
+    apellidos: 'López',
+    dni: '11111111A',
+    telefono: '600000003',
+    email: 'carlos.lopez@example.com',
+    password: '123456',
+    status: 'active',
+    fechaRegistro: new Date().toISOString()
+  },
+  {
+    id: 2,
+    nombre: 'Ana',
+    apellidos: 'Martínez',
+    dni: '22222222B',
+    telefono: '600000004',
+    email: 'ana.martinez@example.com',
+    password: '123456',
+    status: 'active',
+    fechaRegistro: new Date().toISOString()
+  }
+];
 
 // Middleware de autenticación
 const authenticateToken = (req, res, next) => {
@@ -121,8 +146,9 @@ app.get('/api/health', (req, res) => {
 
 // Login
 app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, type } = req.body;
 
+  // Login de administrador
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     const token = jwt.sign({ email, role: 'admin' }, JWT_SECRET, { expiresIn: '24h' });
     res.json({
@@ -130,9 +156,52 @@ app.post('/api/auth/login', async (req, res) => {
       token,
       user: { email, role: 'admin' }
     });
-  } else {
-    res.status(401).json({ error: 'Credenciales inválidas' });
+    return;
   }
+
+  // Login de socios
+  if (type === 'socio' || !type) {
+    const socio = members.find(m => m.email === email && m.password === password);
+    if (socio) {
+      const token = jwt.sign({ email, role: 'socio', id: socio.id }, JWT_SECRET, { expiresIn: '24h' });
+      res.json({
+        success: true,
+        token,
+        user: {
+          id: socio.id,
+          email: socio.email,
+          nombre: socio.nombre,
+          apellidos: socio.apellidos,
+          role: 'socio',
+          status: socio.estado
+        }
+      });
+      return;
+    }
+  }
+
+  // Login de amigos
+  if (type === 'amigo' || !type) {
+    const amigo = amigos.find(a => a.email === email && a.password === password);
+    if (amigo) {
+      const token = jwt.sign({ email, role: 'amigo', id: amigo.id }, JWT_SECRET, { expiresIn: '24h' });
+      res.json({
+        success: true,
+        token,
+        user: {
+          id: amigo.id,
+          email: amigo.email,
+          nombre: amigo.nombre,
+          apellidos: amigo.apellidos,
+          role: 'amigo',
+          status: amigo.status
+        }
+      });
+      return;
+    }
+  }
+
+  res.status(401).json({ error: 'Credenciales inválidas' });
 });
 
 // Members API
@@ -295,6 +364,7 @@ app.post('/api/init-db', (req, res) => {
       email: 'juan.perez@example.com',
       direccion: 'Calle Principal 1, Puebla de Sanabria',
       estado: 'Activo',
+      password: '123456',
       fechaRegistro: new Date().toISOString()
     },
     {
@@ -307,6 +377,7 @@ app.post('/api/init-db', (req, res) => {
       email: 'maria.garcia@example.com',
       direccion: 'Calle Secundaria 2, Puebla de Sanabria',
       estado: 'Activo',
+      password: '123456',
       fechaRegistro: new Date().toISOString()
     }
   ];
@@ -321,7 +392,30 @@ app.post('/api/init-db', (req, res) => {
   
   jugadores = [];
   eventos = [];
-  amigos = [];
+  amigos = [
+    {
+      id: 1,
+      nombre: 'Carlos',
+      apellidos: 'López',
+      dni: '11111111A',
+      telefono: '600000003',
+      email: 'carlos.lopez@example.com',
+      password: '123456',
+      status: 'active',
+      fechaRegistro: new Date().toISOString()
+    },
+    {
+      id: 2,
+      nombre: 'Ana',
+      apellidos: 'Martínez',
+      dni: '22222222B',
+      telefono: '600000004',
+      email: 'ana.martinez@example.com',
+      password: '123456',
+      status: 'active',
+      fechaRegistro: new Date().toISOString()
+    }
+  ];
   
   // Emitir sincronización
   io.emit('data-sync', { members, equipos, jugadores, eventos, amigos });

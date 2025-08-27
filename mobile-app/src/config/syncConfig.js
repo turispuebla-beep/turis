@@ -3,7 +3,7 @@
  * Configura la sincronización entre la APK y el backend de Railway
  */
 
-// URL del backend de Railway
+// URL del backend de Railway - CD Sanabria CF
 export const BACKEND_URL = 'https://turis-production.up.railway.app';
 
 // Configuración de WebSocket

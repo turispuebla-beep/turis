@@ -64,7 +64,11 @@ export default function HomeScreen({ navigation }) {
       >
         <View style={styles.headerContent}>
           <View style={styles.logoContainer}>
-            <Icon name="sports-soccer" size={60} color="white" />
+            <Image 
+              source={require('../assets/logo-cdsanabriacf.png')} 
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.title}>CDSANABRIACF</Text>
           <Text style={styles.subtitle}>Club Deportivo Sanabriacf</Text>
@@ -223,6 +227,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
+  },
+  logoImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   title: {
     fontSize: 28,
