@@ -690,6 +690,13 @@ window.sincronizarSociosConBackend = async function() {
         // Obtener socios locales
         const sociosLocales = await cdsanabriacfDB.getSocios();
         
+        // Verificar si tenemos URL real del backend
+        if (BACKEND_URL === 'https://tu-proyecto.railway.app') {
+            console.log('⚠️ URL del backend no configurada');
+            alert('⚠️ URL del backend no configurada\n\nPara sincronizar:\n1. Ve a Railway.com\n2. Busca tu proyecto\n3. Copia la URL\n4. Actualiza BACKEND_URL en database.js');
+            return;
+        }
+        
         // Enviar al backend
         const response = await fetch(`${BACKEND_URL}/api/members/sync`, {
             method: 'POST',
@@ -708,7 +715,7 @@ window.sincronizarSociosConBackend = async function() {
         }
     } catch (error) {
         console.error('❌ Error en sincronización:', error);
-        alert('❌ Error de conexión con el backend');
+        alert('❌ Error de conexión con el backend\n\nAsegúrate de que la URL del backend esté correcta');
     }
 };
 
@@ -716,6 +723,13 @@ window.sincronizarSociosConBackend = async function() {
 window.obtenerSociosDelBackend = async function() {
     try {
         console.log('📥 Obteniendo socios del backend...');
+        
+        // Verificar si tenemos URL real del backend
+        if (BACKEND_URL === 'https://tu-proyecto.railway.app') {
+            console.log('⚠️ URL del backend no configurada');
+            alert('⚠️ URL del backend no configurada\n\nPara sincronizar:\n1. Ve a Railway.com\n2. Busca tu proyecto\n3. Copia la URL\n4. Actualiza BACKEND_URL en database.js');
+            return;
+        }
         
         const response = await fetch(`${BACKEND_URL}/api/members`);
         
@@ -735,7 +749,7 @@ window.obtenerSociosDelBackend = async function() {
         }
     } catch (error) {
         console.error('❌ Error obteniendo socios:', error);
-        alert('❌ Error de conexión con el backend');
+        alert('❌ Error de conexión con el backend\n\nAsegúrate de que la URL del backend esté correcta');
     }
 };
 
