@@ -677,11 +677,75 @@ window.limpiarSociosYResetearContador = async function() {
     }
 };
 
+// ===== FUNCIONES DE SINCRONIZACIÓN CON BACKEND =====
+
+// URL del backend (Railway)
+const BACKEND_URL = 'https://tu-proyecto.railway.app';
+
+// Función para sincronizar socios con el backend
+window.sincronizarSociosConBackend = async function() {
+    try {
+        console.log('🔄 Sincronizando socios con el backend...');
+        
+        // Obtener socios locales
+        const sociosLocales = await cdsanabriacfDB.getSocios();
+        
+        // Enviar al backend
+        const response = await fetch(`${BACKEND_URL}/api/members/sync`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ socios: sociosLocales })
+        });
+        
+        if (response.ok) {
+            console.log('✅ Socios sincronizados con el backend');
+            alert('✅ Socios sincronizados correctamente con el backend');
+        } else {
+            console.error('❌ Error sincronizando socios:', response.statusText);
+            alert('❌ Error sincronizando socios con el backend');
+        }
+    } catch (error) {
+        console.error('❌ Error en sincronización:', error);
+        alert('❌ Error de conexión con el backend');
+    }
+};
+
+// Función para obtener socios del backend
+window.obtenerSociosDelBackend = async function() {
+    try {
+        console.log('📥 Obteniendo socios del backend...');
+        
+        const response = await fetch(`${BACKEND_URL}/api/members`);
+        
+        if (response.ok) {
+            const sociosBackend = await response.json();
+            console.log('✅ Socios obtenidos del backend:', sociosBackend);
+            
+            // Actualizar base de datos local
+            for (const socio of sociosBackend) {
+                await cdsanabriacfDB.agregarSocio(socio);
+            }
+            
+            alert(`✅ ${sociosBackend.length} socios sincronizados desde el backend`);
+        } else {
+            console.error('❌ Error obteniendo socios:', response.statusText);
+            alert('❌ Error obteniendo socios del backend');
+        }
+    } catch (error) {
+        console.error('❌ Error obteniendo socios:', error);
+        alert('❌ Error de conexión con el backend');
+    }
+};
+
 console.log('🚀 Base de Datos CDSANABRIACF LIMPIA cargada');
 console.log('📊 Funciones disponibles:');
 console.log('- cdsanabriacfDB: Instancia principal de la base de datos');
 console.log('- eliminarBaseDatosCompletamente(): ELIMINA COMPLETAMENTE la base de datos');
 console.log('- limpiarSociosYResetearContador(): Elimina todos los socios y resetea contador a 0');
+console.log('- sincronizarSociosConBackend(): Sincroniza socios con el backend');
+console.log('- obtenerSociosDelBackend(): Obtiene socios del backend');
 
 
 
