@@ -4,7 +4,7 @@
  */
 
 // URL del backend de Railway
-export const BACKEND_URL = 'http://localhost:3000';
+export const BACKEND_URL = 'https://turis-production.up.railway.app';
 
 // Configuración de WebSocket
 export const WEBSOCKET_CONFIG = {

@@ -679,8 +679,8 @@ window.limpiarSociosYResetearContador = async function() {
 
 // ===== FUNCIONES DE SINCRONIZACIÓN CON BACKEND =====
 
-// URL del backend (Local para pruebas, cambiar por Railway cuando esté desplegado)
-const BACKEND_URL = 'http://localhost:3000';
+// URL del backend Railway - CD Sanabria CF
+const BACKEND_URL = 'https://turis-production.up.railway.app';
 
 // Función para sincronizar socios con el backend
 window.sincronizarSociosConBackend = async function() {

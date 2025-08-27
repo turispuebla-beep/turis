@@ -5,7 +5,7 @@
 
 class RealtimeSync {
     constructor() {
-        this.backendUrl = 'http://localhost:3000';
+        this.backendUrl = 'https://turis-production.up.railway.app';
         this.socket = null;
         this.isConnected = false;
         this.reconnectAttempts = 0;
