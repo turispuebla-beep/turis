@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Icono CDSANABRIACF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        canvas {
+            border: 2px solid white;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Generador de Icono CDSANABRIACF</h1>
+        <p>Generando iconos para la aplicación Android con el logo del club</p>
+        
+        <div id="previews"></div>
+        
+        <button onclick="generarIconos()">🎨 Generar Iconos</button>
+        <button onclick="descargarTodos()">📥 Descargar Todos</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const sizes = [
+            { name: 'mdpi', size: 48, label: '48x48' },
+            { name: 'hdpi', size: 72, label: '72x72' },
+            { name: 'xhdpi', size: 96, label: '96x96' },
+            { name: 'xxhdpi', size: 144, label: '144x144' },
+            { name: 'xxxhdpi', size: 192, label: '192x192' }
+        ];
+
+        function generarIconos() {
+            const status = document.getElementById('status');
+            const previews = document.getElementById('previews');
+            
+            status.innerHTML = '<p>🔄 Generando iconos...</p>';
+            previews.innerHTML = '';
+
+            const img = new Image();
+            img.onload = function() {
+                sizes.forEach(s => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = s.size;
+                    canvas.height = s.size;
+                    const ctx = canvas.getContext('2d');
+
+                    // Fondo azul del club
+                    ctx.fillStyle = '#1e3a8a';
+                    ctx.fillRect(0, 0, s.size, s.size);
+
+                    // Calcular escala para el logo
+                    const scale = Math.min(s.size / img.width, s.size / img.height) * 0.7;
+                    const newWidth = img.width * scale;
+                    const newHeight = img.height * scale;
+                    const x = (s.size - newWidth) / 2;
+                    const y = (s.size - newHeight) / 2;
+
+                    // Dibujar logo
+                    ctx.drawImage(img, x, y, newWidth, newHeight);
+
+                    // Crear preview
+                    const preview = document.createElement('div');
+                    preview.className = 'icon-preview';
+                    preview.innerHTML = `
+                        <canvas width="${s.size}" height="${s.size}" style="border: 1px solid white; border-radius: 5px;"></canvas>
+                        <p>${s.label}</p>
+                        <button onclick="descargarIcono('${s.name}', ${s.size})">📥 ${s.name}</button>
+                    `;
+                    previews.appendChild(preview);
+
+                    // Copiar al canvas del preview
+                    const previewCanvas = preview.querySelector('canvas');
+                    const previewCtx = previewCanvas.getContext('2d');
+                    previewCtx.drawImage(canvas, 0, 0);
+
+                    // Guardar referencia para descarga
+                    canvas.dataset.name = s.name;
+                    canvas.dataset.size = s.size;
+                });
+
+                status.innerHTML = '<p style="color: #4CAF50;">✅ Iconos generados correctamente</p>';
+            };
+
+            img.src = 'logo-cdsanabriacf.jpeg';
+        }
+
+        function descargarIcono(name, size) {
+            const canvas = document.querySelector(`canvas[data-name="${name}"]`);
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `ic_launcher_${name}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        function descargarTodos() {
+            sizes.forEach(s => {
+                setTimeout(() => descargarIcono(s.name, s.size), s.size * 10);
+            });
+        }
+
+        // Generar automáticamente al cargar
+        window.onload = function() {
+            setTimeout(generarIconos, 1000);
+        };
+    </script>
+</body>
+</html>
