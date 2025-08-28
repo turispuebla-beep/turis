@@ -1,0 +1,43 @@
+{
+  "project": {
+    "name": "CDSANABRIACF",
+    "version": "2.0.0",
+    "description": "Club Deportivo Sanabriacf - Aplicación Web Completa"
+  },
+  "deployment": {
+    "frontend": {
+      "platform": "netlify",
+      "directory": "CDSANABRIACF-FINAL",
+      "buildCommand": "",
+      "publishDirectory": ".",
+      "environment": "production"
+    },
+    "backend": {
+      "platform": "railway",
+      "mainFile": "server.js",
+      "startCommand": "npm start",
+      "environment": "production"
+    }
+  },
+  "urls": {
+    "frontend": "https://cdsanabriacf.netlify.app",
+    "backend": "https://turis-production.up.railway.app",
+    "api": "https://turis-production.up.railway.app/api"
+  },
+  "credentials": {
+    "admin": {
+      "email": "amco@gmx.es",
+      "password": "533712"
+    }
+  },
+  "features": {
+    "synchronization": true,
+    "realTime": true,
+    "localStorage": true,
+    "adminPanel": true,
+    "userManagement": true,
+    "teamManagement": true,
+    "events": true,
+    "multimedia": true
+  }
+}
