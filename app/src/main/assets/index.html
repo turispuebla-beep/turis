@@ -926,11 +926,11 @@
             </div>
         </div>
 
-        <!-- Banner distintivo de la App -->
+        <!-- Banner del Club -->
         <div class="app-banner" style="background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%); color: white; padding: 15px; text-align: center; font-size: 1rem; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
 
-                <span style="font-weight: bold;">APP OFICIAL CDSANABRIACF</span>
+                <span style="font-weight: bold;">CDSANABRIACF</span>
                 <span style="font-size: 1.5rem;">⚽</span>
             </div>
             <div style="margin-top: 8px; font-size: 0.8rem; opacity: 0.9;">
@@ -946,8 +946,8 @@
             <div class="logo-message" id="logoMessage">
                 <!-- Mensaje debajo del logo se cargará aquí -->
             </div>
-            <h2>App Oficial CDSANABRIACF</h2>
-            <p>Acceso móvil al Club Deportivo Sanabriacf. Un equipo con tradición, pasión y compromiso con el fútbol. Formamos parte de la familia TURISTEAM.</p>
+            <h2>CDSANABRIACF</h2>
+            <p>Un equipo con tradición, pasión y compromiso con el fútbol. Formamos parte de la familia TURISTEAM.</p>
         </div>
 
         <div class="features">
@@ -1373,7 +1373,7 @@
 
         <footer>
             <p>&copy; 2024 CDSANABRIACF. Todos los derechos reservados.</p>
-            <p>App Oficial - Club Deportivo Sanabriacf - Miembro de TURISTEAM</p>
+                            <p>Club Deportivo Sanabriacf - Miembro de TURISTEAM</p>
             <p style="font-size: 0.8rem; margin-top: 10px;">
                 <a href="https://www.aepd.es" target="_blank" style="color: var(--text-light-color); text-decoration: none;">🔒 Protección de Datos - AEPD</a>
             </p>
@@ -1582,7 +1582,7 @@
             if (messageElement) {
                 // Cargar desde la configuración del equipo
                 const teamSettings = JSON.parse(localStorage.getItem('cdsanabriacfSettings') || '{}');
-                const messageText = teamSettings.logoMessage || 'App Oficial CDSANABRIACF ⚽';
+                const messageText = teamSettings.logoMessage || 'CDSANABRIACF ⚽';
                 
                 messageElement.innerHTML = messageText;
                 console.log('✅ Mensaje del logo cargado:', messageText);
@@ -1807,8 +1807,8 @@
                             <input type="email" id="amigoEmail" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="amigoPhone">Teléfono:</label>
-                            <input type="tel" id="amigoPhone" name="phone" required>
+                                            <label for="amigoPassword">Contraseña:</label>
+                <input type="password" id="amigoPassword" name="password" required>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -1869,8 +1869,8 @@
                             <input type="email" id="socioEmail" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="socioPhone">Teléfono:</label>
-                            <input type="tel" id="socioPhone" name="phone" required>
+                                            <label for="socioPassword">Contraseña:</label>
+                <input type="password" id="socioPassword" name="password" required>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -3156,45 +3156,44 @@
             event.preventDefault();
             
             const email = document.getElementById('socioEmail').value.trim();
-            const phone = document.getElementById('socioPhone').value.trim();
+            const password = document.getElementById('socioPassword').value.trim();
             
-            if (!email || !phone) {
-                alert('❌ Por favor, completa todos los campos');
+            if (!email || !password) {
+                alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
-            // Buscar socio en localStorage
-            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-            const socio = socios.find(s => 
-                (s.email === email && s.telefono === phone) ||
-                (s.email === phone && s.telefono === email)
-            );
+            // Credenciales válidas para pruebas (base de datos limpia)
+            const credencialesValidas = [
+                { email: 'admin@cdsanabriacf.com', password: 'admin123', nombre: 'Administrador' },
+                { email: 'socio@cdsanabriacf.com', password: '123456', nombre: 'Socio Demo' },
+                { email: 'demo@cdsanabriacf.com', password: '123456', nombre: 'Usuario Demo' }
+            ];
             
-            if (!socio) {
-                alert('❌ No se encontró ningún socio con esos datos. Verifica tu correo y teléfono.');
-                return;
-
+            const credencial = credencialesValidas.find(c => c.email === email && c.password === password);
+            
+            if (credencial) {
+                // Login exitoso
+                const socioSimulado = {
+                    id: Date.now(),
+                    email: credencial.email,
+                    nombre: credencial.nombre,
+                    estado: 'Activo',
+                    role: 'socio'
+                };
+                
+                localStorage.setItem('currentSocio', JSON.stringify(socioSimulado));
+                closeLoginModal();
+                alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
+                
+                // Actualizar estado de login en la página principal
+                updateLoginStatus();
+                
+                // Redirigir a la página de socios
+                window.open('members-access.html', '_blank');
+            } else {
+                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nCredenciales de prueba disponibles:\n- admin@cdsanabriacf.com / admin123\n- socio@cdsanabriacf.com / 123456\n- demo@cdsanabriacf.com / 123456');
             }
-            
-            if (socio.estado === 'expirado') {
-                alert('❌ Tu cuenta ha expirado. Contacta con el administrador para renovar tu cuota.');
-                return;
-            }
-            
-            if (socio.estado === 'pendiente') {
-                alert('⚠️ Tu cuenta está pendiente de validación. Puedes acceder pero algunos servicios pueden estar limitados.');
-            }
-            
-            // Login exitoso
-            localStorage.setItem('currentSocio', JSON.stringify(socio));
-            closeLoginModal();
-            alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
-            
-            // Actualizar estado de login en la página principal
-            updateLoginStatus();
-            
-            // Redirigir a la página de socios
-            window.open('members-access.html', '_blank');
         }
 
         // ===== FUNCIONES DE LOGIN PARA AMIGOS =====
@@ -3202,39 +3201,43 @@
             event.preventDefault();
             
             const email = document.getElementById('amigoEmail').value.trim();
-            const phone = document.getElementById('amigoPhone').value.trim();
+            const password = document.getElementById('amigoPassword').value.trim();
             
-            if (!email || !phone) {
-                alert('❌ Por favor, completa todos los campos');
+            if (!email || !password) {
+                alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
-            // Buscar amigo en localStorage
-            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
-            const amigo = amigos.find(a => 
-                (a.email === email && a.telefono === phone) ||
-                (a.email === phone && a.telefono === email)
-            );
+            // Credenciales válidas para amigos
+            const credencialesValidas = [
+                { email: 'carlos.lopez@example.com', password: '123456', nombre: 'Carlos López' },
+                { email: 'ana.martinez@example.com', password: '123456', nombre: 'Ana Martínez' }
+            ];
             
-            if (!amigo) {
-                alert('❌ No se encontró ningún amigo con esos datos. Verifica tu correo y teléfono.');
-                return;
+            const credencial = credencialesValidas.find(c => c.email === email && c.password === password);
+            
+            if (credencial) {
+                // Login exitoso
+                const amigoSimulado = {
+                    id: Date.now(),
+                    email: credencial.email,
+                    nombre: credencial.nombre,
+                    estado: 'activo',
+                    role: 'amigo'
+                };
+                
+                localStorage.setItem('currentAmigo', JSON.stringify(amigoSimulado));
+                closeLoginModal();
+                alert('✅ ¡Bienvenido de vuelta! Acceso concedido como amigo del club.');
+                
+                // Actualizar estado de login en la página principal
+                updateLoginStatus();
+                
+                // Redirigir a la página de amigos
+                window.open('friends-access.html', '_blank');
+            } else {
+                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nCredenciales de prueba disponibles:\n- carlos.lopez@example.com / 123456\n- ana.martinez@example.com / 123456');
             }
-            
-            if (amigo.estado !== 'activo') {
-                alert('⚠️ Tu cuenta no está activa. Puedes acceder pero algunos servicios pueden estar limitados.');
-            }
-            
-            // Login exitoso
-            localStorage.setItem('currentAmigo', JSON.stringify(amigo));
-            closeLoginModal();
-            alert('✅ ¡Bienvenido de vuelta! Acceso concedido como amigo del club.');
-            
-            // Actualizar estado de login en la página principal
-            updateLoginStatus();
-            
-            // Redirigir a la página de amigos
-            window.open('friends-access.html', '_blank');
         }
 
         // ===== FUNCIONES DE LOGIN PARA ENTRENADORES =====

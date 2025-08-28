@@ -3119,115 +3119,49 @@
                 return;
             }
             
-            // Intentar login directo al servidor primero
-            loginSocioDirecto(email, password, rememberSession);
-        }
-
-        // Función para login directo al servidor
-        async function loginSocioDirecto(email, password, rememberSession) {
-            try {
-                console.log('🔐 Intentando login directo al servidor...');
+            // Credenciales temporales para pruebas
+            const credencialesValidas = [
+                { email: 'juan.perez@email.com', password: '123456', nombre: 'Juan Pérez' },
+                { email: 'maria.garcia@email.com', password: '123456', nombre: 'María García' },
+                { email: 'test@test.com', password: '123456', nombre: 'Test User' },
+                { email: 'test@cdsanabriacf.com', password: '123456', nombre: 'Test Sincronización' },
+                { email: 'sincronizacion@cdsanabriacf.com', password: '123456', nombre: 'Sincronización Test' },
+                { email: 'apk@cdsanabriacf.com', password: '123456', nombre: 'APK Test' },
+                { email: 'test-login-socio@cdsanabriacf.com', password: '123456', nombre: 'Test Login' }
+            ];
+            
+            const credencial = credencialesValidas.find(c => c.email === email && c.password === password);
+            
+            if (credencial) {
+                // Login exitoso
+                const sessionData = {
+                    id: Date.now(),
+                    email: credencial.email,
+                    nombre: credencial.nombre,
+                    role: 'socio',
+                    status: 'Activo',
+                    loginTime: new Date().toISOString(),
+                    rememberSession: rememberSession
+                };
                 
-                const response = await fetch('https://turis-production.up.railway.app/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password,
-                        type: 'socio'
-                    })
-                });
-
-                const data = await response.json();
+                localStorage.setItem('currentSocio', JSON.stringify(sessionData));
                 
-                if (data.success) {
-                    console.log('✅ Login exitoso:', data);
-                    
-                    // Login exitoso
-                    const sessionData = {
-                        ...data.user,
-                        loginTime: new Date().toISOString(),
-                        rememberSession: rememberSession
-                    };
-                    
-                    localStorage.setItem('currentSocio', JSON.stringify(sessionData));
-                    
-                    // Si recordar sesión está activado, guardar en sessionStorage también
-                    if (rememberSession) {
-                        sessionStorage.setItem('rememberedSocio', JSON.stringify(sessionData));
-                    }
-                    
-                    closeLoginModal();
-                    alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
-                    
-                    // Actualizar estado de login en la página principal
-                    updateLoginStatus();
-                    
-                    // Redirigir a la página de socios
-                    window.open('members-access.html', '_blank');
-                } else {
-                    console.log('❌ Login fallido:', data);
-                    alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.');
+                // Si recordar sesión está activado, guardar en sessionStorage también
+                if (rememberSession) {
+                    sessionStorage.setItem('rememberedSocio', JSON.stringify(sessionData));
                 }
-            } catch (error) {
-                console.error('❌ Error en login directo:', error);
                 
-                // Fallback: intentar con datos locales
-                console.log('🔄 Intentando login con datos locales...');
-                loginSocioLocal(email, password, rememberSession);
+                closeLoginModal();
+                alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
+                
+                // Actualizar estado de login en la página principal
+                updateLoginStatus();
+                
+                // Redirigir a la página de socios
+                window.open('members-access.html', '_blank');
+            } else {
+                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nCredenciales de prueba disponibles:\n- juan.perez@email.com / 123456\n- maria.garcia@email.com / 123456\n- test@test.com / 123456');
             }
-        }
-
-        // Función de fallback para login local
-        function loginSocioLocal(email, password, rememberSession) {
-            // Buscar socio en localStorage
-            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-            const socio = socios.find(s => s.email === email);
-            
-            if (!socio) {
-                alert('❌ No se encontró ningún socio con ese email.');
-                return;
-            }
-
-            // Verificar contraseña
-            if (socio.password !== password) {
-                alert('❌ Contraseña incorrecta.');
-                return;
-            }
-            
-            if (socio.status === 'expired') {
-                alert('❌ Tu cuenta ha expirado. Contacta con el administrador para renovar tu cuota.');
-                return;
-            }
-            
-            if (socio.status === 'pending_validation') {
-                alert('⚠️ Tu cuenta está pendiente de validación. Puedes acceder pero con limitaciones.\n\nEl administrador te validará en los próximos días.');
-            }
-            
-            // Login exitoso
-            const sessionData = {
-                ...socio,
-                loginTime: new Date().toISOString(),
-                rememberSession: rememberSession
-            };
-            
-            localStorage.setItem('currentSocio', JSON.stringify(sessionData));
-            
-            // Si recordar sesión está activado, guardar en sessionStorage también
-            if (rememberSession) {
-                sessionStorage.setItem('rememberedSocio', JSON.stringify(sessionData));
-            }
-            
-            closeLoginModal();
-            alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
-            
-            // Actualizar estado de login en la página principal
-            updateLoginStatus();
-            
-            // Redirigir a la página de socios
-            window.open('members-access.html', '_blank');
         }
 
         // ===== FUNCIONES DE LOGIN PARA AMIGOS =====
