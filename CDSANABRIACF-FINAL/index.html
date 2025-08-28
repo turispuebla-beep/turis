@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDSANABRIACF - Club Deportivo Sanabriacf</title>
     <script src="database.js"></script>
-    <link rel="icon" type="image/x-icon" href="escudo-sanabria.jpeg">
-    <link rel="shortcut icon" type="image/x-icon" href="escudo-sanabria.jpeg">
-    <link rel="apple-touch-icon" href="escudo-sanabria.jpeg">
+    <script src="error-handler.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="realtime-sync.js"></script>
+    <link rel="icon" type="image/x-icon" href="logo-cdsanabriacf-nuevo.png">
+    <link rel="shortcut icon" type="image/x-icon" href="logo-cdsanabriacf-nuevo.png">
+    <link rel="apple-touch-icon" href="logo-cdsanabriacf-nuevo.png">
     <style>
         * {
             margin: 0;
@@ -69,21 +72,17 @@
         .team-logo {
             width: 150px;
             height: 150px;
-            background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
+            background: #e5e7eb;
             border-radius: 50%;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            color: white;
-            border: 6px solid #ffffff;
+            color: var(--primary-color);
+            border: 4px solid var(--secondary-color);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
-            position: relative;
         }
-        
-
 
         .team-logo img {
             width: 100%;
@@ -119,11 +118,7 @@
             text-align: center;
             transition: transform 0.3s ease;
             cursor: pointer;
-            border-left: 5px solid #dc2626;
-            position: relative;
         }
-        
-
 
         .feature-card:hover {
             transform: translateY(-5px);
@@ -589,6 +584,11 @@
             margin-right: 20px;
             border-radius: 8px;
         }
+        
+        .publicidad-banner-content {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
 
         .carousel-btn {
             position: absolute;
@@ -923,26 +923,20 @@
             </div>
         </div>
 
-        <!-- Banner distintivo de la App -->
-        <div class="app-banner" style="background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%); color: white; padding: 15px; text-align: center; font-size: 1rem; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-
-                <span style="font-weight: bold;">CDSANABRIACF</span>
-                <span style="font-size: 1.5rem;">⚽</span>
-            </div>
-            <div style="margin-top: 8px; font-size: 0.8rem; opacity: 0.9;">
-                <span id="currentDayDisplay">📅 Cargando fecha actual...</span>
-                <span id="currentTimeDisplay" style="margin-left: 15px;">⏰ Cargando hora...</span>
-            </div>
+        <!-- Indicador del día actual -->
+        <div class="current-day-banner" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 12px; text-align: center; font-size: 0.9rem; border-radius: 10px; margin-bottom: 20px;">
+            <span id="currentDayDisplay">📅 Cargando fecha actual...</span>
+            <span id="currentTimeDisplay" style="margin-left: 15px; opacity: 0.9;">⏰ Cargando hora...</span>
         </div>
 
         <div class="team-info">
             <div class="team-logo">
+                <img src="logo-cdsanabriacf-nuevo.png" alt="CD Sanabria CF Logo">
             </div>
             <div class="logo-message" id="logoMessage">
                 <!-- Mensaje debajo del logo se cargará aquí -->
             </div>
-            <h2>CDSANABRIACF</h2>
+            <h2>Bienvenidos al Club Deportivo Sanabriacf</h2>
             <p>Un equipo con tradición, pasión y compromiso con el fútbol. Formamos parte de la familia TURISTEAM.</p>
         </div>
 
@@ -1099,13 +1093,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="socioDNI">DNI</label>
-                        <input type="text" id="socioDNI">
+                        <label for="socioDNI">DNI *</label>
+                        <input type="text" id="socioDNI" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="socioDireccion">Dirección</label>
-                        <input type="text" id="socioDireccion">
+                        <label for="socioDireccion">Dirección *</label>
+                        <input type="text" id="socioDireccion" required>
                     </div>
                     
                     <div class="form-group">
@@ -1114,8 +1108,19 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="socioEmail">Correo Electrónico</label>
-                        <input type="email" id="socioEmail">
+                        <label for="socioEmail">Correo Electrónico *</label>
+                        <input type="email" id="socioEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="socioPassword">Contraseña *</label>
+                        <input type="password" id="socioPassword" required minlength="6">
+                        <small style="display:block; color:#6b7280; margin-top:6px;">Mínimo 6 caracteres</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="socioPasswordConfirm">Confirmar Contraseña *</label>
+                        <input type="password" id="socioPasswordConfirm" required minlength="6">
                     </div>
                     
                     <div class="form-group">
@@ -1142,7 +1147,7 @@
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="btn-primary">Registrarse como Socio</button>
+                        <button type="submit" class="btn-primary">Registrarse como Socio/a</button>
                         <button type="button" class="btn-secondary" onclick="closeSociosModal()">Cancelar</button>
                     </div>
                 </form>
@@ -1153,7 +1158,7 @@
         <div id="amigosModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" onclick="closeAmigosModal()">&times;</span>
-                <h2>🤝 Registro de Amigo del Club</h2>
+                <h2>🤝 Registro de Amigo/a del Club</h2>
                 <p style="color: #059669; font-weight: bold; margin-bottom: 20px;">✅ GRATUITO: El registro como amigo del club es completamente gratuito.</p>
                 
                 <form id="amigosForm" onsubmit="registerAmigo(event)">
@@ -1168,8 +1173,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="amigoDNI">DNI</label>
-                        <input type="text" id="amigoDNI">
+                        <label for="amigoDNI">DNI *</label>
+                        <input type="text" id="amigoDNI" required>
                     </div>
                     
                     <div class="form-group">
@@ -1183,6 +1188,17 @@
                     </div>
                     
                     <div class="form-group">
+                        <label for="amigoPassword">Contraseña *</label>
+                        <input type="password" id="amigoPassword" required minlength="6">
+                        <small style="display:block; color:#6b7280; margin-top:6px;">Mínimo 6 caracteres</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amigoPasswordConfirm">Confirmar Contraseña *</label>
+                        <input type="password" id="amigoPasswordConfirm" required minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
                         <label>
                             <input type="checkbox" id="amigoConsentimiento" required>
                             Acepto las condiciones del club *
@@ -1190,7 +1206,7 @@
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="btn-primary">Registrarse como Amigo</button>
+                        <button type="submit" class="btn-primary">Registrarse como Amigo/a</button>
                         <button type="button" class="btn-secondary" onclick="closeAmigosModal()">Cancelar</button>
                     </div>
                 </form>
@@ -1230,7 +1246,7 @@
                     <p id="contactEmail" style="color: var(--text-light-color);">cdsanabriafc@gmail.com</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--text-color); margin-bottom: 10px;">Teléfono</h4>
+                    <h4 style="color: var(--text-color); margin-bottom: 10px;">📱 Teléfono</h4>
                     <p id="contactPhone" style="color: var(--text-light-color);">+34 600 000 000</p>
                 </div>
                 <div>
@@ -1242,7 +1258,7 @@
                     <p id="contactWebsite" style="color: var(--text-light-color);">www.cdsanabriacf.com</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--text-color); margin-bottom: 10px;">WhatsApp</h4>
+                    <h4 style="color: var(--text-color); margin-bottom: 10px;">📱 WhatsApp</h4>
                     <p id="contactWhatsApp" style="color: var(--text-light-color);">+34 600 000 000</p>
                 </div>
                 <div>
@@ -1369,7 +1385,7 @@
 
         <footer>
             <p>&copy; 2024 CDSANABRIACF. Todos los derechos reservados.</p>
-                            <p>Club Deportivo Sanabriacf - Miembro de TURISTEAM</p>
+            <p>Club Deportivo Sanabriacf - Miembro de TURISTEAM</p>
             <p style="font-size: 0.8rem; margin-top: 10px;">
                 <a href="https://www.aepd.es" target="_blank" style="color: var(--text-light-color); text-decoration: none;">🔒 Protección de Datos - AEPD</a>
             </p>
@@ -1377,7 +1393,7 @@
     </div>
 
     <div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000;">
-        <button class="admin-button" onclick="openAdminPanel()">🔧 Admin</button>
+        <button class="admin-button" onclick="openAdminModal()">🔧 Admin</button>
         <button class="coach-access-button" onclick="openCoachesAccess()" style="background: #059669; color: white; border: none; padding: 10px 15px; border-radius: 25px; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;">👨‍🏫 Entrenadores/as</button>
     </div>
 
@@ -1561,9 +1577,9 @@
         function loadDefaultLogo() {
             const logoElement = document.querySelector('.team-logo');
             if (logoElement) {
-                // Usar el logo específico de la app Android para distinguirla de la web
-                logoElement.innerHTML = `<img src="logo-cdsanabriacf.jpeg" alt="Logo CDSANABRIACF App" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--secondary-color); box-shadow: 0 4px 15px rgba(0,0,0,0.2);">`;
-                console.log('✅ Logo por defecto cargado (logo específico de la app Android)');
+                // Siempre usar el escudo del Sanabria como logo por defecto
+                logoElement.innerHTML = `<img src="escudo-sanabria.jpeg" alt="Escudo CDSANABRIACF" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--secondary-color);">`;
+                console.log('✅ Logo por defecto cargado (escudo del Sanabria)');
             }
         }
 
@@ -1573,7 +1589,7 @@
             if (messageElement) {
                 // Cargar desde la configuración del equipo
                 const teamSettings = JSON.parse(localStorage.getItem('cdsanabriacfSettings') || '{}');
-                const messageText = teamSettings.logoMessage || 'CDSANABRIACF ⚽';
+                const messageText = teamSettings.logoMessage || '¡Bienvenidos al Club Deportivo Sanabriacf! ⚽';
                 
                 messageElement.innerHTML = messageText;
                 console.log('✅ Mensaje del logo cargado:', messageText);
@@ -1674,13 +1690,20 @@
             }
         });
 
-        // Función para acceder al panel de administración
+        // Variable global para controlar la ventana de admin
+        let adminWindow = null;
+        
+        // Función para abrir panel de administración (solo una ventana)
         function openAdminPanel() {
-            // Usar el modal de administración existente
-            document.getElementById('adminModal').style.display = 'block';
-            document.getElementById('adminEmail').focus();
+            if (adminWindow && !adminWindow.closed) {
+                // Si ya hay una ventana abierta, enfocarla
+                adminWindow.focus();
+            } else {
+                // Abrir nueva ventana
+                adminWindow = window.open('admin-panel.html', '_blank');
+            }
         }
-
+        
         // Función para login del administrador
         function loginAdmin(event) {
             event.preventDefault();
@@ -1711,7 +1734,9 @@
                     alert('✅ Autenticación exitosa.\nRedirigiendo al panel de administración...');
                     
                     // Abrir el panel de administración
-                    window.open('admin-panel.html', '_blank');
+                    setTimeout(() => {
+                        openAdminPanel();
+                    }, 100);
                     return;
                 } else {
                     alert('❌ Verifica tus credenciales.');
@@ -1751,7 +1776,9 @@
                 alert(`✅ Autenticación exitosa.\nBienvenido, administrador del equipo ${admin.team}.\nRedirigiendo al panel de administración...`);
                 
                 // Abrir el panel de administración
-                window.open('admin-panel.html', '_blank');
+                setTimeout(() => {
+                    openAdminPanel();
+                }, 100);
                 return;
             }
 
@@ -1775,7 +1802,9 @@
                 alert('✅ Autenticación exitosa.\nRedirigiendo al panel de administración...');
                 
                 // Abrir el panel de administración
-                window.open('admin-panel.html', '_blank');
+                setTimeout(() => {
+                    openAdminPanel();
+                }, 100);
                 return;
             }
 
@@ -1801,6 +1830,10 @@
                             <label for="amigoPassword">Contraseña:</label>
                             <input type="password" id="amigoPassword" name="password" required>
                         </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                            <input type="checkbox" id="amigoRememberSession" style="width: auto; margin: 0;">
+                            <label for="amigoRememberSession" style="margin: 0; font-size: 0.9rem; color: #666;">🔐 Recordar sesión</label>
+                        </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
                             <button type="button" class="btn-secondary" onclick="closeLoginModal()">Cancelar</button>
@@ -1822,15 +1855,11 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeLoginModal()">&times;</span>
                     <h2>👨‍🏫 Acceso de Entrenador</h2>
-                    <p style="color: #059669; font-weight: bold; margin-bottom: 20px;">✅ Introduce tu email y contraseña para acceder como entrenador</p>
+                    <p style="color: #059669; font-weight: bold; margin-bottom: 20px;">✅ Introduce tu email o teléfono para acceder como entrenador</p>
                     <form id="coachesLoginForm" onsubmit="loginCoach(event)">
                         <div class="form-group">
-                            <label for="coachEmail">Correo Electrónico:</label>
-                            <input type="email" id="coachEmail" name="email" placeholder="tu@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="coachPassword">Contraseña:</label>
-                            <input type="password" id="coachPassword" name="password" placeholder="Tu contraseña" required>
+                            <label for="coachIdentifier">Email o Teléfono:</label>
+                            <input type="text" id="coachIdentifier" name="identifier" placeholder="Email o número de teléfono" required>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -1862,6 +1891,10 @@
                         <div class="form-group">
                             <label for="socioPassword">Contraseña:</label>
                             <input type="password" id="socioPassword" name="password" required>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                            <input type="checkbox" id="socioRememberSession" style="width: auto; margin: 0;">
+                            <label for="socioRememberSession" style="margin: 0; font-size: 0.9rem; color: #666;">🔐 Recordar sesión</label>
                         </div>
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Acceder</button>
@@ -2925,98 +2958,78 @@
         function registerSocio(event) {
             event.preventDefault();
             
-            try {
-                const nombre = document.getElementById('socioNombre').value.trim();
-                const apellidos = document.getElementById('socioApellidos').value.trim();
-                const fechaNacimiento = document.getElementById('socioFechaNacimiento').value;
-                const dni = document.getElementById('socioDNI').value.trim();
-                const direccion = document.getElementById('socioDireccion').value.trim();
-                const telefono = document.getElementById('socioTelefono').value.trim();
-                const email = document.getElementById('socioEmail').value.trim();
-                const cuota = parseFloat(document.getElementById('socioCuota').value) || 20;
-                const consentimiento = document.getElementById('socioConsentimiento').checked;
-                
-                // Validaciones
-                if (!nombre || !apellidos || !telefono || !fechaNacimiento) {
-                    alert('❌ Por favor, completa los campos obligatorios:\n• Nombre\n• Apellidos\n• Teléfono\n• Fecha de Nacimiento');
-                    return;
-                }
-                
-                if (!consentimiento) {
-                    alert('❌ Debes aceptar las condiciones para registrarte como socio');
-                    return;
-                }
-                
-                // Verificar si ya existe un socio con ese DNI, email o teléfono
-                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-                const existeSocio = socios.find(s => 
-                    (s.dni && s.dni === dni) || 
-                    (s.email && s.email === email) || 
-                    s.telefono === telefono
-                );
-                
-                if (existeSocio) {
-                    alert('❌ Ya existe un socio registrado con esos datos (DNI, email o teléfono)');
-                    return;
-                }
-                
-                // Crear nuevo socio
-                const nuevoSocio = {
-                    id: Date.now().toString(),
-                    nombre: nombre,
-                    apellidos: apellidos,
-                    dni: dni,
-                    direccion: direccion,
-                    telefono: telefono,
-                    email: email,
-                    cuota: cuota,
-                    fechaNacimiento: fechaNacimiento,
-                    fechaRegistro: new Date().toISOString(),
-                    fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 días
-                    estado: 'pendiente', // pendiente, confirmado, expirado
-                    pagado: false,
-                    numeroSocio: generarNumeroSocio()
-                };
-                
-                // Guardar en localStorage
-                socios.push(nuevoSocio);
-                localStorage.setItem('clubMembers', JSON.stringify(socios));
-                
-                // Cerrar modal y mostrar confirmación
-                closeSociosModal();
-                
-                // Mostrar mensaje de éxito
-                const mensaje = `✅ ¡Socio registrado exitosamente!\n\n📋 Datos del registro:\n• Número de Socio: ${nuevoSocio.numeroSocio}\n• Nombre: ${nombre} ${apellidos}\n• Teléfono: ${telefono}\n• Cuota: ${cuota}€\n\n⚠️ IMPORTANTE:\n• Tienes 7 días para completar el pago\n• Un administrador validará tu registro\n• Guarda tu número de socio: ${nuevoSocio.numeroSocio}`;
-                
-                alert(mensaje);
-                
-                // Limpiar formulario
-                document.getElementById('sociosForm').reset();
-                
-                console.log('👨‍👩‍👧‍👦 Nuevo socio registrado:', nuevoSocio);
-                
-            } catch (error) {
-                console.error('Error al registrar socio:', error);
-                alert('❌ Error al registrar socio. Por favor, inténtalo de nuevo.');
+            const nombre = document.getElementById('socioNombre').value.trim();
+            const apellidos = document.getElementById('socioApellidos').value.trim();
+            const fechaNacimiento = document.getElementById('socioFechaNacimiento').value;
+            const dni = document.getElementById('socioDNI').value.trim();
+            const direccion = document.getElementById('socioDireccion').value.trim();
+            const telefono = document.getElementById('socioTelefono').value.trim();
+            const email = document.getElementById('socioEmail').value.trim();
+            const password = document.getElementById('socioPassword').value.trim();
+            const passwordConfirm = document.getElementById('socioPasswordConfirm').value.trim();
+            const cuota = parseFloat(document.getElementById('socioCuota').value) || 20;
+            const consentimiento = document.getElementById('socioConsentimiento').checked;
+            
+            if (!nombre || !apellidos || !dni || !direccion || !telefono || !email || !fechaNacimiento || !password) {
+                alert('Por favor, completa todos los campos obligatorios: Nombre, Apellidos, DNI, Dirección, Teléfono, Email, Fecha de Nacimiento y Contraseña');
+                return;
             }
+            
+            if (password !== passwordConfirm) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            if (!consentimiento) {
+                alert('Debes aceptar las condiciones para registrarte como socio');
+                return;
+            }
+            
+            // Crear nuevo socio
+            const nuevoSocio = {
+                id: Date.now().toString(),
+                nombre: nombre,
+                apellidos: apellidos,
+                dni: dni,
+                direccion: direccion,
+                telefono: telefono,
+                email: email,
+                password: password,
+                cuota: cuota,
+                fechaNacimiento: fechaNacimiento,
+                registrationDate: new Date().toISOString(),
+                fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 días
+                status: 'pending_validation', // pending_validation, active, expired
+                pagado: false,
+                numeroSocio: generarNumeroSocio()
+            };
+            
+            // Guardar en localStorage
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            console.log('📊 Socios antes del registro:', socios.length);
+            
+            socios.push(nuevoSocio);
+            localStorage.setItem('clubMembers', JSON.stringify(socios));
+            
+            console.log('📊 Socios después del registro:', socios.length);
+            console.log('💾 localStorage guardado:', localStorage.getItem('clubMembers'));
+            
+            // Cerrar modal y mostrar confirmación
+            closeSociosModal();
+            alert(`✅ Socio registrado exitosamente\n\nNúmero de Socio: ${nuevoSocio.numeroSocio}\nCuota: ${cuota}€\n\n⚠️ IMPORTANTE: Tienes 7 días para completar el pago. Un administrador validará tu registro.\n\n💾 Datos guardados correctamente.`);
+            
+            console.log('👨‍👩‍👧‍👦 Nuevo socio registrado:', nuevoSocio);
         }
         
         function generarNumeroSocio() {
             const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-            let ultimoNumero = 0;
-            
-            if (socios.length > 0) {
-                // Buscar el número más alto existente
-                socios.forEach(socio => {
-                    if (socio.numeroSocio) {
-                        const numero = parseInt(socio.numeroSocio.replace('SOC-', ''));
-                        if (!isNaN(numero) && numero > ultimoNumero) {
-                            ultimoNumero = numero;
-                        }
-                    }
-                });
-            }
-            
+            const ultimoNumero = socios.length > 0 ? 
+                Math.max(...socios.map(s => parseInt(s.numeroSocio.replace('SOC-', '')))) : 0;
             return `SOC-${(ultimoNumero + 1).toString().padStart(4, '0')}`;
         }
 
@@ -3025,105 +3038,73 @@
         function registerAmigo(event) {
             event.preventDefault();
             
-            try {
-                const nombre = document.getElementById('amigoNombre').value.trim();
-                const apellidos = document.getElementById('amigoApellidos').value.trim();
-                const dni = document.getElementById('amigoDNI').value.trim();
-                const telefono = document.getElementById('amigoTelefono').value.trim();
-                const email = document.getElementById('amigoEmail').value.trim();
-                const consentimiento = document.getElementById('amigoConsentimiento').checked;
-                
-                // Validaciones
-                if (!nombre || !apellidos || !telefono || !email) {
-                    alert('❌ Por favor, completa todos los campos obligatorios:\n• Nombre\n• Apellidos\n• Teléfono\n• Correo Electrónico');
-                    return;
-                }
-                
-                if (!consentimiento) {
-                    alert('❌ Debes aceptar las condiciones para registrarte como amigo del club');
-                    return;
-                }
-                
-                // Verificar si ya existe un amigo con ese email o teléfono
-                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
-                const existeAmigo = amigos.find(a => 
-                    a.email === email || a.telefono === telefono
-                );
-                
-                if (existeAmigo) {
-                    alert('❌ Ya existe un amigo registrado con ese email o teléfono');
-                    return;
-                }
+            const nombre = document.getElementById('amigoNombre').value.trim();
+            const apellidos = document.getElementById('amigoApellidos').value.trim();
+            const dni = document.getElementById('amigoDNI').value.trim();
+            const telefono = document.getElementById('amigoTelefono').value.trim();
+            const email = document.getElementById('amigoEmail').value.trim();
+            const password = document.getElementById('amigoPassword').value.trim();
+            const passwordConfirm = document.getElementById('amigoPasswordConfirm').value.trim();
+            const consentimiento = document.getElementById('amigoConsentimiento').checked;
             
-                // Crear nuevo amigo
-                const nuevoAmigo = {
-                    id: Date.now().toString(),
-                    nombre: nombre,
-                    apellidos: apellidos,
-                    dni: dni,
-                    telefono: telefono,
-                    email: email,
-                    fechaRegistro: new Date().toISOString(),
-                    estado: 'activo',
-                    acceso: {
-                        email: email,
-                        telefono: telefono
-                    }
-                };
-                
-                // Guardar en localStorage
-                amigos.push(nuevoAmigo);
-                localStorage.setItem('clubFriends', JSON.stringify(amigos));
-                
-                // Cerrar modal y mostrar confirmación
-                closeAmigosModal();
-                
-                // Mostrar mensaje de éxito
-                const mensaje = `✅ ¡Amigo del club registrado exitosamente!\n\n📋 Datos del registro:\n• Nombre: ${nombre} ${apellidos}\n• Email: ${email}\n• Teléfono: ${telefono}\n\n🔑 Para acceder:\n• Usa tu email o teléfono\n• No necesitas contraseña\n• Acceso inmediato a contenido limitado`;
-                
-                alert(mensaje);
-                
-                // Limpiar formulario
-                document.getElementById('amigosForm').reset();
-                
-                console.log('🤝 Nuevo amigo registrado:', nuevoAmigo);
-                
-            } catch (error) {
-                console.error('Error al registrar amigo:', error);
-                alert('❌ Error al registrar amigo. Por favor, inténtalo de nuevo.');
+            if (!nombre || !apellidos || !dni || !telefono || !email || !password) {
+                alert('Por favor, completa todos los campos obligatorios: Nombre, Apellidos, DNI, Teléfono, Email y Contraseña');
+                return;
             }
+            
+            if (password !== passwordConfirm) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            if (!consentimiento) {
+                alert('Debes aceptar las condiciones para registrarte como amigo del club');
+                return;
+            }
+            
+            // Verificar si ya existe un amigo con ese email o teléfono
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            const existeAmigo = amigos.find(a => 
+                a.email === email || a.telefono === telefono
+            );
+            
+            if (existeAmigo) {
+                alert('Ya existe un amigo registrado con ese email o teléfono');
+                return;
+            }
+            
+            // Crear nuevo amigo
+            const nuevoAmigo = {
+                id: Date.now().toString(),
+                nombre: nombre,
+                apellidos: apellidos,
+                dni: dni,
+                telefono: telefono,
+                email: email,
+                password: password,
+                registrationDate: new Date().toISOString(),
+                status: 'active'
+            };
+            
+            // Guardar en localStorage
+            amigos.push(nuevoAmigo);
+            localStorage.setItem('clubFriends', JSON.stringify(amigos));
+            
+            console.log('📊 Amigos después del registro:', amigos.length);
+            console.log('💾 localStorage guardado:', localStorage.getItem('clubFriends'));
+            
+            // Cerrar modal y mostrar confirmación
+            closeAmigosModal();
+            alert(`✅ Amigo del club registrado exitosamente\n\n📧 Email: ${email}\n📱 Teléfono: ${telefono}\n\nPara acceder, usa tu email y contraseña.\n\n💾 Datos guardados correctamente.`);
+            
+            console.log('🤝 Nuevo amigo registrado:', nuevoAmigo);
         }
 
-        // ===== FUNCIÓN DE INICIALIZACIÓN Y VERIFICACIÓN =====
-        function inicializarAplicacion() {
-            console.log('🚀 Inicializando aplicación CDSANABRIACF...');
-            
-            // Verificar que los formularios estén disponibles
-            setTimeout(() => {
-                const sociosForm = document.getElementById('sociosForm');
-                const amigosForm = document.getElementById('amigosForm');
-                
-                if (sociosForm) {
-                    console.log('✅ Formulario de socios listo');
-                } else {
-                    console.log('❌ Formulario de socios no encontrado');
-                }
-                
-                if (amigosForm) {
-                    console.log('✅ Formulario de amigos listo');
-                } else {
-                    console.log('❌ Formulario de amigos no encontrado');
-                }
-                
-                // Verificar localStorage
-                const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
-                const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
-                console.log(`📊 Socios registrados: ${socios.length}`);
-                console.log(`🤝 Amigos registrados: ${amigos.length}`);
-                
-            }, 1000);
-        }
-        
         // ===== FUNCIONES PARA LOGIN DINÁMICO =====
         function showLoginModal(content) {
             // Crear modal dinámico para login
@@ -3146,22 +3127,71 @@
         function loginSocio(event) {
             event.preventDefault();
             
-            const email = document.getElementById('socioEmail').value.trim();
-            const password = document.getElementById('socioPassword').value.trim();
+            console.log('🔍 Función loginSocio ejecutada');
+            
+            // Obtener valores directamente del formulario
+            const form = event.target;
+            const formData = new FormData(form);
+            const email = formData.get('email') || '';
+            const password = formData.get('password') || '';
+            const rememberSession = document.getElementById('socioRememberSession') ? document.getElementById('socioRememberSession').checked : false;
+            
+            console.log('📧 Email:', email);
+            console.log('🔑 Password:', password ? '***' : 'vacío');
+            console.log('🔐 Recordar sesión:', rememberSession);
             
             if (!email || !password) {
                 alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
-            // Credenciales válidas para pruebas (base de datos limpia)
-            const credencialesValidas = [
-                { email: 'admin@cdsanabriacf.com', password: 'admin123', nombre: 'Administrador' },
-                { email: 'socio@cdsanabriacf.com', password: '123456', nombre: 'Socio Demo' },
-                { email: 'demo@cdsanabriacf.com', password: '123456', nombre: 'Usuario Demo' }
-            ];
+            // Credenciales temporales para pruebas (DESACTIVADAS)
+            // const credencialesValidas = [
+            //     { email: 'juan.perez@email.com', password: '123456', nombre: 'Juan Pérez' },
+            //     { email: 'maria.garcia@email.com', password: '123456', nombre: 'María García' },
+            //     { email: 'test@test.com', password: '123456', nombre: 'Test User' },
+            //     { email: 'test@cdsanabriacf.com', password: '123456', nombre: 'Test Sincronización' },
+            //     { email: 'sincronizacion@cdsanabriacf.com', password: '123456', nombre: 'Sincronización Test' },
+            //     { email: 'apk@cdsanabriacf.com', password: '123456', nombre: 'APK Test' },
+            //     { email: 'test-login-socio@cdsanabriacf.com', password: '123456', nombre: 'Test Login' }
+            // ];
             
-            const credencial = credencialesValidas.find(c => c.email === email && c.password === password);
+            // const credencial = credencialesValidas.find(c => c.email === email && c.password === password);
+            // const credencial = null; // Credenciales de prueba desactivadas
+            
+            // Buscar socio real en localStorage
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            console.log('📊 Socios en localStorage:', socios.length);
+            console.log('📋 Socios disponibles:', socios.map(s => ({ email: s.email, nombre: s.nombre, password: s.password ? '***' : 'vacío' })));
+            
+            const socio = socios.find(s => s.email === email);
+            console.log('🔍 Buscando socio con email:', email);
+            console.log('✅ Socio encontrado:', socio ? socio.nombre : 'No encontrado');
+            
+            if (socio) {
+                console.log('🔍 Detalles del socio encontrado:');
+                console.log('  - Email:', socio.email);
+                console.log('  - Password guardada:', socio.password ? '***' : 'vacío');
+                console.log('  - Password introducida:', password ? '***' : 'vacío');
+                console.log('  - Coincidencia de password:', socio.password === password);
+            }
+            
+            let credencial = null;
+            
+            if (socio && socio.password === password) {
+                console.log('✅ Contraseña correcta para socio:', socio.nombre);
+                credencial = {
+                    email: socio.email,
+                    password: socio.password,
+                    nombre: `${socio.nombre} ${socio.apellidos}`,
+                    numeroSocio: socio.numeroSocio,
+                    estado: socio.estado
+                };
+            } else if (socio) {
+                console.log('❌ Contraseña incorrecta para socio:', socio.nombre);
+            } else {
+                console.log('❌ No se encontró socio con email:', email);
+            }
             
             if (credencial) {
                 // Login exitoso
@@ -3171,10 +3201,17 @@
                     nombre: credencial.nombre,
                     role: 'socio',
                     status: 'Activo',
-                    loginTime: new Date().toISOString()
+                    loginTime: new Date().toISOString(),
+                    rememberSession: rememberSession
                 };
                 
                 localStorage.setItem('currentSocio', JSON.stringify(sessionData));
+                
+                // Si recordar sesión está activado, guardar en sessionStorage también
+                if (rememberSession) {
+                    sessionStorage.setItem('rememberedSocio', JSON.stringify(sessionData));
+                }
+                
                 closeLoginModal();
                 alert('✅ ¡Bienvenido de vuelta! Acceso concedido como socio.');
                 
@@ -3184,7 +3221,7 @@
                 // Redirigir a la página de socios
                 window.open('members-access.html', '_blank');
             } else {
-                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nCredenciales de prueba disponibles:\n- admin@cdsanabriacf.com / admin123\n- socio@cdsanabriacf.com / 123456\n- demo@cdsanabriacf.com / 123456');
+                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nAsegúrate de estar registrado como socio.');
             }
         }
 
@@ -3194,69 +3231,75 @@
             
             const email = document.getElementById('amigoEmail').value.trim();
             const password = document.getElementById('amigoPassword').value.trim();
+            const rememberSession = document.getElementById('amigoRememberSession') ? document.getElementById('amigoRememberSession').checked : false;
             
             if (!email || !password) {
                 alert('❌ Por favor, introduce tu email y contraseña');
                 return;
             }
             
-            // Credenciales válidas para amigos
-            const credencialesAmigos = [
-                { email: 'carlos.lopez@example.com', password: '123456', nombre: 'Carlos López' },
-                { email: 'ana.martinez@example.com', password: '123456', nombre: 'Ana Martínez' }
-            ];
+            // Buscar amigo en localStorage
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            const amigo = amigos.find(a => a.email === email);
             
-            const amigo = credencialesAmigos.find(a => a.email === email && a.password === password);
-            
-            if (amigo) {
-                // Login exitoso
-                const sessionData = {
-                    id: Date.now(),
-                    email: amigo.email,
-                    nombre: amigo.nombre,
-                    role: 'amigo',
-                    status: 'Activo',
-                    loginTime: new Date().toISOString()
-                };
-                
-                localStorage.setItem('currentAmigo', JSON.stringify(sessionData));
-                closeLoginModal();
-                alert('✅ ¡Bienvenido de vuelta! Acceso concedido como amigo del club.');
-                
-                // Actualizar estado de login en la página principal
-                updateLoginStatus();
-                
-                // Redirigir a la página de amigos
-                window.open('friends-access.html', '_blank');
-            } else {
-                alert('❌ Credenciales incorrectas. Verifica tu email y contraseña.\n\nCredenciales de prueba para amigos:\n- carlos.lopez@example.com / 123456\n- ana.martinez@example.com / 123456');
+            if (!amigo) {
+                alert('❌ No se encontró ningún amigo con ese email.');
+                return;
             }
+            
+            // Verificar contraseña
+            if (amigo.password !== password) {
+                alert('❌ Contraseña incorrecta.');
+                return;
+            }
+            
+            if (amigo.status !== 'active') {
+                alert('⚠️ Tu cuenta no está activa, pero puedes acceder con limitaciones.\n\nContacta con el administrador para activar tu cuenta.');
+            }
+            
+            // Login exitoso
+            const sessionData = {
+                ...amigo,
+                loginTime: new Date().toISOString(),
+                rememberSession: rememberSession
+            };
+            
+            localStorage.setItem('currentAmigo', JSON.stringify(sessionData));
+            
+            // Si recordar sesión está activado, guardar en sessionStorage también
+            if (rememberSession) {
+                sessionStorage.setItem('rememberedAmigo', JSON.stringify(sessionData));
+            }
+            
+            closeLoginModal();
+            alert('✅ ¡Bienvenido de vuelta! Acceso concedido como amigo del club.');
+            
+            // Actualizar estado de login en la página principal
+            updateLoginStatus();
+            
+            // Redirigir a la página de amigos
+            window.open('friends-access.html', '_blank');
         }
 
         // ===== FUNCIONES DE LOGIN PARA ENTRENADORES =====
         function loginCoach(event) {
             event.preventDefault();
             
-            const email = document.getElementById('coachEmail').value.trim();
-            const password = document.getElementById('coachPassword').value.trim();
+            const identifier = document.getElementById('coachIdentifier').value.trim();
             
-            if (!email || !password) {
-                alert('❌ Por favor, introduce tu email y contraseña');
+            if (!identifier) {
+                alert('❌ Por favor, introduce tu email o teléfono');
                 return;
             }
             
             // Buscar entrenador en localStorage
             const coaches = JSON.parse(localStorage.getItem('clubCoaches') || '[]');
-            const coach = coaches.find(c => c.email === email);
+            const coach = coaches.find(c => 
+                c.email === identifier || c.phone === identifier
+            );
             
             if (!coach) {
-                alert('❌ No se encontró ningún entrenador con ese email. Verifica tus datos.');
-                return;
-            }
-            
-            // Verificar contraseña
-            if (coach.password !== password) {
-                alert('❌ Contraseña incorrecta. Verifica tu contraseña.');
+                alert('❌ No se encontró ningún entrenador con esos datos. Verifica tu email o teléfono.');
                 return;
             }
             
@@ -3704,7 +3747,7 @@
                 
                 setTimeout(() => {
                     closeAdminModal();
-                    window.open('admin-panel.html', '_blank');
+                    openAdminPanel();
                 }, 1500);
             } 
             // Verificar credenciales del administrador principal
@@ -3717,7 +3760,7 @@
                 
                 setTimeout(() => {
                     closeAdminModal();
-                    window.open('admin-panel.html', '_blank');
+                    openAdminPanel();
                 }, 1500);
             }
             // Verificar credenciales del administrador fijo
@@ -3730,7 +3773,7 @@
                 
                 setTimeout(() => {
                     closeAdminModal();
-                    window.open('admin-panel.html', '_blank');
+                    openAdminPanel();
                 }, 1500);
             } else {
                 messageDiv.style.display = 'block';
@@ -3747,6 +3790,10 @@
             localStorage.removeItem('currentSocio');
             localStorage.removeItem('currentAmigo');
             localStorage.removeItem('currentCoach');
+            
+            // Limpiar sesiones recordadas
+            sessionStorage.removeItem('rememberedSocio');
+            sessionStorage.removeItem('rememberedAmigo');
             
             // Actualizar estado de login
             updateLoginStatus();
@@ -3830,6 +3877,105 @@
             }
         }
 
+        // Función para mostrar indicador de sincronización (oculto)
+        function showSyncIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'syncIndicator';
+            indicator.style.cssText = `
+                position: fixed;
+                bottom: -100px;
+                right: -100px;
+                background: rgba(59, 130, 246, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                z-index: -1;
+                display: none;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            `;
+            indicator.innerHTML = '🔄 Sincronizado';
+            document.body.appendChild(indicator);
+            
+            // Actualizar cada 5 segundos (oculto)
+            setInterval(() => {
+                const now = new Date().toLocaleTimeString();
+                indicator.innerHTML = `🔄 Sincronizado ${now}`;
+            }, 5000);
+        }
+
+        // Función para verificar sesión recordada y actualizar datos
+        function checkRememberedSession() {
+            // Verificar si hay una sesión de socio recordada
+            const rememberedSocio = sessionStorage.getItem('rememberedSocio');
+            if (rememberedSocio) {
+                try {
+                    const socioData = JSON.parse(rememberedSocio);
+                    if (socioData.rememberSession) {
+                        // Verificar si los datos del socio han sido actualizados
+                        const currentSocios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                        const updatedSocio = currentSocios.find(s => s.email === socioData.email);
+                        
+                        if (updatedSocio) {
+                            // Actualizar la sesión con los datos más recientes
+                            const updatedSessionData = {
+                                ...updatedSocio,
+                                loginTime: socioData.loginTime,
+                                rememberSession: true
+                            };
+                            
+                            localStorage.setItem('currentSocio', JSON.stringify(updatedSessionData));
+                            sessionStorage.setItem('rememberedSocio', JSON.stringify(updatedSessionData));
+                            console.log('✅ Sesión de socio restaurada y actualizada automáticamente');
+                        } else {
+                            // Si el socio ya no existe, limpiar la sesión
+                            sessionStorage.removeItem('rememberedSocio');
+                            console.log('⚠️ Sesión de socio eliminada - usuario no encontrado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error al restaurar sesión de socio:', error);
+                    sessionStorage.removeItem('rememberedSocio');
+                }
+            }
+            
+            // Verificar si hay una sesión de amigo recordada
+            const rememberedAmigo = sessionStorage.getItem('rememberedAmigo');
+            if (rememberedAmigo) {
+                try {
+                    const amigoData = JSON.parse(rememberedAmigo);
+                    if (amigoData.rememberSession) {
+                        // Verificar si los datos del amigo han sido actualizados
+                        const currentAmigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                        const updatedAmigo = currentAmigos.find(a => a.email === amigoData.email);
+                        
+                        if (updatedAmigo) {
+                            // Actualizar la sesión con los datos más recientes
+                            const updatedSessionData = {
+                                ...updatedAmigo,
+                                loginTime: amigoData.loginTime,
+                                rememberSession: true
+                            };
+                            
+                            localStorage.setItem('currentAmigo', JSON.stringify(updatedSessionData));
+                            sessionStorage.setItem('rememberedAmigo', JSON.stringify(updatedSessionData));
+                            console.log('✅ Sesión de amigo restaurada y actualizada automáticamente');
+                        } else {
+                            // Si el amigo ya no existe, limpiar la sesión
+                            sessionStorage.removeItem('rememberedAmigo');
+                            console.log('⚠️ Sesión de amigo eliminada - usuario no encontrado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error al restaurar sesión de amigo:', error);
+                    sessionStorage.removeItem('rememberedAmigo');
+                }
+            }
+        }
+
         // Función para sincronizar datos con la app
         function syncDataWithApp() {
             try {
@@ -3863,36 +4009,6 @@
             } catch (error) {
                 console.error('❌ Error en sincronización:', error);
             }
-        }
-
-        // Función para mostrar indicador de sincronización
-        function showSyncIndicator() {
-            const indicator = document.createElement('div');
-            indicator.id = 'syncIndicator';
-            indicator.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: rgba(59, 130, 246, 0.9);
-                color: white;
-                padding: 8px 12px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                font-weight: bold;
-                z-index: 1000;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            `;
-            indicator.innerHTML = '🔄 Sincronizado';
-            document.body.appendChild(indicator);
-            
-            // Actualizar cada 5 segundos
-            setInterval(() => {
-                const now = new Date().toLocaleTimeString();
-                indicator.innerHTML = `🔄 Sincronizado ${now}`;
-            }, 5000);
         }
 
         // Función para actualizar todos los datos de la página
@@ -3976,9 +4092,113 @@
             
             // Mostrar indicador de sincronización
             showSyncIndicator();
+        });
+
+        // Función para cargar datos del servidor al cargar la página
+        async function loadServerData() {
+            try {
+                console.log('📥 Cargando datos del servidor...');
+                
+                // Obtener datos locales existentes
+                const sociosLocales = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+                const amigosLocales = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+                
+                console.log('📊 Datos locales antes de sincronizar:');
+                console.log('  - Socios locales:', sociosLocales.length);
+                console.log('  - Amigos locales:', amigosLocales.length);
+                
+                // SOLO cargar datos del servidor si no hay datos locales
+                if (sociosLocales.length === 0) {
+                    const response = await fetch('https://turis-production.up.railway.app/api/members');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.data) {
+                            localStorage.setItem('clubMembers', JSON.stringify(data.data));
+                            console.log('✅ Socios cargados del servidor:', data.data.length);
+                        }
+                    }
+                } else {
+                    console.log('✅ Manteniendo socios locales existentes:', sociosLocales.length);
+                }
+                
+                if (amigosLocales.length === 0) {
+                    const amigosResponse = await fetch('https://turis-production.up.railway.app/api/amigos');
+                    if (amigosResponse.ok) {
+                        const amigosData = await amigosResponse.json();
+                        if (amigosData.success && amigosData.data) {
+                            localStorage.setItem('clubFriends', JSON.stringify(amigosData.data));
+                            console.log('✅ Amigos cargados del servidor:', amigosData.data.length);
+                        }
+                    }
+                } else {
+                    console.log('✅ Manteniendo amigos locales existentes:', amigosLocales.length);
+                }
+                
+                console.log('✅ Sincronización completada - Datos locales preservados');
+            } catch (error) {
+                console.error('❌ Error cargando datos del servidor:', error);
+            }
+        }
+
+        // Cargar datos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadServerData();
+        });
+
+        // ===== FUNCIÓN DE DIAGNÓSTICO PARA SOCIOS Y AMIGOS =====
+        function diagnosticarSociosAmigos() {
+            console.log('🔍 === DIAGNÓSTICO DE SOCIOS Y AMIGOS ===');
             
-            // Inicializar aplicación y verificar formularios
-            inicializarAplicacion();
+            // Verificar socios
+            const socios = JSON.parse(localStorage.getItem('clubMembers') || '[]');
+            console.log('📊 Socios en localStorage:', socios.length);
+            if (socios.length > 0) {
+                console.log('👥 Socios disponibles:');
+                socios.forEach((socio, index) => {
+                    console.log(`  ${index + 1}. ${socio.nombre} ${socio.apellidos} - ${socio.email} - Estado: ${socio.status}`);
+                });
+            } else {
+                console.log('❌ No hay socios registrados');
+            }
+            
+            // Verificar amigos
+            const amigos = JSON.parse(localStorage.getItem('clubFriends') || '[]');
+            console.log('📊 Amigos en localStorage:', amigos.length);
+            if (amigos.length > 0) {
+                console.log('🤝 Amigos disponibles:');
+                amigos.forEach((amigo, index) => {
+                    console.log(`  ${index + 1}. ${amigo.nombre} ${amigo.apellidos} - ${amigo.email} - Estado: ${amigo.status}`);
+                });
+            } else {
+                console.log('❌ No hay amigos registrados');
+            }
+            
+            // Verificar sesiones activas
+            const currentSocio = localStorage.getItem('currentSocio');
+            const currentAmigo = localStorage.getItem('currentAmigo');
+            console.log('🔐 Sesión de socio activa:', currentSocio ? 'SÍ' : 'NO');
+            console.log('🔐 Sesión de amigo activa:', currentAmigo ? 'SÍ' : 'NO');
+            
+            console.log('🔍 === FIN DEL DIAGNÓSTICO ===');
+        }
+
+        // Función para limpiar datos de prueba (solo para desarrollo)
+        function limpiarDatosPrueba() {
+            if (confirm('¿Estás seguro de que quieres limpiar todos los datos de socios y amigos? Esto no se puede deshacer.')) {
+                localStorage.removeItem('clubMembers');
+                localStorage.removeItem('clubFriends');
+                localStorage.removeItem('currentSocio');
+                localStorage.removeItem('currentAmigo');
+                alert('✅ Datos limpiados correctamente');
+                console.log('🧹 Datos de prueba limpiados');
+            }
+        }
+
+        // Ejecutar diagnóstico al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                diagnosticarSociosAmigos();
+            }, 2000); // Esperar 2 segundos para que se carguen los datos
         });
 
     </script>

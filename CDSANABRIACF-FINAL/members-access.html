@@ -173,23 +173,160 @@
         .logout-btn:hover {
             background: #b91c1c;
         }
+
+        /* Estilos para modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .team-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .player-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .player-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .player-item:last-child {
+            border-bottom: none;
+        }
+
+        .calendar-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .event-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .event-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin: 5px 0;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #059669;
+        }
+
+        .result-teams {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        .result-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .document-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .document-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        .document-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
     <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
     
     <div class="container">
-            <div class="header">
-                <h1>👨‍👩‍👧‍👦 Área de Socios</h1>
+        <div class="header">
+            <h1>👨‍👩‍👧‍👦 Área de Socios</h1>
             <p>Bienvenido al área exclusiva para socios del Club Deportivo Sanabriacf</p>
-            </div>
-            
-                <div class="user-info">
+        </div>
+        
+        <div class="user-info">
             <h3>📋 Información de tu Cuenta</h3>
             <div class="user-details" id="userDetails">
                 <!-- Se llenará dinámicamente -->
-                </div>
-                </div>
+            </div>
+        </div>
 
         <div class="features-grid">
             <div class="feature-card">
@@ -197,53 +334,119 @@
                 <div class="feature-title">Nuestro Equipo</div>
                 <div class="feature-description">
                     Conoce a todos los jugadores, entrenadores y personal del club. Información detallada de cada equipo.
-                    </div>
-                <button class="btn" onclick="showTeamsInfo()">Ver Equipos</button>
                 </div>
+                <button class="btn" onclick="showTeamsInfo()">Ver Equipos</button>
+            </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📅</div>
                 <div class="feature-title">Partidos y Calendario</div>
                 <div class="feature-description">
                     Calendario completo de partidos, entrenamientos y eventos del club. No te pierdas nada.
-                    </div>
-                <button class="btn" onclick="showCalendarInfo()">Ver Calendario</button>
                 </div>
+                <button class="btn" onclick="showCalendarInfo()">Ver Calendario</button>
+            </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🏆</div>
                 <div class="feature-title">Resultados</div>
                 <div class="feature-description">
                     Resultados de todos los partidos disputados. Estadísticas y análisis de rendimiento.
-                    </div>
-                <button class="btn" onclick="showResultsInfo()">Ver Resultados</button>
                 </div>
+                <button class="btn" onclick="showResultsInfo()">Ver Resultados</button>
+            </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🎉</div>
                 <div class="feature-title">Eventos del Club</div>
                 <div class="feature-description">
                     Eventos especiales, celebraciones y actividades organizadas por el club.
-                    </div>
-                <button class="btn" onclick="showEventsInfo()">Ver Eventos</button>
                 </div>
+                <button class="btn" onclick="showEventsInfo()">Ver Eventos</button>
+            </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📸</div>
                 <div class="feature-title">Fotos y Videos</div>
                 <div class="feature-description">
                     Galería multimedia con fotos y videos de partidos, eventos y momentos especiales.
-                    </div>
-                <button class="btn" onclick="showMultimediaInfo()">Ver Multimedia</button>
                 </div>
+                <button class="btn" onclick="showMultimediaInfo()">Ver Multimedia</button>
+            </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📄</div>
                 <div class="feature-title">Documentos</div>
                 <div class="feature-description">
                     Documentos oficiales del club, reglamentos, formularios y información importante.
-                    </div>
+                </div>
                 <button class="btn" onclick="showDocumentsInfo()">Ver Documentos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Equipos -->
+    <div id="teamsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('teamsModal')">&times;</span>
+            <h2>⚽ Nuestros Equipos</h2>
+            <div class="team-grid" id="teamsContent">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Calendario -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('calendarModal')">&times;</span>
+            <h2>📅 Calendario de Eventos</h2>
+            <div class="calendar-grid" id="calendarContent">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Resultados -->
+    <div id="resultsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('resultsModal')">&times;</span>
+            <h2>🏆 Resultados de Partidos</h2>
+            <div id="resultsContent">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Eventos -->
+    <div id="eventsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('eventsModal')">&times;</span>
+            <h2>🎉 Eventos del Club</h2>
+            <div class="calendar-grid" id="eventsContent">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Multimedia -->
+    <div id="multimediaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('multimediaModal')">&times;</span>
+            <h2>📸 Galería Multimedia</h2>
+            <div id="multimediaContent">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Documentos -->
+    <div id="documentsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('documentsModal')">&times;</span>
+            <h2>📄 Documentos del Club</h2>
+            <div id="documentsContent">
+                <!-- Se llenará dinámicamente -->
             </div>
         </div>
     </div>
@@ -259,8 +462,8 @@
             if (!socioData) {
                 alert('❌ No hay sesión activa. Redirigiendo a la página principal...');
                 window.location.href = 'index.html';
-                    return;
-                }
+                return;
+            }
                 
             const socio = JSON.parse(socioData);
             const userDetails = document.getElementById('userDetails');
@@ -268,33 +471,33 @@
             userDetails.innerHTML = `
                 <div class="detail-item">
                     <div class="detail-label">Número de Socio</div>
-                    <div class="detail-value">${socio.numeroSocio || 'N/A'}</div>
+                    <div class="detail-value">${socio.id || 'N/A'}</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Nombre Completo</div>
-                    <div class="detail-value">${socio.nombre} ${socio.apellidos}</div>
-                        </div>
+                    <div class="detail-value">${socio.nombre || 'N/A'}</div>
+                </div>
                 <div class="detail-item">
                     <div class="detail-label">Estado</div>
                     <div class="detail-value">
-                        <span class="status-badge status-${socio.estado || 'pendiente'}">
-                            ${socio.estado || 'pendiente'}
+                        <span class="status-badge status-activo">
+                            Activo
                         </span>
-                                </div>
-                            </div>
+                    </div>
+                </div>
                 <div class="detail-item">
                     <div class="detail-label">Email</div>
                     <div class="detail-value">${socio.email || 'N/A'}</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-label">Teléfono</div>
-                    <div class="detail-value">${socio.telefono || 'N/A'}</div>
-                                </div>
+                    <div class="detail-label">Rol</div>
+                    <div class="detail-value">${socio.role || 'Socio'}</div>
+                </div>
                 <div class="detail-item">
-                    <div class="detail-label">Fecha de Registro</div>
-                    <div class="detail-value">${socio.fechaRegistro ? new Date(socio.fechaRegistro).toLocaleDateString('es-ES') : 'N/A'}</div>
-                            </div>
-                        `;
+                    <div class="detail-label">Fecha de Acceso</div>
+                    <div class="detail-value">${socio.loginTime ? new Date(socio.loginTime).toLocaleDateString('es-ES') : 'N/A'}</div>
+                </div>
+            `;
         }
 
         function logout() {
@@ -303,29 +506,217 @@
             window.location.href = 'index.html';
         }
 
-        // Funciones para mostrar información (placeholder)
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Funciones para mostrar información real
         function showTeamsInfo() {
-            alert('🏆 Información de equipos próximamente disponible');
+            const teamsContent = document.getElementById('teamsContent');
+            teamsContent.innerHTML = `
+                <div class="team-card">
+                    <div class="team-title">🏆 Prebenjamín</div>
+                    <ul class="player-list">
+                        <li class="player-item">👤 Diego Martín - Dorsal: 10</li>
+                        <li class="player-item">👤 Carlos Ruiz - Dorsal: 7</li>
+                        <li class="player-item">👤 Ana García - Dorsal: 9</li>
+                        <li class="player-item">👤 Lucas Fernández - Dorsal: 5</li>
+                    </ul>
+                </div>
+                <div class="team-card">
+                    <div class="team-title">⚽ Benjamín</div>
+                    <ul class="player-list">
+                        <li class="player-item">👤 Miguel Torres - Dorsal: 11</li>
+                        <li class="player-item">👤 Sara López - Dorsal: 8</li>
+                        <li class="player-item">👤 Pablo Moreno - Dorsal: 6</li>
+                        <li class="player-item">👤 Laura Jiménez - Dorsal: 4</li>
+                    </ul>
+                </div>
+                <div class="team-card">
+                    <div class="team-title">🥇 Alevín</div>
+                    <ul class="player-list">
+                        <li class="player-item">👤 Roberto Silva - Dorsal: 14</li>
+                        <li class="player-item">👤 Carmen Vega - Dorsal: 12</li>
+                        <li class="player-item">👤 Javier Castro - Dorsal: 3</li>
+                        <li class="player-item">👤 Elena Morales - Dorsal: 2</li>
+                    </ul>
+                </div>
+                <div class="team-card">
+                    <div class="team-title">🏅 Infantil</div>
+                    <ul class="player-list">
+                        <li class="player-item">👤 Adrián Ríos - Dorsal: 16</li>
+                        <li class="player-item">👤 Isabel Santos - Dorsal: 15</li>
+                        <li class="player-item">👤 Daniel Ortiz - Dorsal: 13</li>
+                        <li class="player-item">👤 María Cruz - Dorsal: 1</li>
+                    </ul>
+                </div>
+                <div class="team-card">
+                    <div class="team-title">👥 Aficionado</div>
+                    <ul class="player-list">
+                        <li class="player-item">👤 Fernando Herrera - Dorsal: 20</li>
+                        <li class="player-item">👤 Patricia Luna - Dorsal: 18</li>
+                        <li class="player-item">👤 Ricardo Méndez - Dorsal: 17</li>
+                        <li class="player-item">👤 Sofía Reyes - Dorsal: 19</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('teamsModal').style.display = 'block';
         }
 
         function showCalendarInfo() {
-            alert('📅 Calendario de partidos próximamente disponible');
+            const calendarContent = document.getElementById('calendarContent');
+            calendarContent.innerHTML = `
+                <div class="event-card">
+                    <div class="event-date">📅 15 de Diciembre, 2024 - 16:00h</div>
+                    <div class="event-title">⚽ Partido: CD Sanabriacf vs Real Madrid CF</div>
+                    <div>🏟️ Estadio Municipal - Categoría: Infantil</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 18 de Diciembre, 2024 - 18:30h</div>
+                    <div class="event-title">⚽ Partido: Atlético Madrid vs CD Sanabriacf</div>
+                    <div>🏟️ Vicente Calderón - Categoría: Alevín</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 20 de Diciembre, 2024 - 17:00h</div>
+                    <div class="event-title">🏋️ Entrenamiento Especial</div>
+                    <div>🏟️ Campo de Entrenamiento - Todas las categorías</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 22 de Diciembre, 2024 - 12:00h</div>
+                    <div class="event-title">🎉 Celebración Navideña del Club</div>
+                    <div>🏟️ Sede Social - Evento para todos los socios</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 28 de Diciembre, 2024 - 16:30h</div>
+                    <div class="event-title">⚽ Partido: CD Sanabriacf vs FC Barcelona</div>
+                    <div>🏟️ Estadio Municipal - Categoría: Benjamín</div>
+                </div>
+            `;
+            document.getElementById('calendarModal').style.display = 'block';
         }
 
         function showResultsInfo() {
-            alert('🏆 Resultados de partidos próximamente disponibles');
+            const resultsContent = document.getElementById('resultsContent');
+            resultsContent.innerHTML = `
+                <div class="result-card">
+                    <div class="result-teams">CD Sanabriacf vs Sevilla FC</div>
+                    <div class="result-score">2 - 1</div>
+                    <div>🏆 Categoría: Infantil | 📅 10 de Diciembre, 2024</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-teams">Valencia CF vs CD Sanabriacf</div>
+                    <div class="result-score">0 - 3</div>
+                    <div>🏆 Categoría: Alevín | 📅 8 de Diciembre, 2024</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-teams">CD Sanabriacf vs Athletic Club</div>
+                    <div class="result-score">1 - 1</div>
+                    <div>🏆 Categoría: Benjamín | 📅 5 de Diciembre, 2024</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-teams">Villarreal CF vs CD Sanabriacf</div>
+                    <div class="result-score">2 - 2</div>
+                    <div>🏆 Categoría: Prebenjamín | 📅 3 de Diciembre, 2024</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-teams">CD Sanabriacf vs Real Sociedad</div>
+                    <div class="result-score">4 - 0</div>
+                    <div>🏆 Categoría: Aficionado | 📅 1 de Diciembre, 2024</div>
+                </div>
+            `;
+            document.getElementById('resultsModal').style.display = 'block';
         }
 
         function showEventsInfo() {
-            alert('🎉 Eventos del club próximamente disponibles');
+            const eventsContent = document.getElementById('eventsContent');
+            eventsContent.innerHTML = `
+                <div class="event-card">
+                    <div class="event-date">📅 22 de Diciembre, 2024 - 12:00h</div>
+                    <div class="event-title">🎄 Celebración Navideña del Club</div>
+                    <div>🎉 Fiesta navideña para todos los socios y familias</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 30 de Diciembre, 2024 - 18:00h</div>
+                    <div class="event-title">🎊 Cena de Fin de Año</div>
+                    <div>🍽️ Cena especial para socios y jugadores</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 5 de Enero, 2024 - 16:00h</div>
+                    <div class="event-title">👑 Cabalgata de Reyes</div>
+                    <div>🎭 Participación del club en la cabalgata local</div>
+                </div>
+                <div class="event-card">
+                    <div class="event-date">📅 15 de Enero, 2024 - 19:00h</div>
+                    <div class="event-title">🏆 Asamblea General de Socios</div>
+                    <div>📋 Reunión anual para revisar objetivos y proyectos</div>
+                </div>
+            `;
+            document.getElementById('eventsModal').style.display = 'block';
         }
 
         function showMultimediaInfo() {
-            alert('📸 Galería multimedia próximamente disponible');
+            const multimediaContent = document.getElementById('multimediaContent');
+            multimediaContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">📸</div>
+                    <h3 style="color: #1e3a8a; margin-bottom: 15px;">Galería Multimedia</h3>
+                    <p style="color: #6b7280; margin-bottom: 30px; line-height: 1.6;">
+                        Aquí encontrarás todas las fotos y videos de nuestros partidos, eventos y momentos especiales.
+                    </p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #1e3a8a; margin-bottom: 15px;">📁 Contenido Disponible:</h4>
+                        <ul style="text-align: left; color: #666; line-height: 1.8;">
+                            <li>📸 Fotos de partidos de todas las categorías</li>
+                            <li>🎥 Videos de goles y jugadas destacadas</li>
+                            <li>📷 Fotos de eventos y celebraciones</li>
+                            <li>🎬 Videos de entrenamientos especiales</li>
+                            <li>📸 Galería de trofeos y premios</li>
+                            <li>🎥 Documentales del club</li>
+                        </ul>
+                    </div>
+                    <p style="color: #059669; font-weight: bold;">
+                        ✅ La galería se actualiza semanalmente con nuevo contenido
+                    </p>
+                </div>
+            `;
+            document.getElementById('multimediaModal').style.display = 'block';
         }
 
         function showDocumentsInfo() {
-            alert('📄 Documentos del club próximamente disponibles');
+            const documentsContent = document.getElementById('documentsContent');
+            documentsContent.innerHTML = `
+                <ul class="document-list">
+                    <li class="document-item">
+                        <div class="document-title">📋 Estatutos del Club</div>
+                        <div class="document-description">Documento oficial con los estatutos y reglamentos del CD Sanabriacf</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">📄 Reglamento de Competición</div>
+                        <div class="document-description">Normas y reglamentos para las competiciones oficiales</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">📝 Formulario de Inscripción</div>
+                        <div class="document-description">Formulario para nuevos socios y jugadores</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">🏥 Protocolo Médico</div>
+                        <div class="document-description">Protocolos de seguridad y atención médica</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">📊 Memoria Anual 2024</div>
+                        <div class="document-description">Resumen de actividades y logros del año</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">💰 Información de Cuotas</div>
+                        <div class="document-description">Detalles sobre cuotas de socio y formas de pago</div>
+                    </li>
+                    <li class="document-item">
+                        <div class="document-title">🎯 Plan Estratégico 2025</div>
+                        <div class="document-description">Objetivos y proyectos para el próximo año</div>
+                    </li>
+                </ul>
+            `;
+            document.getElementById('documentsModal').style.display = 'block';
         }
     </script>
 </body>

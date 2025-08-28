@@ -1,12 +1,11 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "npm install"
+    "builder": "NIXPACKS"
   },
   "deploy": {
     "startCommand": "npm start",
-    "healthcheckPath": "/api/health",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
@@ -16,20 +15,18 @@
       "variables": {
         "NODE_ENV": "production",
         "PORT": "3000",
-        "CORS_ORIGIN": "*",
-        "JWT_SECRET": "cdsanabriacf_jwt_secret_2024",
-        "ADMIN_EMAIL": "amco@gmx.es",
-        "ADMIN_PASSWORD": "533712"
+        "CLUB_NAME": "CDSANABRIACF",
+        "CLUB_EMAIL": "cdsanabriafc@gmail.com",
+        "CORS_ORIGIN": "https://cdsanabriacf.netlify.app"
       }
     },
     "development": {
       "variables": {
         "NODE_ENV": "development",
         "PORT": "3000",
-        "CORS_ORIGIN": "*",
-        "JWT_SECRET": "cdsanabriacf_jwt_secret_dev_2024",
-        "ADMIN_EMAIL": "amco@gmx.es",
-        "ADMIN_PASSWORD": "533712"
+        "CLUB_NAME": "CDSANABRIACF",
+        "CLUB_EMAIL": "cdsanabriafc@gmail.com",
+        "CORS_ORIGIN": "http://localhost:3000"
       }
     }
   }

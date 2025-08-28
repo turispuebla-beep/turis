@@ -3154,10 +3154,37 @@
         // Función para cerrar sesión
         function logout() {
             if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                localStorage.removeItem('currentAdmin');
-                console.log('👋 Sesión cerrada');
-                alert('✅ Sesión cerrada correctamente');
-                window.location.href = '../admin-panel.html';
+                try {
+                    // Limpiar datos de sesión
+                    localStorage.removeItem('currentAdmin');
+                    sessionStorage.clear();
+                    
+                    console.log('👋 Sesión cerrada correctamente');
+                    
+                    // Mostrar mensaje de confirmación
+                    alert('✅ Sesión cerrada correctamente');
+                    
+                    // Intentar cerrar la ventana
+                    try {
+                        window.close();
+                    } catch (e) {
+                        console.log('No se pudo cerrar la ventana automáticamente');
+                    }
+                    
+                    // Redirigir a la página principal como fallback
+                    setTimeout(() => {
+                        try {
+                            window.location.href = '../index.html';
+                        } catch (e) {
+                            // Si no funciona la redirección, intentar abrir en nueva pestaña
+                            window.open('../index.html', '_blank');
+                        }
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('❌ Error al cerrar sesión:', error);
+                    alert('❌ Error al cerrar sesión. Por favor, cierra la ventana manualmente.');
+                }
             }
         }
 
@@ -5983,17 +6010,26 @@
                     const statusText = friend.status === 'active' ? 'Activo' : 'Inactivo';
                     const lastAccessText = friend.lastAccess ? new Date(friend.lastAccess).toLocaleDateString('es-ES') : 'Nunca';
 
+                    // Usar nombres de campos compatibles (español e inglés)
+                    const nombre = friend.nombre || friend.name || 'Sin nombre';
+                    const apellidos = friend.apellidos || friend.surname || 'Sin apellidos';
+                    const telefono = friend.telefono || friend.phone || 'Sin teléfono';
+                    const dni = friend.dni || 'Sin DNI';
+                    const email = friend.email || 'Sin email';
+                    const registrationDate = friend.registrationDate || friend.registration_date || new Date().toISOString();
+                    const accessCount = friend.accessCount || friend.access_count || 0;
+
                     html += `
                         <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ${statusColor};">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                 <div>
-                                    <h4 style="margin: 0 0 5px 0; color: #1e3a8a;">${friend.name} ${friend.surname}</h4>
-                                    <p style="margin: 2px 0; color: #666;"><strong>DNI:</strong> ${friend.dni}</p>
-                                    <p style="margin: 2px 0; color: #666;"><strong>Teléfono:</strong> ${friend.phone}</p>
-                                    <p style="margin: 2px 0; color: #666;"><strong>Email:</strong> ${friend.email}</p>
-                                    <p style="margin: 2px 0; color: #666;"><strong>Registro:</strong> ${new Date(friend.registrationDate).toLocaleDateString('es-ES')}</p>
+                                    <h4 style="margin: 0 0 5px 0; color: #1e3a8a;">${nombre} ${apellidos}</h4>
+                                    <p style="margin: 2px 0; color: #666;"><strong>DNI:</strong> ${dni}</p>
+                                    <p style="margin: 2px 0; color: #666;"><strong>Teléfono:</strong> ${telefono}</p>
+                                    <p style="margin: 2px 0; color: #666;"><strong>Email:</strong> ${email}</p>
+                                    <p style="margin: 2px 0; color: #666;"><strong>Registro:</strong> ${new Date(registrationDate).toLocaleDateString('es-ES')}</p>
                                     <p style="margin: 2px 0; color: #666;"><strong>Último acceso:</strong> ${lastAccessText}</p>
-                                    <p style="margin: 2px 0; color: #666;"><strong>Accesos:</strong> ${friend.accessCount}</p>
+                                    <p style="margin: 2px 0; color: #666;"><strong>Accesos:</strong> ${accessCount}</p>
                                 </div>
                                 <div style="display: flex; flex-direction: column; gap: 5px;">
                                     <span style="background: ${statusColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${statusText}</span>
@@ -6035,20 +6071,29 @@
                 const lastAccessText = friend.lastAccess ? new Date(friend.lastAccess).toLocaleString('es-ES') : 'Nunca ha accedido';
                 const statusText = friend.status === 'active' ? 'Activo' : 'Inactivo';
 
+                // Usar nombres de campos compatibles (español e inglés)
+                const nombre = friend.nombre || friend.name || 'Sin nombre';
+                const apellidos = friend.apellidos || friend.surname || 'Sin apellidos';
+                const telefono = friend.telefono || friend.phone || 'Sin teléfono';
+                const dni = friend.dni || 'Sin DNI';
+                const email = friend.email || 'Sin email';
+                const registrationDate = friend.registrationDate || friend.registration_date || new Date().toISOString();
+                const accessCount = friend.accessCount || friend.access_count || 0;
+
                 const details = `
 🤝 DETALLES DEL AMIGO DEL CLUB
 
 👤 DATOS PERSONALES:
-• Nombre: ${friend.name} ${friend.surname}
-• DNI: ${friend.dni}
-• Teléfono: ${friend.phone}
-• Correo Electrónico: ${friend.email}
+• Nombre: ${nombre} ${apellidos}
+• DNI: ${dni}
+• Teléfono: ${telefono}
+• Correo Electrónico: ${email}
 
 📊 INFORMACIÓN DE ACCESO:
 • Estado: ${statusText}
-• Fecha de Registro: ${new Date(friend.registrationDate).toLocaleDateString('es-ES')}
+• Fecha de Registro: ${new Date(registrationDate).toLocaleDateString('es-ES')}
 • Último Acceso: ${lastAccessText}
-• Número de Accesos: ${friend.accessCount}
+• Número de Accesos: ${accessCount}
 
 🔐 PERMISOS:
 • Solo puede ver calendario y competiciones
@@ -6078,7 +6123,11 @@
                 const newStatus = friend.status === 'active' ? 'inactive' : 'active';
                 const statusText = newStatus === 'active' ? 'activado' : 'desactivado';
 
-                if (confirm(`¿Estás seguro de que quieres ${statusText} a ${friend.name} ${friend.surname}?`)) {
+                // Usar nombres de campos compatibles
+                const nombre = friend.nombre || friend.name || 'Sin nombre';
+                const apellidos = friend.apellidos || friend.surname || 'Sin apellidos';
+
+                if (confirm(`¿Estás seguro de que quieres ${statusText} a ${nombre} ${apellidos}?`)) {
                     friends[friendIndex].status = newStatus;
                     localStorage.setItem('clubFriends', JSON.stringify(friends));
                     
@@ -6087,7 +6136,7 @@
                     updateDashboardCounts();
                     
                     alert(`✅ Amigo del club ${statusText} correctamente.`);
-                    console.log(`🤝 Amigo del club ${statusText}:`, friend.name + ' ' + friend.surname);
+                    console.log(`🤝 Amigo del club ${statusText}:`, nombre + ' ' + apellidos);
                 }
 
             } catch (error) {
@@ -6106,7 +6155,11 @@
                     return;
                 }
 
-                if (confirm(`¿Estás seguro de que quieres eliminar a ${friend.name} ${friend.surname} de la lista de amigos del club?\n\n⚠️ Esta acción no se puede deshacer.`)) {
+                // Usar nombres de campos compatibles
+                const nombre = friend.nombre || friend.name || 'Sin nombre';
+                const apellidos = friend.apellidos || friend.surname || 'Sin apellidos';
+
+                if (confirm(`¿Estás seguro de que quieres eliminar a ${nombre} ${apellidos} de la lista de amigos del club?\n\n⚠️ Esta acción no se puede deshacer.`)) {
                     const updatedFriends = friends.filter(f => f.id !== friendId);
                     localStorage.setItem('clubFriends', JSON.stringify(updatedFriends));
                     
@@ -6115,7 +6168,7 @@
                     updateDashboardCounts();
                     
                     alert('✅ Amigo del club eliminado correctamente.');
-                    console.log('🗑️ Amigo del club eliminado:', friend.name + ' ' + friend.surname);
+                    console.log('🗑️ Amigo del club eliminado:', nombre + ' ' + apellidos);
                 }
 
             } catch (error) {
