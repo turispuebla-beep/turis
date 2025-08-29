@@ -763,3 +763,4 @@ console.log('- obtenerSociosDelBackend(): Obtiene socios del backend');
 
 
 
+y ha las 
